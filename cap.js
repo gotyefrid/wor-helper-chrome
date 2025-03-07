@@ -1,3 +1,5 @@
+const CAPTCHA_HOST = localStorage.getItem('captcha_host');
+
 processCapcha();
 
 async function processCapcha() {
@@ -80,7 +82,7 @@ async function checkRigthImage(otherImageFiles, detectResult) {
         otherImageFiles.forEach(file => matchFormData.append("files", file));
         matchFormData.append("expected", JSON.stringify(detectResult));
 
-        let matchResponse = await fetch("http://localhost:8585/find_matching_image", {
+        let matchResponse = await fetch(CAPTCHA_HOST + "/find_matching_image", {
             method: "POST",
             body: matchFormData
         });
@@ -103,7 +105,7 @@ async function getCaptchaRequirements(firstImageFile) {
         let detectFormData = new FormData();
         detectFormData.append("image", firstImageFile);
 
-        let detectResponse = await fetch("http://localhost:8585/detect_numbers", {
+        let detectResponse = await fetch(CAPTCHA_HOST + "/detect_numbers", {
             method: "POST",
             body: detectFormData
         });
