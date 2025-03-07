@@ -1,0 +1,57 @@
+{
+    "manifest_version": 3,
+    "name": "WOR Extension",
+    "version": "1.1",
+    "description": "Полезные скрипты для игры World of Rest",
+    "permissions": [
+        "storage"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icon.png",
+            "48": "icon.png",
+            "128": "icon.png"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://wor.com.ua/wap/lovit*",
+                "http://185.212.47.8/wap/lovit*"
+            ],
+            "js": [
+                "common.js",
+                "fishing.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/cap*",
+                "http://185.212.47.8/wap/cap*"
+            ],
+            "js": [
+                "common.js",
+                "cap.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/teritory*",
+                "http://185.212.47.8/wap/teritory*"
+            ],
+            "js": [
+                "moving_by_keyboard.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/teritory*",
+                "http://185.212.47.8/wap/teritory*"
+            ],
+            "js": [
+                "map-history.js"
+            ]
+        }
+    ]
+}
