@@ -22,6 +22,7 @@
             ],
             "js": [
                 "common.js",
+                "chat-utils.js",
                 "fishing.js"
             ]
         },
@@ -37,11 +38,12 @@
         },
         {
             "matches": [
-                "*://wor.com.ua/wap/teritory*",
-                "http://185.212.47.8/wap/teritory*"
+                "*://wor.com.ua/wap/*",
+                "http://185.212.47.8/wap/*"
             ],
             "js": [
-                "moving_by_keyboard.js"
+                "common.js",
+                "moving-key.js"
             ]
         },
         {
@@ -51,6 +53,16 @@
             ],
             "js": [
                 "map-history.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/*",
+                "http://185.212.47.8/wap/*"
+            ],
+            "js": [
+                "common.js",
+                "chat-utils.js"
             ]
         }
     ]

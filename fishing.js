@@ -26,7 +26,7 @@ async function fishing() {
 
             log('Смотрим есть ли новые приватные сообщения');
             await delay(getRandomNumber(500, 1000));
-            processPrivateMessage();
+            await processLastPrivateMessage();
 
             await processGetFishButton();
         }
@@ -101,49 +101,6 @@ async function processGetFishButton() {
     });
 }
 
-function isMessageHasAlreadySent(text) {
-    let lastStoredMessage = localStorage.getItem("lastPrivateMessage");
-
-    if (lastStoredMessage && text.toString() == lastStoredMessage.toString()) {
-        log(`Сообщение "${text}" уже было отправлено ранее`);
-        return true;
-    }
-
-    return false;
-}
-
-function getPrivateLastPrivateMessage() {
-    // Получаем все ссылки <a> на странице
-    let message = [...document.querySelectorAll("#msg_box strong")].find(link => link.innerText.includes('для WheeL'))?.parentElement;
-
-    if (!(message instanceof Object)) {
-        return false;
-    }
-
-    let text = "";
-
-    // Перебираем все дочерние узлы внутри message
-    for (let node of message.childNodes) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            // Если текстовый узел — добавляем текст
-            text += node.textContent.trim() + " ";
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            if (node.tagName === "A" && node.onclick?.toString().includes("chatline.message.value")) {
-                // Если это <a> с onclick для вставки смайла — достаем значение
-                let match = node.onclick.toString().match(/'(.+?)'/);
-                if (match) {
-                    text += match[1] + " ";
-                }
-            } else {
-                // Для других элементов берем их innerText
-                text += node.innerText.trim() + " ";
-            }
-        }
-    }
-
-    return text.trim();
-}
-
 async function processSetFishingLocation() {
     let placeButtons = [...document.querySelectorAll(".btninv")]; // Получаем все кнопки
 
@@ -153,20 +110,5 @@ async function processSetFishingLocation() {
 
     if (randomButton) {
         randomButton.click();
-    }
-}
-
-async function processPrivateMessage() {
-    let lastMessageToMe = getPrivateLastPrivateMessage();
-
-    if (!lastMessageToMe) {
-        return;
-    };
-
-    if (!isMessageHasAlreadySent(lastMessageToMe)) {
-        log('Есть новое сообщение, отправляем в ТГ');
-        await delay(1000);
-        sendTelegramMessage("ЛС: " + lastMessageToMe.toString());
-        localStorage.setItem("lastPrivateMessage", lastMessageToMe);
     }
 }

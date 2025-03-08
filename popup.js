@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const toggleContainer = document.body; // Контейнер для добавления переключателей
+    const toggleContainer = document.body;
 
     // Определяем настройки переключателей
     const toggles = {
@@ -13,10 +13,11 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Функция создания переключателя
     function createToggle(id, label, storageKey) {
         let wrapper = document.createElement("div");
+        wrapper.classList.add("toggle-wrapper");
 
-        let title = document.createElement("h2");
+        let title = document.createElement("span");
         title.textContent = label;
-        wrapper.appendChild(title);
+        title.classList.add("toggle-title");
 
         let labelElem = document.createElement("label");
         labelElem.classList.add("switch");
@@ -30,9 +31,16 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         labelElem.appendChild(input);
         labelElem.appendChild(span);
+
+        wrapper.appendChild(title);
         wrapper.appendChild(labelElem);
 
         toggleContainer.appendChild(wrapper);
+
+        // Разделитель
+        let divider = document.createElement("hr");
+        divider.classList.add("divider");
+        toggleContainer.appendChild(divider);
 
         // Загружаем сохранённое состояние из storage
         chrome.storage.local.get(storageKey, function (data) {
