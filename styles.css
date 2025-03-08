@@ -1,12 +1,26 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    width: 200px;
     padding: 10px;
+    width: 250px;
+    background: #f8f8f8;
+    text-align: center;
 }
 
 h2 {
-    margin: 0 0 10px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.toggle-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.toggle-title {
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .switch {
@@ -47,9 +61,16 @@ h2 {
 }
 
 input:checked + .slider {
-    background-color: #4caf50;
+    background-color: #4CAF50;
 }
 
 input:checked + .slider:before {
     transform: translateX(14px);
+}
+
+.divider {
+    border: none;
+    height: 1px;
+    background: #ddd;
+    margin: 8px 0;
 }
