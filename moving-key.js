@@ -3,28 +3,46 @@ start();
 async function start() {
     let access = await chrome.storage.local.get(["wor_moving_active"]);
 
-    if (!access) {
+    if (access.wor_moving_active !== true || document.location.href.includes('chat')) {
         return;
     }
 
     document.addEventListener("keydown", function (event) {
         try {
-            var playerCell = document.querySelector("td[align=center]").querySelector('div');
-            var upperRow = playerCell.parentElement.parentElement.previousElementSibling;
-            var downRow = playerCell.parentElement.parentElement.nextElementSibling;
+            try {
+                var playerCell = document.querySelector("td[align=center]").querySelector('div');
+                var upperRow = playerCell.parentElement.parentElement.previousElementSibling;
+                var downRow = playerCell.parentElement.parentElement.nextElementSibling;
+            } catch (error) {
+
+            }
 
             switch (event.code) {
                 case 'KeyA': // Влево
-                    var cellId = parseInt(playerCell.id.substring(1), 10) - 1;
-                    playerCell.parentElement.parentElement.querySelector(`#r${id}`).click();
+                    try {
+                        var cellId = parseInt(playerCell.id.substring(1), 10) - 1;
+                        playerCell.parentElement.parentElement.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("влево")).click();
+                    }
+
                     break;
                 case 'KeyD': // Вправо
-                    var id = parseInt(playerCell.id.substring(1), 10) + 1;
-                    playerCell.parentElement.parentElement.querySelector(`#r${id}`).click();
+                    try {
+                        var cellId = parseInt(playerCell.id.substring(1), 10) + 1;
+                        playerCell.parentElement.parentElement.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вправо")).click();
+                    }
                     break;
                 case 'KeyW': // Вверх
-                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + 2;
-                    upperRow.querySelector(`#r${cellId}`).click();
+                    try {
+                        var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + 2;
+                        upperRow.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вверх")).click();
+                    }
+
                     break;
                 case 'KeyQ': // Вверх-влево
                     var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + 1;
@@ -35,8 +53,12 @@ async function start() {
                     upperRow.querySelector(`#r${cellId}`).click();
                     break;
                 case 'KeyS': // Вниз
-                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + 2;
-                    downRow.querySelector(`#r${cellId}`).click();
+                    try {
+                        var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + 2;
+                        downRow.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вниз")).click();
+                    }
                     break;
                 case 'KeyZ': // Вниз-влево
                     var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + 1;
