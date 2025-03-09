@@ -28,7 +28,7 @@ async function alchemistry() {
 
     async function runalchemistryLoop() {
         if (!result.wor_alchemistry_active) {
-            log(`Бот алхимии отключен`);
+            log(`Бот алхимии отключен`, false);
             return;
         }
 

@@ -1,16 +1,14 @@
-
-putInfoBlock();
-
 async function log(message, showInFront = true, important) {
     try {
         let result = await chrome.storage.local.get(["wor_log_active"]);
 
         if (showInFront) {
+            putInfoBlock();
             let div = document.querySelector('#temp_block')
             div.textContent = message;
         }
 
-        if (result.wor_log_active) { 
+        if (result.wor_log_active) {
             console.log(message);
         }
 
@@ -34,7 +32,7 @@ function getRandomNumber(min, max) {
 function sendTelegramMessage(text) {
     const botToken = localStorage.getItem('botToken');
     const chatId = localStorage.getItem('chatId');
-    
+
     if (!botToken || !chatId) {
         console.error('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в localStroage');
         return;
@@ -47,11 +45,15 @@ function sendTelegramMessage(text) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: chatId, text: text })
     }).then(response => response.json())
-        .then(data => log("TG ответ:"  + data, false))
+        .then(data => log("TG ответ:" + data, false))
         .catch(error => console.error("Ошибка отправки в Telegram:", error));
 }
 
 function putInfoBlock(text, color) {
+    if (document.querySelector("#temp_block")) {
+        return;
+    }
+
     // Находим оригинальный элемент с классом 
     let chatElements = document.querySelectorAll(".chat");
     let originalElement = chatElements[chatElements.length - 1]; // Берём последний элемент
