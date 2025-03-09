@@ -34,7 +34,18 @@ async function alchemistry() {
 
         if (document.querySelector('#progressBar')) {
             log('Ждем кнопки Собрать');
+            log('Запоминаем ссылку lastPoiskTravUrl', false);
             localStorage.setItem('lastPoiskTravUrl', document.location.href)
+
+            let chatBox = document.querySelector('#msg_box');
+
+            processLastPrivateMessage();
+
+            let contur = chatBox ? chatBox.querySelector('.contur') : null;
+    
+            if (chatBox && contur && contur.textContent.includes('В бой:')) {
+                location.reload();
+            }
         }
 
         if ((sobrat = document.querySelector('input[value=Собрать]'))) {
@@ -108,13 +119,6 @@ async function alchemistry() {
             log('Выходим на природу');
             await delay(getRandomNumber(1000, 3000));
             priroda.click();
-        }
-
-        let chatBox = document.querySelector('#msg_box');
-        let contur = chatBox ? chatBox.querySelector('.contur') : null;
-
-        if (chatBox && contur && contur.textContent.includes('В бой:')) {
-            location.reload();
         }
 
         // Запускаем новый вызов функции через случайный интервал, но ТОЛЬКО после завершения всех действий
