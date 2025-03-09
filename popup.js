@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Определяем настройки переключателей
     const toggles = {
         toggleFishing: { name: "Рыбалка", storageKey: "wor_fishing_active" },
+        toggleAlchemistry: { name: "Алхимия", storageKey: "wor_alchemistry_active" },
         toggleMoving: { name: "Клавамув", storageKey: "wor_moving_active" },
         toggleCaptcha: { name: "Капча", storageKey: "wor_captcha_active" },
         toggleMapHistory: { name: "История карты", storageKey: "wor_maphistory_active" },
