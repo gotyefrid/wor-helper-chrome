@@ -3,7 +3,7 @@ start();
 async function start() {
     let access = await chrome.storage.local.get(["wor_moving_active"]);
 
-    if (access.wor_moving_active !== true  || document.location.href.includes('chat')) {
+    if (access.wor_moving_active !== true || document.querySelector('[type=text], textarea')) {
         return;
     }
 

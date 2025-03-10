@@ -71,8 +71,9 @@ async function alchemistry() {
             document.location.href.includes('wait')
         ) {
 
-            if (document.querySelector('body').innerText.includes('Дарбутар [24]')) {
+            if (document.querySelector('body').innerText.includes('Дарбутар [24]')) {w
                 sendTelegramMessage('Напал ДАРБУТАР! СРОЧНО УБИТЬ РУЧКАМИ');
+                return;
             }
 
             if (udarit) {
