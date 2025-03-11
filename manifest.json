@@ -17,24 +17,24 @@
     "content_scripts": [
         {
             "matches": [
-                "*://wor.com.ua/wap/lovit*",
-                "http://185.212.47.8/wap/lovit*"
-            ],
-            "js": [
-                "common.js",
-                "chat-utils.js",
-                "fishing.js"
-            ]
-        },
-        {
-            "matches": [
                 "*://wor.com.ua/wap/*",
                 "http://185.212.47.8/wap/*"
             ],
             "js": [
+                "move-to-coords.js",
                 "common.js",
                 "chat-utils.js",
+                "moving-key.js",
                 "chemistry.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/lovit*",
+                "http://185.212.47.8/wap/lovit*"
+            ],
+            "js": [
+                "fishing.js"
             ]
         },
         {
@@ -43,18 +43,7 @@
                 "http://185.212.47.8/wap/cap*"
             ],
             "js": [
-                "common.js",
                 "cap.js"
-            ]
-        },
-        {
-            "matches": [
-                "*://wor.com.ua/wap/*",
-                "http://185.212.47.8/wap/*"
-            ],
-            "js": [
-                "common.js",
-                "moving-key.js"
             ]
         },
         {
@@ -64,16 +53,6 @@
             ],
             "js": [
                 "map-history.js"
-            ]
-        },
-        {
-            "matches": [
-                "*://wor.com.ua/wap/*",
-                "http://185.212.47.8/wap/*"
-            ],
-            "js": [
-                "common.js",
-                "chat-utils.js"
             ]
         }
     ]
