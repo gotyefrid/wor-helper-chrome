@@ -9,7 +9,7 @@ class GridNavigator {
     findCoordinatesById(id) {
         for (let row = 0; row < this.numRows; row++) {
             for (let col = 0; col < this.numCols; col++) {
-                if (this.grid[row][col] === id) return { row, col };
+                if (this.grid[row][col] === id) return {row, col};
             }
         }
         return null;
@@ -27,20 +27,20 @@ class GridNavigator {
 
         // Возможные направления движения (8 направлений: вверх, вниз, влево, вправо и диагонали)
         const directions = [
-            { dr: -1, dc: 0 },  // вверх
-            { dr: 1, dc: 0 },   // вниз
-            { dr: 0, dc: -1 },  // влево
-            { dr: 0, dc: 1 },   // вправо
-            { dr: -1, dc: -1 }, // диагональ вверх-влево
-            { dr: -1, dc: 1 },  // диагональ вверх-вправо
-            { dr: 1, dc: -1 },  // диагональ вниз-влево
-            { dr: 1, dc: 1 }    // диагональ вниз-вправо
+            {dr: -1, dc: 0},  // вверх
+            {dr: 1, dc: 0},   // вниз
+            {dr: 0, dc: -1},  // влево
+            {dr: 0, dc: 1},   // вправо
+            {dr: -1, dc: -1}, // диагональ вверх-влево
+            {dr: -1, dc: 1},  // диагональ вверх-вправо
+            {dr: 1, dc: -1},  // диагональ вниз-влево
+            {dr: 1, dc: 1}    // диагональ вниз-вправо
         ];
 
-        const visited = Array.from({ length: this.numRows }, () =>
+        const visited = Array.from({length: this.numRows}, () =>
             Array(this.numCols).fill(false)
         );
-        const parent = Array.from({ length: this.numRows }, () =>
+        const parent = Array.from({length: this.numRows}, () =>
             Array(this.numCols).fill(null)
         );
         const queue = [];
@@ -65,7 +65,7 @@ class GridNavigator {
             }
 
             // Перебираем все соседние клетки
-            for (const { dr, dc } of directions) {
+            for (const {dr, dc} of directions) {
                 const newRow = current.row + dr;
                 const newCol = current.col + dc;
 
@@ -77,7 +77,7 @@ class GridNavigator {
                 ) {
                     visited[newRow][newCol] = true;
                     parent[newRow][newCol] = current;
-                    queue.push({ row: newRow, col: newCol });
+                    queue.push({row: newRow, col: newCol});
                 }
             }
         }
@@ -101,8 +101,106 @@ const location1Ids = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 758, 759, 760, 761, 762, 763, 764, 765, 766],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 793, 0, 0, 796, 797, 798, 799, 0, 0]
 ];
-const navigator = new GridNavigator(location1Ids);
-const path = navigator.findPath(636, 660, 1);
-console.log(path); // Ожидаемый маршрут: [511, 512, 513, 514, 323, 516]
+
+async function go() {
+
+    let icame = localStorage.getItem('iamcame');
+
+    if (icame) {
+        return;
+    }
+
+    if (document.location.href.includes('main') || document.location.href.includes('gorod')) {
+        localStorage.setItem('visitedPathIds', '[]');
+        let priroda = document.querySelector('a[href*=teritory]');
+
+        if (priroda) {
+            console.log('Кликаем на природу')
+            await delay(2000);
+            priroda.click();
+            return;
+        }
+    }
+
+    if (document.location.href.includes('teritory')) {
+        let playerCell = document.querySelector("td[align=center]").querySelector('div');
+        let currentId = parseInt(playerCell.id.substring(1), 10);
+
+        if (currentId !== 394 && localStorage.getItem('visitedPathIds') === '[]') {
+            console.log('Не на старте мы, кликаем на телепорт')
+            await delay(2000);
+            document.querySelector('a[href*=teleport]').click();
+            return;
+        }
+
+
+        navigatePath();
+
+    }
+}
+
+async function navigatePath() {
+    const navigator = new GridNavigator(location1Ids);
+    const path = navigator.findPath(395, 730);
+    console.log('Путь:', path);
+
+    // Получаем массив пройденных точек из localStorage или создаем пустой, если его ещё нет
+    let visitedPathIds = JSON.parse(localStorage.getItem('visitedPathIds') || '[]');
+
+    // Для первой итерации будем использовать текущий document
+    let currentDocument = document;
+
+    // Проходим по всем точкам пути
+    for (const id of path) {
+        // Если текущая точка не была посещена
+        if (!visitedPathIds.includes(id)) {
+            console.log('Переходим на точку ' + id);
+            await delay(getRandomNumber(50, 150)); // задержка между запросами
+
+            // Добавляем id в массив пройденных точек и сохраняем его в localStorage
+            visitedPathIds.push(id);
+            localStorage.setItem('visitedPathIds', JSON.stringify(visitedPathIds));
+
+            // Формируем селектор для ячейки и ищем её в текущем документе (полученном на предыдущем шаге или изначальном)
+            let cellId = '#r' + id.toString();
+            let cellElement = currentDocument.querySelector(cellId);
+            if (!cellElement) {
+                console.error('Элемент с селектором ' + cellId + ' не найден в текущем документе');
+                localStorage.setItem('visitedPathIds', '[]');
+                break;
+            }
+
+            // Получаем URL из атрибута href найденного элемента
+            let url = cellElement.getAttribute('href');
+            console.log('Отправляем fetch запрос по URL: ' + url);
+
+            try {
+                // Отправляем запрос и получаем HTML-страницу
+                let response = await fetch(url);
+                let html = await response.text();
+
+                // Парсим полученный HTML и создаём новый DOM
+                let parser = new DOMParser();
+                let newDocument = parser.parseFromString(html, 'text/html');
+                console.log('Получена страница с заголовком: ' + newDocument.title);
+
+                // Обновляем currentDocument для следующей итерации
+                currentDocument = newDocument;
+            } catch (error) {
+                console.error('Ошибка при fetch запросе:', error);
+                break;
+            }
+
+            // Если достигнута финальная точка, перезагружаем страницу
+            if (id === path[path.length - 1]) {
+                console.log('Достигнута финальная точка, перезагружаем страницу...');
+                localStorage.setItem('visitedPathIds', '[]');
+                localStorage.setItem('iamcame', 1);
+                location.reload();
+                return;
+            }
+        }
+    }
+}
 
 

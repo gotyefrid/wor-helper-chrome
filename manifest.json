@@ -21,8 +21,8 @@
                 "http://185.212.47.8/wap/*"
             ],
             "js": [
-                "move-to-coords.js",
                 "common.js",
+                "move-to-coords.js",
                 "chat-utils.js",
                 "moving-key.js",
                 "chemistry.js"
