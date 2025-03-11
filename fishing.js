@@ -103,12 +103,36 @@ async function processGetFishButton() {
 
 async function processSetFishingLocation() {
     let placeButtons = [...document.querySelectorAll(".btninv")]; // Получаем все кнопки
+    let needFishName = 'cудак'.toLowerCase();
+    let locationIndex = Math.floor(Math.random() * placeButtons.length);
 
-    let randomButton = placeButtons.length > 0
-        ? placeButtons[Math.floor(Math.random() * placeButtons.length)]
-        : false; // Выбираем случайную кнопку или false, если их нет
+    let savedLocation = localStorage.getItem('lastFishingLocationIndex');
 
-    if (randomButton) {
-        randomButton.click();
+    if (getLastFishName().toLowerCase().includes(needFishName) && savedLocation !== null && savedLocation !== '') {
+        locationIndex = Number(savedLocation); // Преобразуем в число, если значение есть
     }
+
+    let button = placeButtons.length > 0
+        ? placeButtons[locationIndex]
+        : false; // Выбираем кнопку или false, если их нет
+
+    if (button) {
+        localStorage.setItem('lastFishingLocationIndex', locationIndex);
+        button.click();
+        return;
+    }
+
+    log('Почему то не нашлись кнопки выбора локации');
+    sendTelegramMessage('Почему то не нашлись кнопки выбора локации');
+}
+
+async function getLastFishName() {
+    let searchStr = 'Вы подсекли и выловили трофейного';
+    let lastFishNameElement = [...document.querySelectorAll('span.svet')]
+        .find(span => span.textContent.includes(searchStr))
+        ?.textContent
+        .replace(searchStr, '')
+        .trim();
+
+    return lastFishNameElement ? lastFishNameElement : '';
 }
