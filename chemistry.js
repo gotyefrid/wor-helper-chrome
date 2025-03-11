@@ -15,6 +15,8 @@ async function start() {
         "/wap/boj",
         "/wap/wait",
         "/wap/logfull",
+        "/wap/main",
+        "/wap/game",
     ];
 
     if (!allow.some(path => document.location.href.includes(path))) {
