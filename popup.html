@@ -1,13 +1,220 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOR Helper</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="jquery-3.7.1.js"></script>
+    <link href="select2.min.css" rel="stylesheet" />
+    <script src="select2.min.js"></script>
 </head>
+
 <body>
     <h2>WOR Helper</h2>
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Ник</span>
+        <label class="text-input-nick">
+            <input type="text" id="inputPlayerName">
+        </label>
+    </div>
+    <div class="toggle-wrapper" id="toggleFishingWrapper">
+        <span class="toggle-title toggle-expand">Рыбалка ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleFishing"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleFishingOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Приоритет</span>
+            <label class="">
+                <select id="toggleFishingNeedFish" class="dropdown">
+                    <option value="судак">Судак</option>
+                    <option value="карас">Карась</option>
+                    <option value="лещ">Лещ</option>
+                    <option value="окун">Окунь</option>
+                    <option value="капр">Карп</option>
+                    <option value="форел">Форель</option>
+                </select>
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Алхимия</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleAlchemistry"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Движение клавишами</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleMoving"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Проходить капчу</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleCaptcha"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">История карты</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleMapHistory"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleFightingWrapper">
+        <span class="toggle-title toggle-expand">Сражение ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleFighting"><span class="slider round"></span>
+        </label>
+    </div>
+
+    <div class="sub-toggle-wrapper" id="toggleFightingOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Сдаваться</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingGiveUp"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Пить HP</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingPotHP"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Пить MA</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingPotMP"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Не бить лвл >=</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingLevelToSkip" min="0" max="99" maxlength="2">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleBanditsWrapper">
+        <span class="toggle-title toggle-expand">Разбойники ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleBandits"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleBanditsOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Пить HP</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleBanditsOptPotHP"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Пить MA</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleBanditsOptPotMP"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Не бить лвл >=</span>
+            <label class="text-input">
+                <input type="number" id="inputBanditsOptLevelToSkip" min="0" max="99" maxlength="2">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleParsingWrapper">
+        <span class="toggle-title toggle-expand">Парсинг ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleParsing"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleParsingOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Ссылки и цели</span>
+            <label class="">
+                <a id="toggleParsingOptLinksTargets">Редактировать</a>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Таймаут, сек</span>
+            <label class="text-input">
+                <input type="number" id="inputParsingOptTimeout" min="0" max="99" maxlength="2">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleTelegramWrapper">
+        <span class="toggle-title toggle-expand">Уведомления ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleTelegram"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleTelegramOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Бот уведомлений API</span>
+            <label class="text-input">
+                <input type="text" id="inputTelegramOptApiKeyCommon">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Бот чата API</span>
+            <label class="text-input">
+                <input type="text" id="inputTelegramOptApiKeyChat">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Chat ID</span>
+            <label class="text-input">
+                <input type="text" id="inputTelegramOptChatID">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Лог</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleLog"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
+    <!-- Красивая кнопка -->
+    <button id="mergeButton">Объединить предметы</button>
+
     <script src="popup.js"></script>
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>Редактировать ссылки и цели</h3>
+
+            <label class="modal-label">Ссылки</label>
+            <select id="modal-links" class="select2" multiple></select>
+
+            <label class="modal-label">Цели</label>
+            <select id="modal-targets" class="select2" multiple></select>
+
+            <button id="modal-save">Сохранить</button>
+        </div>
+    </div>
 </body>
+
 </html>
