@@ -611,7 +611,7 @@ class CommonHelper {
     }
 }
 
-let title = document.querySelector('.menu').textContent;
+let title = document.querySelector('.menu')?.textContent;
 
 if (title) {
     document.title = title;
