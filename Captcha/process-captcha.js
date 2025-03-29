@@ -4,7 +4,9 @@ window.addEventListener("load", async function () {
 
     if (!access) {
         CommonHelper.log('Обход капчи не активен.');
-        CommonHelper.sendTelegramMessage('Нужно пройти капчу');
+        CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + document.location.href);
+        await CommonHelper.delay(15000);
+        CommonHelper.reloadPage();
         return;
     }
 

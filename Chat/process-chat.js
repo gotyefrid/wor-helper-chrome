@@ -18,24 +18,48 @@
 
     while (true) {
         try {
-            // Отправка сообщений из чата в Telegram
-            chat.sendMessagesToTelegram(chat.getParsedMessages());
+            let newMessages = [];
 
-            // Получаем последний update_id
-            let lastId = await CommonHelper.getRemoteTGUpdateId();
+            let actualMessages = chat.getParsedMessages();
+            let oldMessages = await CommonHelper.getExtStorage('wor_chat_message_queue') || [];
+            let oldNewestMessage = oldMessages[0] ?? [];
 
-            if (!lastId || lastId == 0) {
-                CommonHelper.log('update_id не найден! Процессим в холостую', false);
-                await CommonHelper.getTelegramUpdates('chat', 0, true);
+            if (oldMessages.length === 0) {
+                newMessages = actualMessages;
             } else {
-                CommonHelper.log('Получили последний update_id: ' + lastId, false);
-                const messages = await CommonHelper.getTelegramUpdates('chat', lastId, false);
-                
-                CommonHelper.log('Получили сообщения из телеграма: ' + JSON.stringify(messages), false);
-                await handleTelegramMessages(messages);
+                newMessages = chat.removeFromMatch(actualMessages, oldNewestMessage);
             }
+
+            let resultMessages = [...newMessages, ...oldMessages];
+
+            await CommonHelper.setExtStorage('wor_chat_message_queue', resultMessages);
+
+            while (resultMessages.length > 1) {
+                // Вырезаем последний элемент
+                const lastElement = resultMessages.pop();
+                await chat.sendMessagesToTelegram(lastElement);
+                await CommonHelper.setExtStorage('wor_chat_message_queue', resultMessages);
+            }
+
+            CommonHelper.log("Всё отправили.");
+            // Отправка сообщений из чата в Telegram
+
+
+            // // Получаем последний update_id
+            // let lastId = await CommonHelper.getRemoteTGUpdateId();
+
+            // if (!lastId || lastId == 0) {
+            //     CommonHelper.log('update_id не найден! Процессим в холостую', false);
+            //     await CommonHelper.getTelegramUpdates('chat', 0, true);
+            // } else {
+            //     CommonHelper.log('Получили последний update_id: ' + lastId, false);
+            //     const messages = await CommonHelper.getTelegramUpdates('chat', lastId, false);
+
+            //     CommonHelper.log('Получили сообщения из телеграма: ' + JSON.stringify(messages), false);
+            //     await handleTelegramMessages(messages);
+            // }
         } catch (err) {
-            CommonHelper.log('Ошибка в цикле обработки:', err);
+            console.log(err);
         }
 
         // Ждём 10 секунд перед следующим запуском

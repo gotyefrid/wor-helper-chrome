@@ -13,6 +13,17 @@ class Chat {
         // Получаем все div'ы с id "msg_box"
         let msgBoxes = document.querySelectorAll("div#msg_box");
 
+        const params = new URLSearchParams(window.location.search);
+        const strParam = params.get('str');
+        const mymessParam = params.get('mymess');
+        const str = parseFloat(strParam);
+
+        if (mymessParam !== null || (strParam !== null && str >= 2)
+        ) {
+            CommonHelper.log('Мы не первой странице общего чата, а значит не актуальные сообщения не добавляем');
+            return [];
+        }
+
         let messages = [];
 
         msgBoxes.forEach(msgBox => {
@@ -114,72 +125,60 @@ class Chat {
         return parsedMessages;
     }
 
-    async sendMessagesToTelegram(messages) {
-        const { DateTime } = luxon;
-
-        // Сортируем от старых к новым
-        messages.sort((a, b) => DateTime.fromSQL(a.time) - DateTime.fromSQL(b.time));
-
-        // Получаем последнее отправленное сообщение
-        const lastMsgKey = 'wor_chat_last_telegram_msg';
-        const lastMsgRaw = await new Promise(resolve => {
-            chrome.storage.local.get(lastMsgKey, data => {
-                resolve(data[lastMsgKey] || null);
-            });
-        });
-
-        let lastMsgFound = false;
-        let messagesToSend = [];
-
-        for (const msg of messages) {
-            const msgStr = JSON.stringify(msg);
-            if (lastMsgRaw && !lastMsgFound) {
-                if (msgStr === lastMsgRaw) {
-                    lastMsgFound = true;
-                }
-                continue;
-            }
-            if (lastMsgFound || !lastMsgRaw) {
-                messagesToSend.push(msg);
-            }
+    removeFromMatch(array, target) {
+        if (!array) {
+            return [];
         }
 
-        if (messages.length > 0) {
-            const lastMsgStr = JSON.stringify(messages[messages.length - 1]);
-            CommonHelper.setExtStorage(lastMsgKey, lastMsgStr);
+        if (!target) {
+            return array;
         }
 
-        for (const msg of messagesToSend) {
-            let isToMe = false;
-            let playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+        const index = array.findIndex(item =>
+            item.type === target.type &&
+            item.time === target.time &&
+            item.text === target.text
+        );
 
-            if (playerName) {
-                isToMe = msg.to && msg.to.toLowerCase().includes(playerName.toLowerCase());
-            }
-
-            const escape = (text) => text
-                .replace(/[_*[\]()~`>#+=|{}.!-]/g, '\\$&');
-
-            const time = escape(msg.time);
-            let text = `[${time}] `;
-            text += isToMe ? `🔔 ` : '';
-
-            if (msg.type === 'chat') {
-                text += `\`${escape(msg.from)}\``;
-                if (msg.to) text += ` → \`${escape(msg.to)}\``;
-                text += `: ${escape(msg.text)}`;
-            } else if (msg.type === 'system') {
-                text += `*Система*: ${escape(msg.text)}`;
-            } else {
-                text += escape(msg.text);
-            }
-
-            if (isToMe) {
-                await CommonHelper.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
-            }
-
-            await CommonHelper.sendTelegramMessage(text, 'chat', isToMe, 'MarkdownV2');
-            await CommonHelper.delay(100);
+        if (index !== -1) {
+            array.splice(index); // удаляет с найденного индекса и до конца
         }
+
+        return array;
+    }
+
+    async sendMessagesToTelegram(msg) {
+        let isToMe = false;
+        let playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+
+        if (playerName) {
+            isToMe = msg.to && msg.to.toLowerCase().includes(playerName.toLowerCase());
+        }
+
+        const escape = (text) => {
+            if (!text) return ''; // Проверяет null, undefined, '', 0, false, NaN
+            return text.replace(/[_*[\]()~`>#+=|{}.!-]/g, '\\$&');
+        };
+
+        const time = escape(msg.time);
+        let text = `[${time}] `;
+        text += isToMe ? `🔔 ` : '';
+
+        if (msg.type === 'chat') {
+            text += `\`${escape(msg.from)}\``;
+            if (msg.to) text += ` → \`${escape(msg.to)}\``;
+            text += `: ${escape(msg.text)}`;
+        } else if (msg.type === 'system') {
+            text += `*Система*: ${escape(msg.text)}`;
+        } else {
+            text += escape(msg.text);
+        }
+
+        if (isToMe) {
+            await CommonHelper.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
+        }
+
+        await CommonHelper.sendTelegramMessage(text, 'chat', isToMe, 'MarkdownV2');
+        await CommonHelper.delay(200);
     }
 }

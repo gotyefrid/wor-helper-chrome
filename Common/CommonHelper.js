@@ -151,7 +151,7 @@ class CommonHelper {
                 disable_notification: !notify
             })
         }).then(response => response.json())
-            .then(() => CommonHelper.log("Отправили сообщение в Телеграм: " + text, false))
+            .then(() => CommonHelper.log("Отправили сообщение в Телеграм", false))
             .catch(error => CommonHelper.log("Ошибка отправки в Telegram:" + JSON.stringify(error), false));
     }
 

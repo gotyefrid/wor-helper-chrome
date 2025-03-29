@@ -1,4 +1,8 @@
 (async function () {
+    while (typeof CommonHelper === 'undefined') {
+        await new Promise(r => setTimeout(r, 50));
+    }
+    
     let chemistryStatus = await CommonHelper.getExtStorage('wor_chemistry_active') ?? false;
 
     if (chemistryStatus) {
