@@ -313,7 +313,7 @@ class CommonHelper {
 
     static async setFightExitUrl(url) {
         CommonHelper.log('Запоминаем ссылку выхода из боя', false);
-        CommonHelper.setLocalStorage('wor_fight_exit_url', url);
+        CommonHelper.setExtStorage('wor_fight_exit_url', url);
     }
 
     /**

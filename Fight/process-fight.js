@@ -41,7 +41,7 @@
         };
 
         // Ссылка выхода из файта
-        let exitUrl = CommonHelper.getLocalStorage('wor_fight_exit_url') || null;
+        let exitUrl = CommonHelper.getExtStorage('wor_fight_exit_url') || null;
 
         // Сдаваться?
         let giveUp = (await CommonHelper.getExtStorage("wor_fight_give_up_active")) ?? false;
