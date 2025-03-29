@@ -9,9 +9,11 @@ class Chat {
         this.isChatPage = document.querySelector('#msg_box') !== null;
     }
 
-    getParsedMessages() {
-        // Получаем все div'ы с id "msg_box"
-        let msgBoxes = document.querySelectorAll("div#msg_box");
+    static getParsedMessages(msgBox = null) {
+        if (!msgBox) {
+            // Получаем div id "msg_box"
+            msgBox = document.querySelector("div#msg_box");
+        }
 
         const params = new URLSearchParams(window.location.search);
         const strParam = params.get('str');
@@ -26,25 +28,23 @@ class Chat {
 
         let messages = [];
 
-        msgBoxes.forEach(msgBox => {
-            // Разбиваем содержимое <div> по <br>
-            let parts = msgBox.innerHTML.split("<br>");
+        // Разбиваем содержимое <div> по <br>
+        let parts = msgBox.innerHTML.split("<br>");
 
-            parts.forEach(part => {
-                // Создаём временный div для проверки содержимого
-                let tempDiv = document.createElement("div");
-                tempDiv.innerHTML = part.trim();
+        parts.forEach(part => {
+            // Создаём временный div для проверки содержимого
+            let tempDiv = document.createElement("div");
+            tempDiv.innerHTML = part.trim();
 
-                // Проверяем, есть ли внутри элемент с классом "navigation"
-                if (tempDiv.querySelector(".navigation")) {
-                    return; // Пропускаем итерацию
-                }
+            // Проверяем, есть ли внутри элемент с классом "navigation"
+            if (tempDiv.querySelector(".navigation")) {
+                return; // Пропускаем итерацию
+            }
 
-                // Если контент не пустой, добавляем в messages
-                if (tempDiv.innerHTML !== "") {
-                    messages.push(tempDiv);
-                }
-            });
+            // Если контент не пустой, добавляем в messages
+            if (tempDiv.innerHTML !== "") {
+                messages.push(tempDiv);
+            }
         });
 
         let pureTexts = messages.map(element => {

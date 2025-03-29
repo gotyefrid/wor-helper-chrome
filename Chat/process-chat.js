@@ -20,7 +20,7 @@
         try {
             let newMessages = [];
 
-            let actualMessages = chat.getParsedMessages();
+            let actualMessages = Chat.getParsedMessages();
             let oldMessages = await CommonHelper.getExtStorage('wor_chat_message_queue') || [];
             let oldNewestMessage = oldMessages[0] ?? [];
 
