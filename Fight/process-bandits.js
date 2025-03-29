@@ -2,7 +2,6 @@
     ({ wor_bandits_active: fightStatus } = await chrome.storage.local.get(["wor_bandits_active"]));
 
     if (fightStatus) {
-        document.title = 'Разбойник!';
         // CommonHelper.createDisableButton('Отключить разбойников', () => {
         //     CommonHelper.turnBandits(false);
         //     CommonHelper.reloadPage();

@@ -22,7 +22,10 @@ async function processCheckboxes() {
         },
         toggleAlchemistry: { storageKey: "wor_chemistry_active" },
         toggleMoving: { storageKey: "wor_moving_active" },
-        toggleCaptcha: { storageKey: "wor_captcha_active" },
+        toggleCaptcha: {
+            storageKey: "wor_captcha_active",
+            hasSubOptions: true,
+        },
         toggleMapHistory: { storageKey: "wor_maphistory_active" },
         toggleLog: { storageKey: "wor_log_active" },
 
@@ -33,6 +36,7 @@ async function processCheckboxes() {
         toggleFightingGiveUp: { storageKey: "wor_fight_give_up_active", },
         toggleFightingPotHP: { storageKey: "wor_fight_pot_hp_active", },
         toggleFightingPotMP: { storageKey: "wor_fight_pot_mp_active", },
+        toggleFightingCheckTrauma: { storageKey: "wor_fight_check_trauma", },
 
         toggleBandits: {
             storageKey: "wor_bandits_active",
@@ -188,24 +192,6 @@ async function processParsing() {
     document.querySelector('.modal-close').addEventListener('click', () => {
         closeModal();
     });
-
-    let timeoutInput = document.getElementById('inputParsingOptTimeout');
-
-    // Загружаем сохраненное значение из chrome.storage.local
-    chrome.storage.local.get('wor_parsing_timeout', (data) => {
-        if (data.wor_parsing_timeout) {
-            timeoutInput.value = data.wor_parsing_timeout;
-        } else {
-            timeoutInput.value = 0;
-        }
-    });
-
-    // Сохраняем новое значение при вводе
-    timeoutInput.addEventListener('input', async (event) => {
-        let value = event.target.value.replace(/\D/g, "").slice(0, 2); // Только числа, не более 2 символов
-        event.target.value = value; // Принудительно применяем отфильтрованное значение
-        chrome.storage.local.set({ 'wor_parsing_timeout': value });
-    });
 }
 
 async function processFishing() {
@@ -231,11 +217,13 @@ async function processInputs() {
     const inputs = {
         inputPlayerName: { storageKey: "wor_chat_player_name" },
         inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
+        inputFightingMaxTrauma: { storageKey: "wor_fight_max_trauma" },
         inputBanditsOptLevelToSkip: { storageKey: "wor_bandits_level_to_skip" },
-        // inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
+        inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
         inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
         inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },
         inputTelegramOptChatID: { storageKey: "wor_tg_chat_id" },
+        inputCaptchaHost: { storageKey: "wor_captcha_host" },
     };
 
     for (const [inputId, { storageKey }] of Object.entries(inputs)) {

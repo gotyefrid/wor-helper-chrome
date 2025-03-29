@@ -59,11 +59,19 @@
     </div>
     <hr class="divider">
 
-    <div class="toggle-wrapper">
-        <span class="toggle-title">Проходить капчу</span>
+    <div class="toggle-wrapper" id="toggleCaptchaWrapper">
+        <span class="toggle-title toggle-expand">Проходить капчу ▼</span>
         <label class="switch">
             <input type="checkbox" id="toggleCaptcha"><span class="slider round"></span>
         </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleCaptchaOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Хост</span>
+            <label class="text-input">
+                <input type="text" id="inputCaptchaHost">
+            </label>
+        </div> 
     </div>
     <hr class="divider">
 
@@ -105,6 +113,18 @@
             <span class="toggle-title small">Не бить лвл >=</span>
             <label class="text-input">
                 <input type="number" id="inputFightingLevelToSkip" min="0" max="99" maxlength="2">
+            </label>
+        </div>        
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Проверять травму</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingCheckTrauma"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Травма >= часов</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingMaxTrauma" min="0" max="9999" maxlength="4">
             </label>
         </div>
     </div>

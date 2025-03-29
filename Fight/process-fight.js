@@ -1,5 +1,4 @@
 (async function () {
-    document.title = 'Бой';
     ({ wor_fight_active: fightStatus } = await chrome.storage.local.get(["wor_fight_active"]));
 
     if (fightStatus) {
@@ -16,8 +15,8 @@
         fight.enemiesToSkip = Fight.BOSS_NAMES.concat([
         ]);
 
-        fight.needPotHP = CommonHelper.getExtStorage('wor_fight_pot_hp_active');
-        fight.needPotHP = CommonHelper.getExtStorage('wor_fight_pot_mp_active');
+        fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_hp_active');
+        fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
 
         fight.levelToSkip = (() => {
             let storedValue = CommonHelper.getLocalStorage('wor_fight_level_to_skip');
@@ -41,7 +40,7 @@
         };
 
         // Ссылка выхода из файта
-        let exitUrl = CommonHelper.getExtStorage('wor_fight_exit_url') || null;
+        let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
 
         // Сдаваться?
         let giveUp = (await CommonHelper.getExtStorage("wor_fight_give_up_active")) ?? false;

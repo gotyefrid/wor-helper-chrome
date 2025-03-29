@@ -25,8 +25,6 @@ class Chemistry {
     }
 
     async processWaitPage() {
-        document.title = 'Алхимим...';
-
         CommonHelper.log('Ждем кнопки Собрать');
         CommonHelper.log('Паралельно ждём кнопки "В бой"', false);
 
@@ -44,7 +42,6 @@ class Chemistry {
     }
 
     async processGetLootPage() {
-        document.title = 'Собираем травку';
         let getLootButton = document.querySelector('input[value=Собрать]');
         CommonHelper.log('Жмём кнопку "Собрать"');
         await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1500));
@@ -52,7 +49,6 @@ class Chemistry {
     }
 
     async processTerritoryPage(inspectButton) {
-        document.title = 'Карта';
         CommonHelper.log('Жмём Осмотреться');
         await CommonHelper.clickAndWait(inspectButton);
     }

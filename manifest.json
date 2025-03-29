@@ -98,7 +98,8 @@
                 "http://185.212.47.8/wap/cap*"
             ],
             "js": [
-                "Captcha/cap.js"
+                "Captcha/Captcha.js",
+                "Captcha/process-captcha.js"
             ]
         },
         {

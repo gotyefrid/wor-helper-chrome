@@ -70,17 +70,8 @@ class Fight {
         }
 
         if (giveUp) {
-            CommonHelper.log('Нажимаем кнопку Сдаться!');
-            await CommonHelper.delay(1000);
-            let giveUpButton = document.querySelector('a[href*=killme]');
-
-            if (giveUpButton) {
-                await CommonHelper.clickAndWait(giveUpButton);
-            }
-
-            await CommonHelper.log('Не нашлась кнопка Сдаться, буду бить');
-            await CommonHelper.delay(1000);
-            await CommonHelper.sendTelegramMessage('Не нашлась кнопка Сдаться, буду бить');
+            this.handleGiveUp();
+            return;
         }
 
         let enemyName = this.getEnemyName();
@@ -109,7 +100,7 @@ class Fight {
             let checkTrauma = await CommonHelper.getExtStorage('wor_fight_check_trauma');
             let maxTrauma = await CommonHelper.getExtStorage('wor_fight_max_trauma');
 
-            if (checkTrauma && CommonHelper.isTraumaMore(pars)) {
+            if (checkTrauma && CommonHelper.isTraumaMoreOrEqual(maxTrauma)) {
                 CommonHelper.sendTelegramMessage('Много травмы, ничего не делаю в бою');
                 skip = true;
             }
@@ -173,6 +164,20 @@ class Fight {
         } else {
             await CommonHelper.sendTelegramMessage('Нет кнопки ударить врага.')
         }
+    }
+
+    async handleGiveUp() {
+        CommonHelper.log('Нажимаем кнопку Сдаться!');
+        await CommonHelper.delay(1000);
+        let giveUpButton = document.querySelector('a[href*=killme]');
+
+        if (giveUpButton) {
+            await CommonHelper.clickAndWait(giveUpButton);
+        }
+
+        await CommonHelper.log('Не нашлась кнопка Сдаться, буду бить');
+        await CommonHelper.delay(1000);
+        await CommonHelper.sendTelegramMessage('Не нашлась кнопка Сдаться, ничего не делаем.');
     }
 
     async isNullDamage() {
@@ -380,6 +385,7 @@ class Fight {
 
         if (exitUrl) {
             await CommonHelper.log('Переходим по переданной ссылке выхода');
+            await CommonHelper.log(exitUrl);
             document.location = exitUrl;
             return;
         }

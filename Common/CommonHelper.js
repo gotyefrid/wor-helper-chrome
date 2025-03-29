@@ -1,5 +1,4 @@
 class CommonHelper {
-
     static delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -589,7 +588,7 @@ class CommonHelper {
         "Dragon_Sword"
     ];
 
-    static async isTraumaMore(more = 5) {
+    static async isTraumaMoreOrEqual(more = 5) {
         try {
             let trauma = [...document.querySelectorAll('.status-item')].find(item => item.innerHTML.includes('Травма')).innerText.trim();
 
@@ -611,6 +610,13 @@ class CommonHelper {
         }
     }
 }
+
+let title = document.querySelector('.menu').textContent;
+
+if (title) {
+    document.title = title;
+}
+
 
 (async function () {
     const isActive = await CommonHelper.getExtStorage('wor_parsing_active');
