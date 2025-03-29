@@ -2,11 +2,11 @@
     let chemistryStatus = await CommonHelper.getExtStorage('wor_chemistry_active') ?? false;
 
     if (chemistryStatus) {
-        // CommonHelper.createDisableButton('Отключить алхимию', async () => {
-        //     CommonHelper.turnAlchemistry(false);
-        //     CommonHelper.turnFighting(false);
-        //     await CommonHelper.reloadPage();
-        // });
+        CommonHelper.createDisableButton('Отключить алхимию', async () => {
+            CommonHelper.turnAlchemistry(false);
+            CommonHelper.turnFighting(false);
+            await CommonHelper.reloadPage();
+        });
 
         CommonHelper.log('Мы на одной из страниц алхимии!');
 
@@ -45,10 +45,10 @@
             CommonHelper.log('Процессинг алхимии запущен на на странице доступной для алхимии. Ничего не делаем');
         }
     } else {
-        // CommonHelper.createDisableButton('Включить алхимию', () => {
-        //     CommonHelper.turnAlchemistry(true);
-        //     CommonHelper.turnFighting(true);
-        //     CommonHelper.reloadPage();
-        // });
+        CommonHelper.createDisableButton('Включить алхимию', () => {
+            CommonHelper.turnAlchemistry(true);
+            CommonHelper.turnFighting(true);
+            CommonHelper.reloadPage();
+        });
     }
 })();

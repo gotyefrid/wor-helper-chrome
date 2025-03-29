@@ -35,7 +35,7 @@
                 await handleTelegramMessages(messages);
             }
         } catch (err) {
-            console.error('Ошибка в цикле обработки:', err);
+            CommonHelper.log('Ошибка в цикле обработки:', err);
         }
 
         // Ждём 10 секунд перед следующим запуском

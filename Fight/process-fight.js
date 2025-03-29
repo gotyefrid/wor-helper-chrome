@@ -14,7 +14,6 @@
         let fight = new Fight();
         // Пропускать боссов
         fight.enemiesToSkip = Fight.BOSS_NAMES.concat([
-            // Сюда можно дописать нужных мобов для пропуска
         ]);
 
         fight.needPotHP = CommonHelper.getExtStorage('wor_fight_pot_hp_active');

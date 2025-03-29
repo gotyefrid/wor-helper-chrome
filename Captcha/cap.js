@@ -18,37 +18,43 @@ async function processCapcha() {
 
     log('Отправляем капчу для распознания в нейросеть');
     // 📌 Использование
-    let firstImageElement = document.querySelector('img[src^="captcha.php"]');
-    let otherImageElements = Array.from(document.querySelectorAll('img[src^="captcha_users.php"]'));
+    let backgroud = document.querySelector('img[src^="captcha_main.php"]');
 
     // ✅ Берем картинку прямо из браузера без запроса
-    let firstImageFile = await getImageFromDOM(firstImageElement, "first.jpg");
+    let firstImageFile = await getImageFromDOM(backgroud, "first.png");
 
-    // ✅ Берем остальные 10 картинок
-    let otherImageFiles = await Promise.all(
-        otherImageElements.map(async (img) => {
-            let kParam = getParamFromUrl(img.src, "k"); // Получаем "k" из URL
-            let filename = kParam ? `${kParam}` : "unknown"; // Формируем имя файла
-            return getImageFromDOM(img, filename);
-        })
-    );
+    if (!firstImageFile) {
+        return;
+    }
 
-    let reqs = await getCaptchaRequirements(firstImageFile);
-    log('Количество мужчин и женищин соотвественно равно:' + JSON.stringify(reqs));
-    let check = await checkRigthImage(otherImageFiles, reqs);
-    log('Получили id нужной картинки:' + JSON.stringify(check.matching_image));
+    downloadFile(firstImageFile);
 
-    if (check.matching_image !== false) {
+    log('Скачали картинку');
+    let reqs;
+
+    try {
+        reqs = await getCaptchaRequirements(firstImageFile);
+        log('Искомые координаты:' + JSON.stringify(reqs));
+    } catch (e) {
+        log(e.message);
+    }
+
+
+    if (reqs && reqs.x && reqs.y) {
         log('Обнуляем счетчик попыток счетчик', false);
         localStorage.setItem('captchaShuffleCount', 1);
-        let img = document.querySelector(`img[src*=${check.matching_image}]`)
 
-        if (img) {
-            img.click();
-            log('Выбрали нужную картинку');
+        const piece = document.querySelector("#puzzle-piece");
+
+        if (piece) {
+            piece.style.left = `${reqs.x}px`;
+            piece.style.top = `${reqs.y}px`;
+
+            log('Передвинули картинку');
             await delay(getRandomNumber(500, 1000));
-            log('Подтверждаем');
+            log('Жмём подтвердить');
             document.querySelector(`input[type=submit]`).click();
+            return;
         }
     } else {
         log('Не удалось найти правильный вариант');
@@ -76,7 +82,6 @@ async function processCapcha() {
         document.location = '/wap/teleport.php';
         return;
     }
-
 }
 
 function getImageFromDOM(imgElement, filename = "image.jpg") {
@@ -98,6 +103,17 @@ function getImageFromDOM(imgElement, filename = "image.jpg") {
         console.error("Ошибка получения изображения из DOM:", error);
         return null;
     }
+}
+
+function downloadFile(file) {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name || "download.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function getParamFromUrl(url, param) {
@@ -130,20 +146,15 @@ async function checkRigthImage(otherImageFiles, detectResult) {
 }
 
 async function getCaptchaRequirements(firstImageFile) {
-    try {
-        let detectFormData = new FormData();
-        detectFormData.append("image", firstImageFile);
+    let detectFormData = new FormData();
+    detectFormData.append("file", firstImageFile);
 
-        let detectResponse = await fetch(CAPTCHA_HOST + "/detect_numbers", {
-            method: "POST",
-            body: detectFormData
-        });
+    let detectResponse = await fetch(CAPTCHA_HOST + "/detect_puzzle", {
+        method: "POST",
+        body: detectFormData
+    });
 
-        if (!detectResponse.ok) throw new Error("Ошибка при запросе detect_numbers");
-        let detectResult = await detectResponse.json();
-        return detectResult;
-    } catch (error) {
-        console.error("🚨 Ошибка:", error.message);
-        throw new Error("Ошибка при запросе detect_numbers")
-    }
+    if (!detectResponse.ok) throw new Error("Ошибка при запросе detect_puzzle");
+    let detectResult = await detectResponse.json();
+    return detectResult;
 }

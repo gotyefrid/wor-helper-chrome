@@ -86,11 +86,46 @@ class Fight {
         let enemyName = this.getEnemyName();
 
         if (enemyName) {
+            let skip = false;
+            let isNullDamage = await this.isNullDamage();
+
+            if (isNullDamage) {
+                CommonHelper.sendTelegramMessage('Я бью 0, что-то тут не так, ничего не делаю больше. Выключаю алхимию и сражение');
+                CommonHelper.turnAlchemistry(false);
+                CommonHelper.turnFighting(false);
+                CommonHelper.setFightExitUrl('');
+                CommonHelper.log('Нажимаю Сдаться и в город');
+                let exit = [...document.querySelectorAll('a')].find(a => a.innerText.includes('Сдаться и в город'));
+
+                if (exit) {
+                    CommonHelper.clickAndWait(exit);
+                } else {
+                    CommonHelper.sendTelegramMessage('Нет кнопки Сдаться и в город, просто больше ничего не делаем');
+                }
+
+                return;
+            }
+
+            let checkTrauma = await CommonHelper.getExtStorage('wor_fight_check_trauma');
+            let maxTrauma = await CommonHelper.getExtStorage('wor_fight_max_trauma');
+
+            if (checkTrauma && CommonHelper.isTraumaMore(pars)) {
+                CommonHelper.sendTelegramMessage('Много травмы, ничего не делаю в бою');
+                skip = true;
+            }
+
+            let isEnemyRealPlayer = CommonHelper.isRealPlayer(enemyName);
+
+            if (isEnemyRealPlayer) {
+                CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
+                skip = true;
+            }
+
             let enemyLevel = parseInt(enemyName.match(/\d+/)[0], 10);
 
             let isEnemyNeedSkip = this.enemiesSkipListHas(enemyName);
 
-            if (isEnemyNeedSkip) {
+            if (isEnemyNeedSkip && skip === false) {
                 if (typeof this.enemiesSkipListCallback === "function") {
                     CommonHelper.log('Выполняем фукнцию скипа противника по списку запрещённых');
                     await this.enemiesSkipListCallback(enemyName, enemyLevel, this);
@@ -111,14 +146,16 @@ class Fight {
                 return;
             }
 
-            let isEnemyRealPlayer = CommonHelper.isRealPlayer(enemyName);
-
-            if (isEnemyRealPlayer) {
-                CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
+            if (skip) {
+                CommonHelper.log('Скип');
+                await CommonHelper.delay(15000);
+                await CommonHelper.reloadPage();
                 return;
             }
         } else {
-            await CommonHelper.log('Имя противника не найдено, значит будем его бить')
+            await CommonHelper.log('Имя противника не найдено, ничего не делаем.');
+            await CommonHelper.delay(15000);
+            return;
         }
 
         // Если мы тут - значит мы на странице боя
@@ -136,6 +173,25 @@ class Fight {
         } else {
             await CommonHelper.sendTelegramMessage('Нет кнопки ударить врага.')
         }
+    }
+
+    async isNullDamage() {
+        let info = [...document.querySelectorAll('.table_menu')]?.find(ta => ta.innerText.includes('Игрок'))?.innerText;
+
+        if (!info) {
+            CommonHelper.log('Не нашли историю ударов');
+            return false;
+        }
+
+
+        info = info.replace(/\[\d+\]/g, '[]');
+        let playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+
+        if (info.includes(`Игрок ${playerName}[] нанес критический магический удар 0`) || info.includes(`Игрок ${playerName}[] нанес магический удар 0`)) {
+            return true;
+        }
+
+        return false;
     }
 
     async potHP() {
@@ -334,23 +390,9 @@ class Fight {
 
     prepareHelpMessage(fightNumber) {
         const messages = [
-            'хелп .flag2.',
-            'помогите',
-            'снесите плиз',
-            'убейте пожалуйста',
-            'плиз снесите',
-            'помогите плиз',
-            'нужна хелпа',
-            'замочите моба плиз',
-            'хелпатине с мобом',
-            'снос',
-            'аааааа хелп',
             '.flag.',
-            'снос .2pistoleta.',
             '.flag2.',
-            '',
-            '',
-            '',
+            '.or.',
         ];
 
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];

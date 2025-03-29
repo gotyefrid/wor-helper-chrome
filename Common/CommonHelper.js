@@ -114,7 +114,7 @@ class CommonHelper {
     }
 
     static isRealPlayer(name) {
-        return CommonHelper.playersList.includes(name);
+        return CommonHelper.playersList.some(player => name.includes(player));
     }
 
     static async getTgData(bot = 'common') {
@@ -231,7 +231,7 @@ class CommonHelper {
 
             return formatted;
         } catch (error) {
-            CommonHelper.error("Ошибка при получении обновлений от Telegram:" + JSON.stringify(error));
+            CommonHelper.log("Ошибка при получении обновлений от Telegram:" + JSON.stringify(error));
             return [];
         }
     }
@@ -588,6 +588,28 @@ class CommonHelper {
         "FBI open UP",
         "Dragon_Sword"
     ];
+
+    static async isTraumaMore(more = 5) {
+        try {
+            let trauma = [...document.querySelectorAll('.status-item')].find(item => item.innerHTML.includes('Травма')).innerText.trim();
+
+            if (!trauma) {
+                return false;
+            };
+
+            [hour, minute] = trauma.split(':');
+            hour = parseInt(hour, 10);
+
+            if (trauma >= more) {
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            CommonHelper.log('Произошла ошибка во время вычисления травмы, считаем что травмы много!');
+            return true;
+        }
+    }
 }
 
 (async function () {
@@ -652,3 +674,47 @@ class CommonHelper {
     await checkPage(); // первый запуск
     await scheduleNextCheck(baseInterval); // дальше уже по таймауту
 })();
+
+async function doIfTraumaMore(traumaMax = 5) {
+    CommonHelper.log('Зашли в травму')
+    let trauma = [...document.querySelectorAll('.status-item')].find(item => item.innerHTML.includes('Травма')).innerText.trim();
+
+    if (!trauma) {
+        return;
+    }
+
+    [hour, minute] = trauma.split(':');
+    hour = parseInt(hour, 10);
+
+    if (hour < traumaMax) {
+        CommonHelper.log('Травма меньше ' + traumaMax + '. Играем...');
+        return;
+    }
+
+    CommonHelper.log('Травма больше ' + traumaMax + '. Выходим...');
+
+    let killmeButton = document.querySelector('a[href*=killme]');
+    let url = '/wap/teleport.php'
+
+    if (killmeButton) {
+        CommonHelper.clickAndWait(killmeButton);
+        return;
+    }
+
+    if (document.location.href.includes('gorod')) {
+        CommonHelper.log('Мы в городе');
+        return;
+    }
+
+    let toTerritoryButton = [...document.querySelectorAll('a')].find(text => text.textContent.includes('Природа'));
+
+    if (toTerritoryButton) {
+        CommonHelper.clickAndWait(toTerritoryButton);
+        return;
+    }
+
+    document.location = url;
+    return;
+}
+
+// doIfTraumaMore(5);
