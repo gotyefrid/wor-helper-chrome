@@ -196,18 +196,18 @@ class CommonHelper {
         }
     }
 
-    static async getTelegramUpdates(bot = 'common', lastUpdateId = 0, skipOld = false) {
+    static async getTelegramUpdates(bot = 'common') {
         let { botToken } = await CommonHelper.getTgData(bot);
+        const url = `https://api.telegram.org/bot${botToken}/getUpdates`;
 
         try {
-            const url = `https://api.telegram.org/bot${botToken}/getUpdates?offset=${lastUpdateId + 1}`;
             const response = await fetch(url);
             const data = await response.json();
 
-            if (!data.ok) return [];
+            if (!data.ok) return null;
 
             const updates = data.result;
-            if (updates.length === 0) return [];
+            if (updates.length === 0) return null;
 
             const formatted = updates.map(update => ({
                 update_id: update.update_id,
@@ -215,24 +215,36 @@ class CommonHelper {
                 message: update.message?.text?.trim()
             })).filter(msg => msg.message);
 
+            let lastMessage = formatted.pop();
+            // Фиксируем чтобы больше этого же не пришло
+            await fetch(url + `?offset=${lastMessage.update_id + 1}`);
 
-            if (skipOld) {
-                // Сохраняем только последний update_id, ничего не обрабатываем
-                const last = updates[updates.length - 1];
-                await CommonHelper.setRemoteTGUpdateId(last.update_id);
-                CommonHelper.log('Сохранили update_id: ' + last.update_id, false);
-                return [];
-            }
-
-            // Возвращаем сообщения и сохраняем последний ID
-            const last = updates[updates.length - 1];
-            await CommonHelper.setRemoteTGUpdateId(last.update_id);
-
-            return formatted;
+            return lastMessage;
         } catch (error) {
             CommonHelper.log("Ошибка при получении обновлений от Telegram:" + JSON.stringify(error));
-            return [];
+            return null;
         }
+    }
+
+    static async setTelegramBotCommands(bot = 'chat') {
+        let { botToken } = await CommonHelper.getTgData(bot);
+        const url = `https://api.telegram.org/bot${botToken}/setMyCommands`;
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                commands: [
+                    { command: 'stop', description: 'Остановить бота' },
+                    { command: 'start_chemistry', description: 'Включить алхимию' },
+                    { command: 'start_fishing', description: 'Включить рыбалку' },
+                    { command: 'start_fighting', description: 'Включить сражение' }
+                  ]
+            })
+        })
+            .then(res => res.json())
+            .catch(err => CommonHelper.log('Ошибка: ' + JSON.stringify(err)));
     }
 
     static currentTime() {

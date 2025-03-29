@@ -32,7 +32,8 @@
                 "Common/moving-key.js",
                 "Common/CommonHelper.js",
                 "Common/common.js",
-                "Common/move-to-coords.js"
+                "Common/move-to-coords.js",
+                "Chat/process-commands.js"
             ]
         },
         {
