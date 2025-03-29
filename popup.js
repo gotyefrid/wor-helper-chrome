@@ -1,18 +1,16 @@
 document.addEventListener("DOMContentLoaded", async function () {
     // Обработчик чекбоксов
     processCheckboxes();
-    processPlayerName();
-
-    // Обработчик ввода уровня
-    processFightingLevelToSkipInput();
-    processBanditsLevelToSkipInput();
+    processInputs();
 
     // Обработчик кнопки "Объединить"
     processMergeButton();
 
+    // Обработчики парсинга
     processParsing();
+
+    // Обработчик рыбалки
     processFishing();
-    processTelegram();
 });
 
 async function processCheckboxes() {
@@ -130,46 +128,6 @@ async function processMergeButton() {
     });
 }
 
-async function processFightingLevelToSkipInput() {
-    let levelToSkipInput = document.getElementById('inputFightingLevelToSkip');
-
-    // Загружаем сохраненное значение из chrome.storage.local
-    chrome.storage.local.get('wor_fight_level_to_skip', (data) => {
-        if (data.wor_fight_level_to_skip) {
-            levelToSkipInput.value = data.wor_fight_level_to_skip;
-        } else {
-            levelToSkipInput.value = 0;
-        }
-    });
-
-    // Сохраняем новое значение при вводе
-    levelToSkipInput.addEventListener('input', async (event) => {
-        let value = event.target.value.replace(/\D/g, "").slice(0, 2); // Только числа, не более 2 символов
-        event.target.value = value; // Принудительно применяем отфильтрованное значение
-        chrome.storage.local.set({ 'wor_fight_level_to_skip': value });
-    });
-}
-
-async function processBanditsLevelToSkipInput() {
-    let levelToSkipInput = document.getElementById('inputBanditsOptLevelToSkip');
-
-    // Загружаем сохраненное значение из chrome.storage.local
-    chrome.storage.local.get('wor_bandits_level_to_skip', (data) => {
-        if (data.wor_bandits_level_to_skip) {
-            levelToSkipInput.value = data.wor_bandits_level_to_skip;
-        } else {
-            levelToSkipInput.value = 0;
-        }
-    });
-
-    // Сохраняем новое значение при вводе
-    levelToSkipInput.addEventListener('input', async (event) => {
-        let value = event.target.value.replace(/\D/g, "").slice(0, 2); // Только числа, не более 2 символов
-        event.target.value = value; // Принудительно применяем отфильтрованное значение
-        chrome.storage.local.set({ 'wor_bandits_level_to_skip': value });
-    });
-}
-
 async function processParsing() {
     function openModal() {
         document.getElementById('modal').style.display = 'block';
@@ -268,40 +226,33 @@ async function processFishing() {
     });
 }
 
-async function processTelegram() {
-    const apiKeyCommonInput = document.getElementById('inputTelegramOptApiKeyCommon');
-    const chatIdInput = document.getElementById('inputTelegramOptChatID');
-    const apiKeyChatInput = document.getElementById('inputTelegramOptApiKeyChat');
-
-    chrome.storage.local.get([
-        'wor_tg_bot_common_token',
-        'wor_tg_chat_id',
-        'wor_tg_bot_chat_token'
-    ], (data) => {
-        apiKeyCommonInput.value = data.wor_tg_bot_common_token || '';
-        chatIdInput.value = data.wor_tg_chat_id || '';
-        apiKeyChatInput.value = data.wor_tg_bot_chat_token || '';
-    });
-
-    const saveToStorage = (key) => (event) => {
-        chrome.storage.local.set({ [key]: event.target.value });
+async function processInputs() {
+    // Определяем настройки переключателей
+    const inputs = {
+        inputPlayerName: { storageKey: "wor_chat_player_name" },
+        inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
+        inputBanditsOptLevelToSkip: { storageKey: "wor_bandits_level_to_skip" },
+        // inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
+        inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
+        inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },
+        inputTelegramOptChatID: { storageKey: "wor_tg_chat_id" },
     };
 
-    apiKeyCommonInput.addEventListener('change', saveToStorage('wor_tg_bot_common_token'));
-    chatIdInput.addEventListener('change', saveToStorage('wor_tg_chat_id'));
-    apiKeyChatInput.addEventListener('change', saveToStorage('wor_tg_bot_chat_token'));
-}
+    for (const [inputId, { storageKey }] of Object.entries(inputs)) {
+        const inputElement = document.getElementById(inputId);
+        if (!inputElement) continue;
 
-async function processPlayerName() {
-    const playerName = document.getElementById('inputPlayerName');
+        // Устанавливаем значение из хранилища
+        chrome.storage.local.get(storageKey, (result) => {
+            if (result[storageKey] !== undefined) {
+                inputElement.value = result[storageKey];
+            }
+        });
 
-    chrome.storage.local.get(['wor_chat_player_name'], (data) => {
-        playerName.value = data.wor_chat_player_name || '';
-    });
-
-    const saveToStorage = (key) => (event) => {
-        chrome.storage.local.set({ [key]: event.target.value });
-    };
-
-    playerName.addEventListener('change', saveToStorage('wor_chat_player_name'));
+        // Добавляем слушатель изменений
+        inputElement.addEventListener("input", () => {
+            const value = inputElement.value;
+            chrome.storage.local.set({ [storageKey]: value });
+        });
+    }
 }
