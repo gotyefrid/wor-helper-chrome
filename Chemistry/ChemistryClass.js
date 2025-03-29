@@ -28,6 +28,31 @@ class Chemistry {
         CommonHelper.log('Ждем кнопки Собрать');
         CommonHelper.log('Паралельно ждём кнопки "В бой"', false);
 
+        const progressBar = document.querySelector('#progressBar');
+
+        if (!progressBar) {
+            console.warn('Элемент progressBar не найден');
+            return;
+        }
+
+        // Наблюдаем за внутренним div, где меняются цифры
+        const target = progressBar.firstElementChild;
+
+        const observer = new MutationObserver(() => {
+            const text = target.textContent.replace(/\s/g, '').toLowerCase(); // убираем пробелы и приведение к нижнему регистру
+            // например: "2с."
+            if (text.startsWith('2с.')) {
+                CommonHelper.reloadPage();
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(target, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
         // Ожидаем появления "В бой:"
         await CommonHelper.waitForElement('#msg_box', true, box => {
             let contur = box.querySelector('.contur');
