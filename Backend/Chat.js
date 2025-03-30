@@ -1,4 +1,5 @@
 import { CommonHelperBackground } from './CommonHelperBackground.js';
+
 export class Chat {
     isChatPage = false;
 
