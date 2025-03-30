@@ -97,3 +97,43 @@ async function checkFlashNotifications() {
     await CommonHelper.setExtStorage('wor_chat_flash_notifications', messages);
 }
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    CommonHelper.log("Получено сообщение в process-common.js: " + message.type);
+
+    if (message.type === "getChatMessages") {
+        (async () => {
+            try {
+                let chatUrl = document.querySelector('a[href*=chat2]')?.href;
+
+                if (!chatUrl) {
+                    CommonHelper.log('Нету ссылки на чат');
+                    sendResponse({ error: 'Chat URL not found' });
+                    return;
+                }
+
+                let result = await fetch(chatUrl);
+                let html = await result.text();
+
+                let parser = new DOMParser();
+                let htmlPage = parser.parseFromString(html, 'text/html');
+                let msgBox = htmlPage.querySelector('#msg_box');
+                let formattedMessages = Chat.getParsedMessages(msgBox);
+
+                sendResponse({ formattedMessages });
+            } catch (err) {
+                CommonHelper.log('Ошибка при получении сообщений чата: + ', JSON.stringify(err));
+                sendResponse({ error: err.toString() });
+            }
+        })();
+
+        return true;
+    }
+
+    if (message.action === "mergeContent") {
+        CommonHelper.log("Вызываем mergeContent()");
+        mergeContent();
+        sendResponse({ success: true });
+    }
+});
+
+

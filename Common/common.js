@@ -1,14 +1,3 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("Получено сообщение в common.js:", message);
-
-    if (message.action === "mergeContent") {
-        console.log("Вызываем mergeContent()");
-        mergeContent();
-        sendResponse({ success: true });
-    }
-});
-
-
 async function log(message, showInFront = true, important, toConsole = true) {
     try {
         let result = await chrome.storage.local.get(["wor_log_active"]);

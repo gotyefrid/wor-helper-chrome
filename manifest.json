@@ -6,13 +6,16 @@
     "permissions": [
         "storage",
         "scripting",
-        "activeTab"
+        "activeTab",
+        "tabs"
     ],
     "host_permissions": [
-        "https://api.jsonsilo.com/*"
+        "http://185.212.47.8/wap/*",
+        "https://wor.com.ua/wap/*"
     ],
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "Backend/background.js",
+        "type": "module"
     },
     "action": {
         "default_popup": "popup.html",
