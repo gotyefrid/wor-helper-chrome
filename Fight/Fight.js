@@ -69,11 +69,6 @@ class Fight {
             return;
         }
 
-        if (giveUp) {
-            this.handleGiveUp();
-            return;
-        }
-
         let enemyName = this.getEnemyName();
 
         if (enemyName) {
@@ -124,7 +119,7 @@ class Fight {
                 }
             }
 
-            if (this.levelToSkip && enemyLevel >= this.levelToSkip) {
+            if (this.levelToSkip && enemyLevel >= this.levelToSkip && skip === false) {
                 if (typeof this.levelSkipCallback === "function") {
                     CommonHelper.log('Выполняем фукнцию скипа противника по уровню');
                     await this.levelSkipCallback(enemyName, enemyLevel, this);
@@ -134,6 +129,11 @@ class Fight {
                 CommonHelper.sendTelegramMessage('Скип боя, так как противник больше ' + this.levelToSkip + ' уровня');
                 await CommonHelper.delay(15000);
                 await CommonHelper.reloadPage();
+                return;
+            }
+
+            if (giveUp) {
+                this.handleGiveUp();
                 return;
             }
 

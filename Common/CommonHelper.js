@@ -237,10 +237,12 @@ class CommonHelper {
             body: JSON.stringify({
                 commands: [
                     { command: 'stop', description: 'Остановить бота' },
+                    { command: 'refresh_page', description: 'Перезагрзуить страницу' },
+                    { command: 'to_exit_url', description: 'Перейти на сохранённый URL' },
                     { command: 'start_chemistry', description: 'Включить алхимию' },
                     { command: 'start_fishing', description: 'Включить рыбалку' },
                     { command: 'start_fighting', description: 'Включить сражение' }
-                  ]
+                ]
             })
         })
             .then(res => res.json())
@@ -323,7 +325,12 @@ class CommonHelper {
     }
 
     static async setFightExitUrl(url) {
-        CommonHelper.log('Запоминаем ссылку выхода из боя', false);
+        if (!url) {
+            CommonHelper.log('Очищаем ссылку выхода из боя', false);
+        } else {
+            CommonHelper.log('Запоминаем ссылку выхода из боя', false);
+        }
+        
         CommonHelper.setExtStorage('wor_fight_exit_url', url);
     }
 

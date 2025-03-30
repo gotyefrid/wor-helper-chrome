@@ -39,6 +39,7 @@
             let inspectButton = [...document.querySelectorAll('a')].find(text => text.textContent.includes('Осмотреться'));
 
             if (chemistry.isTerritoryPage && inspectButton) {
+                await CommonHelper.setFightExitUrl(inspectButton.href);
                 await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1000));
                 await chemistry.processTerritoryPage(inspectButton);
                 return;

@@ -36,7 +36,7 @@
                 "Common/process-common.js",
                 "Common/common.js",
                 "Common/move-to-coords.js",
-                "Chat/process-commands.js"
+                "Common/process-commands.js"
             ]
         },
         {
