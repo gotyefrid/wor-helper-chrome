@@ -1,4 +1,4 @@
-import { CommonHelper } from './CommonHelper.js';
+import { CommonHelperBackground } from './CommonHelperBackground.js';
 export class Chat {
     isChatPage = false;
 
@@ -26,7 +26,7 @@ export class Chat {
 
     async sendMessagesToTelegram(msg) {
         let isToMe = false;
-        let playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+        let playerName = await CommonHelperBackground.getExtStorage('wor_chat_player_name');
 
         if (playerName) {
             isToMe = msg.to && msg.to.toLowerCase().includes(playerName.toLowerCase());
@@ -52,10 +52,10 @@ export class Chat {
         }
 
         if (isToMe) {
-            await CommonHelper.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
+            await CommonHelperBackground.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
         }
 
-        await CommonHelper.sendTelegramMessage(text, 'chat', isToMe, 'MarkdownV2');
-        await CommonHelper.delay(200);
+        await CommonHelperBackground.sendTelegramMessage(text, 'chat', isToMe, 'MarkdownV2');
+        await CommonHelperBackground.delay(200);
     }
 }

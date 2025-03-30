@@ -1,4 +1,4 @@
-export class CommonHelper {
+export class CommonHelperBackgroundBackground {
     static delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -9,20 +9,20 @@ export class CommonHelper {
 
     static async reloadPage() {
         location.reload();
-        await CommonHelper.delay(100000);
+        await CommonHelperBackground.delay(100000);
     }
 
     static async clickAndWait(element, delay = 100000) {
         element.click();
-        await CommonHelper.delay(delay);
+        await CommonHelperBackground.delay(delay);
     }
 
     static async log(message, showInFront = true, important, toConsole = true) {
         try {
-            let logActive = await CommonHelper.getExtStorage('wor_log_active');
+            let logActive = await CommonHelperBackground.getExtStorage('wor_log_active');
 
             if (showInFront) {
-                // CommonHelper.putInfoBlock();
+                // CommonHelperBackground.putInfoBlock();
                 // let div = document.querySelector('#temp_block')
                 // div.textContent = message;
             }
@@ -113,26 +113,26 @@ export class CommonHelper {
     }
 
     static isRealPlayer(name) {
-        return CommonHelper.playersList.some(player => name.includes(player));
+        return CommonHelperBackground.playersList.some(player => name.includes(player));
     }
 
     static async getTgData(bot = 'common') {
         let botToken;
-        let chatId = await CommonHelper.getExtStorage('wor_tg_chat_id');
+        let chatId = await CommonHelperBackground.getExtStorage('wor_tg_chat_id');
 
         switch (bot) {
             case 'chat':
-                botToken = await CommonHelper.getExtStorage('wor_tg_bot_chat_token');
+                botToken = await CommonHelperBackground.getExtStorage('wor_tg_bot_chat_token');
                 break;
             default:
-                botToken = await CommonHelper.getExtStorage('wor_tg_bot_common_token');
+                botToken = await CommonHelperBackground.getExtStorage('wor_tg_bot_common_token');
         }
 
         return { botToken, chatId };
     }
 
     static async sendTelegramMessage(text, bot = 'common', notify = true, parseMode = 'html') {
-        let { botToken, chatId } = await CommonHelper.getTgData(bot);
+        let { botToken, chatId } = await CommonHelperBackground.getTgData(bot);
 
         if (!botToken || !chatId) {
             console.error('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в localStroage');
@@ -151,8 +151,8 @@ export class CommonHelper {
                 disable_notification: !notify
             })
         }).then(response => response.json())
-            .then(() => CommonHelper.log("Отправили сообщение в Телеграм", false))
-            .catch(error => CommonHelper.log("Ошибка отправки в Telegram:" + JSON.stringify(error), false));
+            .then(() => CommonHelperBackground.log("Отправили сообщение в Телеграм", false))
+            .catch(error => CommonHelperBackground.log("Ошибка отправки в Telegram:" + JSON.stringify(error), false));
     }
 
     static async sendMessageToChat(message, recipient = null, privateMessage = false) {
@@ -190,14 +190,14 @@ export class CommonHelper {
                 throw new Error(`Ошибка HTTP: ${response.status}`);
             }
 
-            CommonHelper.log("✅ Сообщение успешно отправлено: " + message);
+            CommonHelperBackground.log("✅ Сообщение успешно отправлено: " + message);
         } catch (error) {
             console.error("❌ Ошибка при отправке сообщения:", error);
         }
     }
 
     static async getTelegramUpdates(bot = 'common') {
-        let { botToken } = await CommonHelper.getTgData(bot);
+        let { botToken } = await CommonHelperBackground.getTgData(bot);
         const url = `https://api.telegram.org/bot${botToken}/getUpdates`;
 
         try {
@@ -221,13 +221,13 @@ export class CommonHelper {
 
             return lastMessage;
         } catch (error) {
-            CommonHelper.log("Ошибка при получении обновлений от Telegram:" + JSON.stringify(error));
+            CommonHelperBackground.log("Ошибка при получении обновлений от Telegram:" + JSON.stringify(error));
             return null;
         }
     }
 
     static async setTelegramBotCommands(bot = 'chat') {
-        let { botToken } = await CommonHelper.getTgData(bot);
+        let { botToken } = await CommonHelperBackground.getTgData(bot);
         const url = `https://api.telegram.org/bot${botToken}/setMyCommands`;
         await fetch(url, {
             method: 'POST',
@@ -246,7 +246,7 @@ export class CommonHelper {
             })
         })
             .then(res => res.json())
-            .catch(err => CommonHelper.log('Ошибка: ' + JSON.stringify(err)));
+            .catch(err => CommonHelperBackground.log('Ошибка: ' + JSON.stringify(err)));
     }
 
     static currentTime() {
@@ -254,19 +254,19 @@ export class CommonHelper {
     }
 
     static async turnAlchemistry(active = true) {
-        await CommonHelper.setExtStorage('wor_chemistry_active', active);
+        await CommonHelperBackground.setExtStorage('wor_chemistry_active', active);
     }
 
     static async turnFighting(active = true) {
-        await CommonHelper.setExtStorage('wor_fight_active', active);
+        await CommonHelperBackground.setExtStorage('wor_fight_active', active);
     }
 
     static async turnBandits(active = true) {
-        await CommonHelper.setExtStorage('wor_bandits_active', active);
+        await CommonHelperBackground.setExtStorage('wor_bandits_active', active);
     }
 
     static async turnFishing(active = true) {
-        await CommonHelper.setExtStorage('wor_fishing_active', active);
+        await CommonHelperBackground.setExtStorage('wor_fishing_active', active);
     }
 
     static async createDisableButton(name, toDo) {
@@ -326,12 +326,12 @@ export class CommonHelper {
 
     static async setFightExitUrl(url) {
         if (!url) {
-            CommonHelper.log('Очищаем ссылку выхода из боя', false);
+            CommonHelperBackground.log('Очищаем ссылку выхода из боя', false);
         } else {
-            CommonHelper.log('Запоминаем ссылку выхода из боя', false);
+            CommonHelperBackground.log('Запоминаем ссылку выхода из боя', false);
         }
         
-        CommonHelper.setExtStorage('wor_fight_exit_url', url);
+        CommonHelperBackground.setExtStorage('wor_fight_exit_url', url);
     }
 
     /**
@@ -479,7 +479,7 @@ export class CommonHelper {
             function stop(resolve, modalOverlay) {
                 window.onbeforeunload = () => {
                 };
-                CommonHelper.log('Ботинг приостановлен на этой странице');
+                CommonHelperBackground.log('Ботинг приостановлен на этой странице');
                 resolve(false);
                 modalOverlay.remove();
             }
@@ -498,7 +498,7 @@ export class CommonHelper {
                 if (document.getElementById("custom-modal-overlay")) {
                     resolve(true); // Если не ответили, считаем как "Да"
                     modalOverlay.remove();
-                    CommonHelper.log("Время ожидания отмены ботинга истекло. Продолжаем код.");
+                    CommonHelperBackground.log("Время ожидания отмены ботинга истекло. Продолжаем код.");
                 }
             }, timeout);
         });
@@ -531,7 +531,7 @@ export class CommonHelper {
             });
 
             if (!response.ok) {
-                CommonHelper.sendTelegramMessage(`Ошибка загрузки страницы (${type}):`, response.status);
+                CommonHelperBackground.sendTelegramMessage(`Ошибка загрузки страницы (${type}):`, response.status);
                 console.error(`Ошибка загрузки страницы (${type}):`, response.status);
                 return;
             }
@@ -545,9 +545,9 @@ export class CommonHelper {
             const found = textsToFind.some(str => pageText.includes(str));
 
             if (found) {
-                CommonHelper.sendTelegramMessage(`Парсинг нашёл что-то в: ${url}.`);
+                CommonHelperBackground.sendTelegramMessage(`Парсинг нашёл что-то в: ${url}.`);
             } else {
-                CommonHelper.log(`Не найдено ничего в ${type} (проверка на [${textsToFind.join(', ')}])`, false);
+                CommonHelperBackground.log(`Не найдено ничего в ${type} (проверка на [${textsToFind.join(', ')}])`, false);
             }
         } catch (error) {
             console.error(`Ошибка при проверке ${type}:`, error);
@@ -624,7 +624,7 @@ export class CommonHelper {
 
             return false;
         } catch (error) {
-            CommonHelper.log('Произошла ошибка во время вычисления травмы, считаем что травмы много!');
+            CommonHelperBackground.log('Произошла ошибка во время вычисления травмы, считаем что травмы много!');
             return true;
         }
     }

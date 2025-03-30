@@ -1,5 +1,5 @@
 import { Chat } from './Chat.js';
-import { CommonHelper } from './CommonHelper.js';
+import { CommonHelperBackground } from './CommonHelperBackground.js';
 
 export async function sendMessagesFromChat() {
     try {
@@ -18,12 +18,16 @@ export async function sendMessagesFromChat() {
                 return;
             }
 
+            if (response.error) {
+                return;
+            }
+            
             (async () => {
                 let chat = new Chat();
                 let newMessages = [];
 
                 let actualMessages = response.formattedMessages;
-                let oldMessages = await CommonHelper.getExtStorage('wor_chat_message_queue') || [];
+                let oldMessages = await CommonHelperBackground.getExtStorage('wor_chat_message_queue') || [];
                 let oldNewestMessage = oldMessages[0] ?? [];
 
                 if (oldMessages.length === 0) {
@@ -33,16 +37,16 @@ export async function sendMessagesFromChat() {
                 }
 
                 let resultMessages = [...newMessages, ...oldMessages];
-                await CommonHelper.setExtStorage('wor_chat_message_queue', resultMessages);
+                await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
 
                 while (resultMessages.length > 1) {
                     // Вырезаем последний элемент
                     const lastElement = resultMessages.pop();
                     await chat.sendMessagesToTelegram(lastElement);
-                    await CommonHelper.setExtStorage('wor_chat_message_queue', resultMessages);
+                    await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
                 }
 
-                CommonHelper.log("Всё отправили.");
+                CommonHelperBackground.log("Всё отправили.");
             })();
 
         });
