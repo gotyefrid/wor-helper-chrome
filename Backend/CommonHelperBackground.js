@@ -1,4 +1,4 @@
-export class CommonHelperBackgroundBackground {
+export class CommonHelperBackground {
     static delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
