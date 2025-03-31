@@ -343,7 +343,20 @@ class Fight {
 
     getFightNumber() {
         let toChatButton = document.querySelector('a[href*=tochat]');
-        return toChatButton ? new URLSearchParams(new URL(toChatButton).search).get("text") : null;
+
+        if (toChatButton) {
+            return toChatButton ? new URLSearchParams(new URL(toChatButton).search).get("text") : '';
+        }
+
+        let title = document.querySelector('div.menu')?.innerText.toLowerCase();
+
+        if (title.includes('бой') || title.includes('боя')) {
+            const match = title.match(/№(\d+)/);
+            const battleNumber = match ? match[1] : null;
+            return battleNumber;
+        }
+
+        return '';
     }
 
     getEnemyName() {

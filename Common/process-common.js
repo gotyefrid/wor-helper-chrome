@@ -6,14 +6,11 @@
 
     setTitle();
     checkFlashNotifications();
-
-
+    
     const isParsingActive = await CommonHelper.getExtStorage('wor_parsing_active');
     if (isParsingActive) {
         parsing();
     };
-
-
 })();
 
 async function parsing() {

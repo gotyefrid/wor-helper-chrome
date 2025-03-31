@@ -7,7 +7,8 @@
         "storage",
         "scripting",
         "activeTab",
-        "tabs"
+        "tabs",
+        "alarms"
     ],
     "host_permissions": [
         "http://185.212.47.8/wap/*",
@@ -53,6 +54,15 @@
             ],
             "js": [
                 "Chat/process-chat.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/game.php?show=5*",
+                "http://185.212.47.8/wap/game.php?show=5*"
+            ],
+            "js": [
+                "Common/inventory-helper.js"
             ]
         },
         {

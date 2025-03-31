@@ -1,6 +1,6 @@
 class Captcha {
     CAPTCHA_HOST = CommonHelper.getExtStorage('wor_captcha_host');
-    CURRENT_SCRIPT_HASH = 'e1cmw3';
+    CURRENT_SCRIPT_HASH = 'e1cmw3e1cm';
 
     constructor() {
         this.#checkCurrentPage();
@@ -49,12 +49,19 @@ class Captcha {
         }
     }
 
-    simpleHash(str, length = 8) {
+    simpleHash(str, length = 10) {
         let hash = 0;
+
         for (let i = 0; i < str.length; i++) {
             hash = (hash << 5) - hash + str.charCodeAt(i);
-            hash |= 0; // to 32-bit int
+            hash |= 0; // Приведение к 32-битному целому
         }
-        return Math.abs(hash).toString(36).slice(0, length); // base36 = буквы+цифры
+
+        // Преобразуем в положительное число и в base36 (буквы + цифры)
+        const base = Math.abs(hash).toString(36);
+
+        // Повторим строку, если короткая, и обрежем до нужной длины
+        return base.repeat(Math.ceil(length / base.length)).slice(0, length);
     }
+
 }
