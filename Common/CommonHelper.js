@@ -131,12 +131,31 @@ class CommonHelper {
         return { botToken, chatId };
     }
 
-    static async sendTelegramMessage(text, bot = 'common', notify = true, parseMode = 'html') {
+    static async sendTelegramMessage(text, bot = 'common', notify = true, parseMode = 'html', expireInSeconds = 60) {
         let { botToken, chatId } = await CommonHelper.getTgData(bot);
 
         if (!botToken || !chatId) {
             console.error('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в localStroage');
             return;
+        }
+
+        if (bot === 'common') {
+            const now = Math.floor(Date.now() / 1000);
+
+            const lastMessage = await CommonHelper.getExtStorage('wor_tg_common_last_message');
+            const isSameText = lastMessage?.text === text;
+            const isNotExpired = lastMessage && (now - lastMessage.timestamp) < lastMessage.expire;
+
+            if (isSameText && isNotExpired) {
+                CommonHelper.log('Сообщение уже отправлялось недавно. Пропускаем отправку.');
+                return;
+            }
+
+            await CommonHelper.setExtStorage('wor_tg_common_last_message', {
+                text,
+                timestamp: now,
+                expire: expireInSeconds,
+            });
         }
 
         const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
@@ -330,7 +349,7 @@ class CommonHelper {
         } else {
             CommonHelper.log('Запоминаем ссылку выхода из боя', false);
         }
-        
+
         CommonHelper.setExtStorage('wor_fight_exit_url', url);
     }
 

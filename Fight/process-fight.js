@@ -30,7 +30,7 @@
             let nothingToDoList = Fight.BOSS_NAMES.map(name => name.toLowerCase());
 
             if (nothingToDoList.some(name => enemyName.toLowerCase().includes(name))) {
-                CommonHelper.sendTelegramMessage('Бой с боссом ' + enemyName);
+                CommonHelper.sendTelegramMessage('Бой с боссом ' + enemyName, 'common', true, 'html', 120);
                 // let fightNumber = fightClass.getFightNumber();
 
                 // if (fightNumber) {
@@ -41,7 +41,7 @@
                 // }
 
                 CommonHelper.log('Бой с боссом, бьём руками.');
-                await CommonHelper.delay(3000);
+                await CommonHelper.delay(10000);
                 CommonHelper.reloadPage();
                 return;
             }
