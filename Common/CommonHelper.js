@@ -539,7 +539,7 @@ class CommonHelper {
         return 0;
     }
 
-    static async parsingPage(url, textsToFind, type) {
+    static async parsingPage(url, textsToFind, type, invert = false) {
         try {
             let response = await fetch(url, {
                 method: 'GET',
@@ -561,12 +561,17 @@ class CommonHelper {
             let newDocument = parser.parseFromString(text, 'text/html');
             let pageText = newDocument.body.innerText;
 
-            const found = textsToFind.some(str => pageText.includes(str));
+            let found = textsToFind.some(str => pageText.includes(str));
+
+            // Если ждём что на странице НЕ будет текста 
+            if (invert) {
+                found = !found;
+            }
 
             if (found) {
-                CommonHelper.sendTelegramMessage(`Парсинг нашёл что-то в: ${url}.`);
+                CommonHelper.sendTelegramMessage(`Успех! Парсинг ${invert ? 'не' : ''} нашёл что-то искомое в: ${url}.`);
             } else {
-                CommonHelper.log(`Не найдено ничего в ${type} (проверка на [${textsToFind.join(', ')}])`, false);
+                CommonHelper.log(`Неудача. Не найдено ничего в ${type} (проверка на [${textsToFind.join(', ')}])`, false);
             }
         } catch (error) {
             console.error(`Ошибка при проверке ${type}:`, error);

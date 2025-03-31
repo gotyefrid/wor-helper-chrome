@@ -49,6 +49,7 @@ async function processCheckboxes() {
             storageKey: "wor_parsing_active",
             hasSubOptions: true,
         },
+        toggleParsingOptInvertSearch:  { storageKey: "wor_parsing_invert_search_active" },
 
         toggleTelegram: {
             storageKey: "wor_tg_notifications_active",

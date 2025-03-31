@@ -28,6 +28,7 @@ async function parsing() {
             CommonHelper.log('[Parser] Начинаем проверку...');
             const urls = await CommonHelper.getExtStorage('wor_parsing_links') || [];
             const targets = await CommonHelper.getExtStorage('wor_parsing_targets') || [];
+            const invert = await CommonHelper.getExtStorage('wor_parsing_invert_search_active') || false;
             let i = 1;
 
             const data = urls.map(link => ({
@@ -39,7 +40,7 @@ async function parsing() {
             for (const item of data) {
                 await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 2000));
                 CommonHelper.log(`[Parser] Проверка ${item.type}...`);
-                await CommonHelper.parsingPage(item.url, item.textToFind, item.type);
+                await CommonHelper.parsingPage(item.url, item.textToFind, item.type, invert);
             }
 
             CommonHelper.log('[Parser] Проверка завершена.', false);

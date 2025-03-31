@@ -71,7 +71,7 @@
             <label class="text-input">
                 <input type="text" id="inputCaptchaHost">
             </label>
-        </div> 
+        </div>
     </div>
     <hr class="divider">
 
@@ -114,7 +114,7 @@
             <label class="text-input">
                 <input type="number" id="inputFightingLevelToSkip" min="0" max="99" maxlength="2">
             </label>
-        </div>        
+        </div>
         <div class="toggle-wrapper">
             <span class="toggle-title small">Проверять травму</span>
             <label class="switch">
@@ -231,6 +231,13 @@
 
             <label class="modal-label">Цели</label>
             <select id="modal-targets" class="select2" multiple></select>
+
+            <div class="toggle-wrapper">
+                <span class="toggle-title small">Цели должны отсутствовать</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleParsingOptInvertSearch"><span class="slider round"></span>
+                </label>
+            </div>
 
             <button id="modal-save">Сохранить</button>
         </div>
