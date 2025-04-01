@@ -76,18 +76,18 @@ class Fight {
             let isNullDamage = await this.isNullDamage();
 
             if (isNullDamage) {
-                CommonHelper.sendTelegramMessage('Я бью 0, что-то тут не так, ничего не делаю больше. Выключаю алхимию и сражение');
-                CommonHelper.turnAlchemistry(false);
-                CommonHelper.turnFighting(false);
-                CommonHelper.setFightExitUrl('');
-                CommonHelper.log('Нажимаю Сдаться и в город');
-                let exit = [...document.querySelectorAll('a')].find(a => a.innerText.includes('Сдаться и в город'));
+                CommonHelper.sendTelegramMessage('Я бью 0, что-то тут не так, ничего не делаю больше');
+                // CommonHelper.turnAlchemistry(false);
+                // CommonHelper.turnFighting(false);
+                // CommonHelper.setFightExitUrl('');
+                // CommonHelper.log('Нажимаю Сдаться и в город');
+                // let exit = [...document.querySelectorAll('a')].find(a => a.innerText.includes('Сдаться и в город'));
 
-                if (exit) {
-                    CommonHelper.clickAndWait(exit);
-                } else {
-                    CommonHelper.sendTelegramMessage('Нет кнопки Сдаться и в город, просто больше ничего не делаем');
-                }
+                // if (exit) {
+                //     CommonHelper.clickAndWait(exit);
+                // } else {
+                //     CommonHelper.sendTelegramMessage('Нет кнопки Сдаться и в город, просто больше ничего не делаем');
+                // }
 
                 return;
             }

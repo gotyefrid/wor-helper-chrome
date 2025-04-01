@@ -260,7 +260,8 @@ class CommonHelper {
                     { command: 'to_exit_url', description: 'Перейти на сохранённый URL' },
                     { command: 'start_chemistry', description: 'Включить алхимию' },
                     { command: 'start_fishing', description: 'Включить рыбалку' },
-                    { command: 'start_fighting', description: 'Включить сражение' }
+                    { command: 'start_fighting', description: 'Включить сражение' },
+                    { command: 'refresh_commands_list', description: 'Обновить команды' }
                 ]
             })
         })
@@ -286,6 +287,10 @@ class CommonHelper {
 
     static async turnFishing(active = true) {
         await CommonHelper.setExtStorage('wor_fishing_active', active);
+    }
+
+    static async turnCaptcha(active = true) {
+        await CommonHelper.setExtStorage('wor_captcha_active', active);
     }
 
     static async createDisableButton(name, toDo) {

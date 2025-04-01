@@ -97,6 +97,9 @@ class Captcha {
         clone.querySelectorAll('.contur_mes').forEach(el => el.remove());
         [...clone.querySelectorAll('style')].find(el => el.innerText.includes('clockify'))?.remove();
 
+        // бегающий скрипт
+        [...clone.querySelectorAll('script')].find(el => el.innerText.includes('updateBars'))?.remove();
+
         // Получаем HTML-код без элементов .chat
         let htmlWithoutChat = clone.outerHTML;
 

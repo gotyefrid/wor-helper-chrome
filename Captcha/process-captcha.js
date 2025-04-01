@@ -95,18 +95,20 @@ window.addEventListener("load", async function () {
             } else {
                 // ✅ Всё ок
                 CommonHelper.log("✅ Пазл на месте");
+                await CommonHelper.delay(CommonHelper.getRandomNumber(3000, 15000));
 
                 CommonHelper.clickAndWait(document.querySelector('input[type=submit]'));
-                let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
+                return;
+                // let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
 
-                if (exitUrl) {
-                    CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + exitUrl);
-                    await CommonHelper.delay(15000);
-                    // document.location = exitUrl;
-                    return;
-                }
+                // if (exitUrl) {
+                //     CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + exitUrl);
+                //     await CommonHelper.delay(15000);
+                //     // document.location = exitUrl;
+                //     return;
+                // }
 
-                await CommonHelper.delay(15000);
+                // await CommonHelper.delay(15000);
             }
         } else {
             CommonHelper.sendTelegramMessage("⚠️ Не переданы координаты для перемещения!");

@@ -32,32 +32,45 @@ async function handleTelegramCommands(command) {
             CommonHelper.turnAlchemistry(false);
             CommonHelper.turnFighting(false);
             CommonHelper.turnFishing(false);
+            CommonHelper.turnCaptcha(false);
+            CommonHelper.sendTelegramMessage('Выполнено, выключено всё.', 'common');
             CommonHelper.reloadPage();
-            CommonHelper.sendTelegramMessage('Выполнено', 'common');
             break;
         case '/start_chemistry':
             CommonHelper.log('Пришла команда включить алхимию');
             CommonHelper.turnAlchemistry(true);
             CommonHelper.turnFighting(true);
-            CommonHelper.reloadPage();
             CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            CommonHelper.reloadPage();
+            break;
+        case '/start_captcha':
+            CommonHelper.log('Пришла команда включить капчу');
+            CommonHelper.turnCaptcha(true);
+            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            CommonHelper.reloadPage();
             break;
         case '/start_fishing':
             CommonHelper.log('Пришла команда включить рыбалку');
             CommonHelper.turnFishing(true);
-            CommonHelper.reloadPage();
             CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            CommonHelper.reloadPage();
             break;
         case '/start_fighting':
             CommonHelper.log('Пришла команда включить сражение');
             CommonHelper.turnFighting(true);
-            CommonHelper.reloadPage();
             CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            CommonHelper.reloadPage();
             break;
         case '/refresh_page':
             CommonHelper.log('Пришла команда перезагрузить страницу');
-            CommonHelper.reloadPage();
             CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            CommonHelper.reloadPage();
+            break;
+        case '/refresh_commands_list':
+            CommonHelper.log('Пришла команда перезагрузить страницу');
+            CommonHelper.setTelegramBotCommands('common');
+            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            CommonHelper.reloadPage();
             break;
         case '/to_exit_url':
             CommonHelper.log('Пришла команда перейти на URL сохранённый');
