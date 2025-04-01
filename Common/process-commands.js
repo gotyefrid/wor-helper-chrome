@@ -6,7 +6,7 @@
     while (true) {
         try {
             // Отправка сообщений из чата в Telegram
-            let command = await CommonHelper.getTelegramUpdates('chat');
+            let command = await CommonHelper.getTelegramUpdates('common');
 
             if (command) {
                 handleTelegramCommands(command);
@@ -33,31 +33,31 @@ async function handleTelegramCommands(command) {
             CommonHelper.turnFighting(false);
             CommonHelper.turnFishing(false);
             CommonHelper.reloadPage();
-            CommonHelper.sendTelegramMessage('Выполнено', 'chat');
+            CommonHelper.sendTelegramMessage('Выполнено', 'common');
             break;
         case '/start_chemistry':
             CommonHelper.log('Пришла команда включить алхимию');
             CommonHelper.turnAlchemistry(true);
             CommonHelper.turnFighting(true);
             CommonHelper.reloadPage();
-            CommonHelper.sendTelegramMessage('Выполнено', 'chat');
+            CommonHelper.sendTelegramMessage('Выполнено', 'common');
             break;
         case '/start_fishing':
             CommonHelper.log('Пришла команда включить рыбалку');
             CommonHelper.turnFishing(true);
             CommonHelper.reloadPage();
-            CommonHelper.sendTelegramMessage('Выполнено', 'chat');
+            CommonHelper.sendTelegramMessage('Выполнено', 'common');
             break;
         case '/start_fighting':
             CommonHelper.log('Пришла команда включить сражение');
             CommonHelper.turnFighting(true);
             CommonHelper.reloadPage();
-            CommonHelper.sendTelegramMessage('Выполнено', 'chat');
+            CommonHelper.sendTelegramMessage('Выполнено', 'common');
             break;
         case '/refresh_page':
             CommonHelper.log('Пришла команда перезагрузить страницу');
             CommonHelper.reloadPage();
-            CommonHelper.sendTelegramMessage('Выполнено', 'chat');
+            CommonHelper.sendTelegramMessage('Выполнено', 'common');
             break;
         case '/to_exit_url':
             CommonHelper.log('Пришла команда перейти на URL сохранённый');
@@ -68,7 +68,7 @@ async function handleTelegramCommands(command) {
                 return;
             }
 
-            CommonHelper.sendTelegramMessage('Ссылка редиректа не назначена', 'chat');
+            CommonHelper.sendTelegramMessage('Ссылка редиректа не назначена', 'common');
             break;
         default:
     }

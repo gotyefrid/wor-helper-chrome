@@ -1,6 +1,6 @@
 class Captcha {
-    CAPTCHA_HOST = CommonHelper.getExtStorage('wor_captcha_host');
-    CURRENT_SCRIPT_HASH = 'e1cmw3e1cm';
+    HTML_HASH = 1942182699;
+    RESOURCES_HASH = 2039952467;
 
     constructor() {
         this.#checkCurrentPage();
@@ -13,9 +13,10 @@ class Captcha {
         this.isCaptchaPage = paths.some(path => window.location.pathname.includes(path));
     }
 
-    async getCoorditanes() {
+    async getCoorditanes(image) {
+        const CAPTCHA_HOST = await CommonHelper.getExtStorage('wor_captcha_host');
         let detectFormData = new FormData();
-        detectFormData.append("file", firstImageFile);
+        detectFormData.append("file", image);
 
         let detectResponse = await fetch(CAPTCHA_HOST + "/detect_puzzle", {
             method: "POST",
@@ -49,19 +50,149 @@ class Captcha {
         }
     }
 
-    simpleHash(str, length = 10) {
-        let hash = 0;
-
+    fnv1aHash(str) {
+        const prime = 0x811C9DC5;
+        let hash = prime;
         for (let i = 0; i < str.length; i++) {
-            hash = (hash << 5) - hash + str.charCodeAt(i);
-            hash |= 0; // Приведение к 32-битному целому
+            hash ^= str.charCodeAt(i);
+            hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
         }
-
-        // Преобразуем в положительное число и в base36 (буквы + цифры)
-        const base = Math.abs(hash).toString(36);
-
-        // Повторим строку, если короткая, и обрежем до нужной длины
-        return base.repeat(Math.ceil(length / base.length)).slice(0, length);
+        return hash >>> 0;
     }
+
+    async hashAllResources() {
+        const urls = [];
+    
+        // Собираем все <script src="">
+        document.querySelectorAll('script[src]').forEach(el => urls.push(el.src));
+    
+        // Собираем все <link rel="stylesheet" href="">
+        document.querySelectorAll('link[rel="stylesheet"][href]').forEach(el => urls.push(el.href));
+    
+        const partialHashes = [];
+    
+        for (const url of urls) {
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                const hash = this.fnv1aHash(text);
+                partialHashes.push(hash.toString());
+            } catch (e) {
+                CommonHelper.log(`Не удалось загрузить: ${url}` + JSON.stringify(e));
+                return false;
+            }
+        }
+    
+        const combined = partialHashes.join("|");
+        return this.fnv1aHash(combined);
+    }
+
+    cleanDocumentHTML() {
+        // Клонируем весь документ, чтобы не трогать оригинал
+        const clone = document.documentElement.cloneNode(true);
+
+        // Удаляем все элементы с классом .chat
+        clone.querySelectorAll('.chat').forEach(el => el.remove());
+        clone.querySelectorAll('.menu').forEach(el => el.remove());
+        clone.querySelectorAll('.contur_mes').forEach(el => el.remove());
+        [...clone.querySelectorAll('style')].find(el => el.innerText.includes('clockify'))?.remove();
+
+        // Получаем HTML-код без элементов .chat
+        let htmlWithoutChat = clone.outerHTML;
+
+        // Удаляем значения uni=... и hash=... (оставляя только uni= и hash=)
+        htmlWithoutChat = htmlWithoutChat.replace(/uni=[^&"' ]*/g, 'uni=');
+        htmlWithoutChat = htmlWithoutChat.replace(/hash=[^&"' ]*/g, 'hash=');
+
+        // Удаляем все пробелы, табы и переносы строк
+        const cleanedHTML = htmlWithoutChat.replace(/\s+/g, '');
+
+        // console.log(cleanedHTML);
+        return cleanedHTML;
+    }
+
+
+    async simulateArcDrag(el, end, baseInterval = 8, randomOffset = 10) {
+        return new Promise((resolve) => {
+            const start = { x: 0, y: 0 };
+            el.style.left = "0px";
+            el.style.top = "0px";
+            el.style.position = "absolute";
+
+            const offsetX = (Math.random() - 0.5) * 2 * randomOffset;
+            const offsetY = (Math.random() - 0.5) * 2 * randomOffset;
+            const finalTarget = {
+                x: end.x + offsetX,
+                y: end.y + offsetY
+            };
+
+            const arcRadius = 10 + Math.random() * 20;
+            const arcDirection = Math.random() < 0.5 ? 1 : -1;
+
+            const totalDistance = Math.hypot(finalTarget.x, finalTarget.y);
+            const baseSteps = totalDistance / 3;
+            const speedFactor = 8 / baseInterval;
+            const intervalAdjustment = Math.pow(speedFactor, 0.6);
+            let steps = Math.round(baseSteps * 1.3 * intervalAdjustment);
+
+            const minSteps = 70 + Math.floor(Math.random() * 31);
+            steps = Math.max(steps, minSteps);
+
+            let currentStep = 0;
+
+            function easeOutQuart(t) {
+                return 1 - Math.pow(1 - t, 4);
+            }
+
+            el.dispatchEvent(new MouseEvent("mousedown", {
+                bubbles: true,
+                clientX: start.x,
+                clientY: start.y
+            }));
+
+            function nextStep() {
+                currentStep++;
+                const linearT = Math.min(currentStep / steps, 1);
+                const t = easeOutQuart(linearT);
+                const angle = linearT * Math.PI;
+
+                const dx = finalTarget.x - start.x;
+                const dy = finalTarget.y - start.y;
+
+                const progressX = start.x + dx * t;
+                const progressY = start.y + dy * t;
+
+                const perp = { x: -dy, y: dx };
+                const len = Math.hypot(perp.x, perp.y);
+                const norm = { x: perp.x / len, y: perp.y / len };
+
+                const arcOffset = Math.sin(angle) * arcRadius * arcDirection;
+
+                const x = progressX + norm.x * arcOffset;
+                const y = progressY + norm.y * arcOffset;
+
+                document.dispatchEvent(new MouseEvent("mousemove", {
+                    bubbles: true,
+                    clientX: x,
+                    clientY: y
+                }));
+
+                if (linearT >= 1) {
+                    document.dispatchEvent(new MouseEvent("mouseup", {
+                        bubbles: true,
+                        clientX: x,
+                        clientY: y
+                    }));
+                    resolve(); // ✅ Сообщаем, что всё завершилось
+                } else {
+                    const jitter = baseInterval * (0.8 + Math.random() * 0.4);
+                    setTimeout(nextStep, jitter);
+                }
+            }
+
+            nextStep();
+        });
+    }
+
 
 }
