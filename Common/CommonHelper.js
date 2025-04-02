@@ -217,6 +217,9 @@ class CommonHelper {
 
     static async getTelegramUpdates(bot = 'common') {
         let { botToken } = await CommonHelper.getTgData(bot);
+        if (!botToken) {
+            return null;
+        }
         const url = `https://api.telegram.org/bot${botToken}/getUpdates`;
 
         try {
