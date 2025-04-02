@@ -29,47 +29,63 @@ async function handleTelegramCommands(command) {
     switch (text) {
         case '/stop':
             CommonHelper.log('Пришла команда остановить бота');
-            CommonHelper.turnAlchemistry(false);
-            CommonHelper.turnFighting(false);
-            CommonHelper.turnFishing(false);
-            CommonHelper.turnCaptcha(false);
-            CommonHelper.sendTelegramMessage('Выполнено, выключено всё.', 'common');
+            await CommonHelper.turnAlchemistry(false);
+            await CommonHelper.turnFighting(false);
+            await CommonHelper.turnFishing(false);
+            await CommonHelper.turnCaptcha(false);
+            await CommonHelper.sendTelegramMessage('Выполнено, выключено всё.', 'common');
             CommonHelper.reloadPage();
             break;
         case '/start_chemistry':
             CommonHelper.log('Пришла команда включить алхимию');
-            CommonHelper.turnAlchemistry(true);
-            CommonHelper.turnFighting(true);
-            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            await CommonHelper.turnAlchemistry(true);
+            await CommonHelper.turnFighting(true);
+            await CommonHelper.sendTelegramMessage('Алхимия включена', 'common');
             CommonHelper.reloadPage();
             break;
         case '/start_captcha':
             CommonHelper.log('Пришла команда включить капчу');
-            CommonHelper.turnCaptcha(true);
-            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            await CommonHelper.turnCaptcha(true);
+            await CommonHelper.sendTelegramMessage('Каптча включена', 'common');
             CommonHelper.reloadPage();
             break;
         case '/start_fishing':
             CommonHelper.log('Пришла команда включить рыбалку');
-            CommonHelper.turnFishing(true);
-            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            await CommonHelper.turnFishing(true);
+            await CommonHelper.sendTelegramMessage('Рыбалка включена', 'common');
             CommonHelper.reloadPage();
             break;
         case '/start_fighting':
             CommonHelper.log('Пришла команда включить сражение');
-            CommonHelper.turnFighting(true);
-            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            await CommonHelper.turnFighting(true);
+            await CommonHelper.sendTelegramMessage('Сражение включено', 'common');
             CommonHelper.reloadPage();
             break;
         case '/refresh_page':
             CommonHelper.log('Пришла команда перезагрузить страницу');
-            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            await CommonHelper.sendTelegramMessage('Перезагрузка выполнена', 'common');
             CommonHelper.reloadPage();
             break;
         case '/refresh_commands_list':
-            CommonHelper.log('Пришла команда перезагрузить страницу');
-            CommonHelper.setTelegramBotCommands('common');
-            CommonHelper.sendTelegramMessage('Выполнено', 'common');
+            CommonHelper.log('Пришла команда обновить команды');
+            await CommonHelper.setTelegramBotCommands('common');
+            await CommonHelper.sendTelegramMessage('Команды обновлены', 'common');
+            CommonHelper.reloadPage();
+            break;
+        case '/status':
+            CommonHelper.log('Пришла команда показать статус бота');
+            let chemistry = await CommonHelper.getExtStorage('wor_chemistry_active');
+            let fishing = await CommonHelper.getExtStorage('wor_fishing_active');
+            let fignhting = await CommonHelper.getExtStorage('wor_fight_active');
+            let captcha = await CommonHelper.getExtStorage('wor_captcha_active');
+
+            let statuses =
+                'Алхимия: ' + (chemistry ? '✔️' : '❌') + '\n' +
+                'Рыбалка: ' + (fishing ? '✔️' : '❌') + '\n' +
+                'Сражение: ' + (fignhting ? '✔️' : '❌') + '\n' +
+                'Капча: ' + (captcha ? '✔️' : '❌');
+
+            await CommonHelper.sendTelegramMessage(statuses, 'common');
             CommonHelper.reloadPage();
             break;
         case '/to_exit_url':
@@ -81,7 +97,7 @@ async function handleTelegramCommands(command) {
                 return;
             }
 
-            CommonHelper.sendTelegramMessage('Ссылка редиректа не назначена', 'common');
+            await CommonHelper.sendTelegramMessage('Ссылка редиректа не назначена', 'common');
             break;
         default:
     }

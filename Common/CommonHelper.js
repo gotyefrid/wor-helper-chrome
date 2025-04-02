@@ -256,11 +256,13 @@ class CommonHelper {
             body: JSON.stringify({
                 commands: [
                     { command: 'stop', description: 'Остановить бота' },
+                    { command: 'status', description: 'Статусы бота' },
                     { command: 'refresh_page', description: 'Перезагрзуить страницу' },
                     { command: 'to_exit_url', description: 'Перейти на сохранённый URL' },
                     { command: 'start_chemistry', description: 'Включить алхимию' },
                     { command: 'start_fishing', description: 'Включить рыбалку' },
                     { command: 'start_fighting', description: 'Включить сражение' },
+                    { command: 'start_captcha', description: 'Включить капчу' },
                     { command: 'refresh_commands_list', description: 'Обновить команды' }
                 ]
             })
