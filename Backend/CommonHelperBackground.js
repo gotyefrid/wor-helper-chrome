@@ -63,7 +63,7 @@ export class CommonHelperBackground {
         let { botToken, chatId } = await CommonHelperBackground.getTgData(bot);
 
         if (!botToken || !chatId) {
-            console.error('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в localStroage');
+            console.log('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в Stroage');
             return;
         }
 
