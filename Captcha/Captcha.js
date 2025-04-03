@@ -91,16 +91,33 @@ class Captcha {
         // Клонируем весь документ, чтобы не трогать оригинал
         const clone = document.documentElement.cloneNode(true);
 
-        // Удаляем все элементы с классом .chat
-        clone.querySelectorAll('.chat').forEach(el => el.remove());
-        clone.querySelectorAll('.menu').forEach(el => el.remove());
-        clone.querySelectorAll('.contur_mes').forEach(el => el.remove());
-        [...clone.querySelectorAll('style')].find(el => el.innerText.includes('clockify'))?.remove();
+        // Удаляем все элементы внутри динамических блоков кроме скриптов
+        clone.querySelectorAll('.chat, .menu, .contur_mes').forEach(el => {
+            [...el.childNodes].forEach(child => {
+                if (child.nodeType !== Node.ELEMENT_NODE || child.tagName !== 'SCRIPT') {
+                    el.removeChild(child);
+                }
+            });
 
-        // бегающий скрипт
+            // Если после очистки остался пустым — удаляем сам элемент
+            const hasScript = el.querySelector('script') !== null;
+            const hasText = el.textContent.trim().length > 0;
+            const hasOtherElements = [...el.children].some(child => child.tagName !== 'SCRIPT');
+
+            if (!hasScript && !hasText && !hasOtherElements) {
+                el.remove();
+            }
+        });
+
+        // лично моя фигня из расширения другого
+        [...clone.querySelectorAll('style')]
+            .filter(el => el.innerText.includes('clockify'))
+            .forEach(el => el.remove());
+
+        // бегающий скрипт (если хп не полное он появляется)
         [...clone.querySelectorAll('script')].find(el => el.innerText.includes('updateBars'))?.remove();
 
-        // Получаем HTML-код без элементов .chat
+        // Получаем HTML-код без динамических элементов
         let htmlWithoutChat = clone.outerHTML;
 
         // Удаляем значения uni=... и hash=... (оставляя только uni= и hash=)
@@ -197,5 +214,11 @@ class Captcha {
         });
     }
 
+    setPuzzleCoorsinates(el, x, y, randomOffset = 10) {
+        const offsetX = (Math.random() - 0.5) * 2 * randomOffset;
+        const offsetY = (Math.random() - 0.5) * 2 * randomOffset;
 
+        el.style.left = `${x + offsetX}px`;
+        el.style.top = `${y + offsetY}px`;
+    }
 }

@@ -90,6 +90,10 @@ async function checkFlashNotifications() {
         return;
     }
 
+    if (html.innerText.includes('Награда:')) {
+        CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html');
+    }
+
     let messages = Chat.getParsedMessages(html);
 
     await CommonHelper.setExtStorage('wor_chat_flash_notifications', messages);

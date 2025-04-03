@@ -77,10 +77,11 @@ window.addEventListener("load", async function () {
 
         if (coords && coords.x != null && coords.y != null) {
             let randomOffset = 10;
+            let piece = document.getElementById("puzzle-piece");
+            // await captcha.simulateArcDrag(piece, coords, 8, randomOffset);
+            captcha.setPuzzleCoorsinates(piece, coords.x, coords.y, randomOffset);
 
-            await captcha.simulateArcDrag(document.getElementById("puzzle-piece"), coords, 8, randomOffset);
-
-            const piece = document.getElementById("puzzle-piece");
+            // Проверка что пазл установлен нормально на нужном месте.
             const actualX = piece.offsetLeft;
             const actualY = piece.offsetTop;
 
