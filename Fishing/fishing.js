@@ -17,18 +17,18 @@ async function fishing() {
         // значит экран выбор локации
         if (document.querySelector('.btninv')) {
             CommonHelper.log('Выбираем место рыбалки');
-            await delay(getRandomNumber(1000, 2000));
+            await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 2000));
             await processSetFishingLocation();
         } else {
             CommonHelper.log('Ждем загрузку страницы');
-            await delay(getRandomNumber(500, 1000)); // ждем подгрузки аякс
+            await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1000)); // ждем подгрузки аякс
             showTimeRequired();
 
             await processGetFishButton();
         }
 
         // Запускаем новый вызов функции через случайный интервал, но ТОЛЬКО после завершения всех действий
-        let randomDelay = getRandomNumber(1000, 5000);
+        let randomDelay = CommonHelper.getRandomNumber(1000, 5000);
         fishingTimeout = setTimeout(runFishingLoop, randomDelay);
     }
 
@@ -78,7 +78,7 @@ async function processGetFishButton() {
 
                         if (getButton) {
                             CommonHelper.log("Подсекаем!");
-                            await delay(getRandomNumber(2000, 4000)); // Ждем перед нажатием
+                            await CommonHelper.delay(CommonHelper.getRandomNumber(2000, 4000)); // Ждем перед нажатием
                             observer.disconnect(); // Останавливаем наблюдение
                             getButton.click();
 
@@ -108,7 +108,7 @@ async function processSetFishingLocation() {
     }
 
     // Получаем последнюю сохранённую локацию
-    let savedLocation = localStorage.getItem("lastFishingLocationIndex");
+    let savedLocation = CommonHelper.getExtStorage("wor_fishing_last_location_index");
     savedLocation = savedLocation !== null ? Number(savedLocation) : null; // Приводим к числу, если есть
 
     // Получаем последний отчёт
@@ -174,7 +174,7 @@ async function processSetFishingLocation() {
 
     if (button) {
         CommonHelper.log("Идём в локацию: " + button.innerText.trim(), false);
-        localStorage.setItem("lastFishingLocationIndex", locationIndex);
+        CommonHelper.setExtStorage("wor_fishing_last_location_index", locationIndex);
         button.click();
         return;
     }
