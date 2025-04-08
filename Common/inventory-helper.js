@@ -2,19 +2,16 @@ if (document.location.href.includes('game.php')) {
 
     (function () {
         const fishData = {
-            "Карась": { price: 7, smokedExtra: 4.6 },
-            "Окунь": { price: 8, smokedExtra: 4.6 },
-            "Карп": { price: 10, smokedExtra: 4.6 },
-            "Лещ": { price: 12, smokedExtra: 5.5 },
-            "Судак": { price: 15, smokedExtra: 5.5 },
-        };
-
-        const smokedNames = {
-            "Карась": "Жареный карась",
-            "Окунь": "Жареный окунь",
-            "Карп": "Жареный карп",
-            "Лещ": "Копченый лещ",
-            "Судак": "Копченый судак"
+            "Карась": { price: 7, smokedPrice: 17, woodPrice: 4.6, smokedName: "Жареный карась" },
+            "Окунь": { price: 8, smokedPrice: 18, woodPrice: 4.6, smokedName: "Жареный окунь" },
+            "Карп": { price: 10, smokedPrice: 20, woodPrice: 4.6, smokedName: "Жареный карп" },
+            "Лещ": { price: 12, smokedPrice: 24, woodPrice: 5.5, smokedName: "Копченый лещ" },
+            "Судак": { price: 15, smokedPrice: 28, woodPrice: 5.5, smokedName: "Копченый судак" },
+            "Сом": { price: 20, smokedPrice: 34, woodPrice: 5.5, smokedName: "Копченый сом" },
+            "Щука": { price: 20, smokedPrice: 36, woodPrice: 6.6, smokedName: "Копченая щука" },
+            "Угорь": { price: 22, smokedPrice: 40, woodPrice: 6.6, smokedName: "Копченый угорь" },
+            "Форель": { price: 25, smokedPrice: 45, woodPrice: 7.9, smokedName: "Копченая форель" },
+            "Осётр": { price: 30, smokedPrice: 50, woodPrice: 7.9, smokedName: "Копченый осётр" },
         };
 
         const herbsData = {
@@ -39,10 +36,24 @@ if (document.location.href.includes('game.php')) {
         };
 
         const resourcePrices = {
-            "Уголь": 3, "Камень": 3.3, "Руда": 1.8, "Серебро": 2, "Медь": 3.2, "Золото": 3.3,
-            "Фионид": 6.6, "Сапфир": 3.6, "Ясень": 4.6, "Клён": 5.5, "Дуб": 6.6, "Кр. дерево": 7.9,
-            "Обр. камень": 4.5, "Сл. руды": 2.6, "Сл. серебра": 2.9, "Сл. меди": 4.5,
-            "Сл. золота": 8.8, "Сл. фионида": 9.3
+            "Уголь": [3.0, 1, 6],
+            "Камень": [3.3, 1, 7],
+            "Руда": [1.8, 1],
+            "Серебро": [2.0, 1],
+            "Медь": [3.2, 1, 6],
+            "Золото": [3.3, 1, 7],
+            "Фионид": [6.6, 3, 4],
+            "Сапфир": [3.6, 1, 9],
+            "Ясень": [4.6, 4, 6],
+            "Клён": [5.5, 2, 9],
+            "Дуб": [6.6, 3, 4],
+            "Кр. дерево": [7.9, 4, 1],
+            "Обр. камень": [4.5, 2, 4],
+            "Сл. руды": [2.6, 1, 4],
+            "Сл. серебра": [2.9, 1, 5],
+            "Сл. меди": [4.5, 2, 3],
+            "Сл. золота": [8.8, 2, 4],
+            "Сл. фионида": [9.3, 4, 9],
         };
 
         const rows = Array.from(document.querySelectorAll("table.table_modern tr"));
@@ -60,8 +71,10 @@ if (document.location.href.includes('game.php')) {
         // Подсчёты
         let resourceTotal = 0;
         for (let name in resourcePrices) {
+            const [buyPrice, sellPrice] = resourcePrices[name];
             const qty = inventory[name] || 0;
-            resourceTotal += qty * resourcePrices[name];
+
+            resourceTotal += qty * sellPrice;
         }
 
         let rawFishTotal = 0;
@@ -71,16 +84,16 @@ if (document.location.href.includes('game.php')) {
 
         for (let fish in fishData) {
             const rawQty = inventory[fish] || 0;
-            const smokedName = smokedNames[fish];
+            const smokedName = fishData[fish].smokedName;
             const smokedQty = inventory[smokedName] || 0;
             const basePrice = fishData[fish].price;
-            const extra = fishData[fish].smokedExtra;
-            const smokedPrice = basePrice + extra;
+            const woodPrice = fishData[fish].woodPrice;
+            const smokedPrice = fishData[fish].smokedPrice;
 
             rawFishTotal += rawQty * basePrice;
             smokedFishTotal += smokedQty * smokedPrice;
             allFishActual += rawQty * basePrice + smokedQty * smokedPrice;
-            allFishHypothetical += (rawQty + smokedQty) * smokedPrice;
+            allFishHypothetical += ((rawQty + smokedQty) * smokedPrice) - woodPrice;
         }
 
         let herbTotal = 0;
@@ -96,7 +109,11 @@ if (document.location.href.includes('game.php')) {
 
         for (let name in inventory) {
             if (name.toLowerCase().includes("отвар")) {
-                const herbName = name.replace("Отвар ", "");
+                const words = name.trim().split(' ');
+                const lastWord = words.at(-1); // или words[words.length - 1]
+                const herbPartName = lastWord.slice(0, 4);
+                const herbName = Object.keys(herbsData).find(key => key.includes(herbPartName));
+
                 if (herbsData[herbName]) {
                     const price = herbsData[herbName][1];
                     decoctionTotal += inventory[name] * price;
