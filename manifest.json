@@ -38,7 +38,6 @@
                 "Chat/luxon.js",
                 "Chat/Chat.js",
                 "Common/process-common.js",
-                "Common/common.js",
                 "Common/move-to-coords.js",
                 "Common/process-commands.js"
             ]
