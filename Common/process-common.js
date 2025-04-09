@@ -95,7 +95,7 @@ async function checkFlashNotifications() {
     }
 
     if (html.innerText.includes('Награда:')) {
-        CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html');
+        CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 300);
     }
 
     let messages = Chat.getParsedMessages(html);
