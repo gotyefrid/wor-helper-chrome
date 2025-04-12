@@ -13,6 +13,20 @@ class Captcha {
         this.isCaptchaPage = paths.some(path => window.location.pathname.includes(path));
     }
 
+    lastTryWasWrong() {
+        let html = document.querySelector('.header_mes');
+
+        if (!html) {
+            return false;
+        }
+
+        if (html.innerText.includes('Неправильно поставлен пазл!')) {
+            return true;
+        }
+
+        return false;
+    }
+
     async getCoorditanes(image) {
         const CAPTCHA_HOST = await CommonHelper.getExtStorage('wor_captcha_host');
         let detectFormData = new FormData();
@@ -62,15 +76,15 @@ class Captcha {
 
     async hashAllResources() {
         const urls = [];
-    
+
         // Собираем все <script src="">
         document.querySelectorAll('script[src]').forEach(el => urls.push(el.src));
-    
+
         // Собираем все <link rel="stylesheet" href="">
         document.querySelectorAll('link[rel="stylesheet"][href]').forEach(el => urls.push(el.href));
-    
+
         const partialHashes = [];
-    
+
         for (const url of urls) {
             try {
                 const res = await fetch(url);
@@ -82,7 +96,7 @@ class Captcha {
                 return false;
             }
         }
-    
+
         const combined = partialHashes.join("|");
         return this.fnv1aHash(combined);
     }

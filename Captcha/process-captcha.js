@@ -20,6 +20,24 @@ window.addEventListener("load", async function () {
     }
 
     let captcha = new Captcha();
+
+    if (captcha.lastTryWasWrong()) {
+        let currentErrorCount = await CommonHelper.getExtStorage('wor_captcha_error_count') || 0; // либо получить значение - либо 0
+
+        if (currentErrorCount > 2) {
+            CommonHelper.sendTelegramMessage('Не получается пройти капчу! Срочно нужно вмешательство!', 'common', true, 'html', 180);
+            return;
+        }
+
+        CommonHelper.sendTelegramMessage('Неправильно поставлен пазл! Запрашиваем новую картинку!', 'common', true, 'html');
+        await CommonHelper.setExtStorage('wor_captcha_error_count', ++currentErrorCount);
+
+        // Обновляем картинку
+        document.querySelector('a[href*=shuffle]').click();
+
+        return;
+    }
+
     let actualCacheAllResourses = await captcha.hashAllResources();
 
     if (!actualCacheAllResourses) {
@@ -96,6 +114,7 @@ window.addEventListener("load", async function () {
             } else {
                 // ✅ Всё ок
                 CommonHelper.log("✅ Пазл на месте");
+                await CommonHelper.setExtStorage('wor_captcha_error_count', 0);
                 await CommonHelper.delay(CommonHelper.getRandomNumber(3000, 15000));
 
                 CommonHelper.clickAndWait(document.querySelector('input[type=submit]'));
