@@ -167,7 +167,7 @@ async function sendRandomFact() {
             return;
         }
 
-        let waitTime = CommonHelper.getRandomNumber(60000, 300000); // Генерируем случайное время ожидания (60-90 сек)
+        let waitTime = CommonHelper.getRandomNumber(300000, 900000); // Генерируем случайное время ожидания (60-90 сек)
         CommonHelper.log(`Ожидание ${Math.floor(waitTime / 1000)} секунд перед публикацией...`);
 
         // Таймер обратного отсчёта
