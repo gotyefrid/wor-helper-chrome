@@ -2,10 +2,10 @@
     ({ wor_fight_active: fightStatus } = await chrome.storage.local.get(["wor_fight_active"]));
 
     if (fightStatus) {
-        // CommonHelper.createDisableButton('Отключить сражение', () => {
-        //     CommonHelper.turnFighting(false);
-        //     CommonHelper.reloadPage();
-        // });
+        CommonHelper.createDisableButton('Отключить сражение', () => {
+            CommonHelper.turnFighting(false);
+            CommonHelper.reloadPage();
+        });
 
         await CommonHelper.log('Мы на странице боя!');
 
@@ -58,10 +58,10 @@
         // Обработчик файта
         fight.processFightDefault(giveUp, exitUrl);
     } else {
-        // CommonHelper.createDisableButton('Включить сражение', () => {
-        //     CommonHelper.turnFighting(true);
-        //     CommonHelper.reloadPage();
-        // });
+        CommonHelper.createDisableButton('Включить сражение', () => {
+            CommonHelper.turnFighting(true);
+            CommonHelper.reloadPage();
+        });
     }
 })();
 

@@ -121,6 +121,10 @@ if (document.location.href.includes('game.php')) {
             }
         }
 
+        if (decoctionTotal) {
+            decoctionHypotheticalTotal += decoctionTotal;
+        }
+
         const totalUnprocessed = resourceTotal + rawFishTotal + herbTotal;
         const totalProcessed = resourceTotal + allFishHypothetical + decoctionTotal;
         const totalHypothetical = resourceTotal + allFishHypothetical + decoctionHypotheticalTotal;
@@ -133,15 +137,15 @@ if (document.location.href.includes('game.php')) {
         const rowsHTML = [
             ["📊 Статистика по всем ресурсам", ''],
             ["📦 Стоимость ресурсов", resourceTotal],
-            ["🐟 Стоимость всех сырых рыб", rawFishTotal],
-            ["🔥 Стоимость всех копчёных рыб", smokedFishTotal],
-            ["🎣 Фактическая стоимость всех рыб (сырые + копчёные)", allFishActual],
+            // ["🐟 Стоимость всех сырых рыб", rawFishTotal],
+            // ["🔥 Стоимость всех копчёных рыб", smokedFishTotal],
+            // ["🎣 Фактическая стоимость всех рыб (сырые + копчёные)", allFishActual],
             ["💭 Гипотетическая стоимость всех рыб (если всё закоптить)", allFishHypothetical],
-            ["🌿 Стоимость всех трав/корней/грибов (не отваров)", herbTotal],
+            // ["🌿 Стоимость всех трав/корней/грибов (не отваров)", herbTotal],
             ["🧪 Стоимость всех отваров (реально в наличии)", decoctionTotal],
             ["🌡️ Гипотетическая стоимость отваров (если все травы превратить в отвары)", decoctionHypotheticalTotal],
-            ["📊 Общая стоимость необработанных продуктов", totalUnprocessed],
-            ["⚗️ Общая стоимость обработанных продуктов", totalProcessed],
+            // ["📊 Общая стоимость необработанных продуктов", totalUnprocessed],
+            // ["⚗️ Общая стоимость обработанных продуктов", totalProcessed],
             ["🧠 Общая гипотетическая стоимость (ресурсы + все рыбы закопчены + все травы в отвары)", totalHypothetical],
         ];
 
