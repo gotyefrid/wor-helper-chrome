@@ -644,7 +644,7 @@ class CommonHelper {
     static isTraumaMoreOrEqual(more = 5) {
         try {
             more = parseInt(more, 10);
-            let trauma = [...document.querySelectorAll('.status-item')].find(item => item.innerHTML.includes('Травма')).innerText.trim();
+            let trauma = [...document.querySelectorAll('.status-item')].find(item => item.innerHTML.includes('Травма'))?.innerText.trim();
 
             if (!trauma) {
                 return false;
