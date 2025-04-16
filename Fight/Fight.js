@@ -76,7 +76,9 @@ class Fight {
             let isNullDamage = await this.isNullDamage();
 
             if (isNullDamage) {
+                CommonHelper.log('Я бью 0, что-то тут не так, ничего не делаю больше');
                 CommonHelper.sendTelegramMessage('Я бью 0, что-то тут не так, ничего не делаю больше');
+                // CommonHelper.sendMessageToChat('.zvezdy.');
                 // CommonHelper.turnAlchemistry(false);
                 // CommonHelper.turnFighting(false);
                 // CommonHelper.setFightExitUrl('');
@@ -96,6 +98,7 @@ class Fight {
             let maxTrauma = await CommonHelper.getExtStorage('wor_fight_max_trauma');
 
             if (checkTrauma && CommonHelper.isTraumaMoreOrEqual(maxTrauma)) {
+                CommonHelper.log('Много травмы, ничего не делаю в бою');
                 CommonHelper.sendTelegramMessage('Много травмы, ничего не делаю в бою');
                 skip = true;
             }
@@ -103,6 +106,7 @@ class Fight {
             let isEnemyRealPlayer = CommonHelper.isRealPlayer(enemyName);
 
             if (isEnemyRealPlayer) {
+                CommonHelper.log('Против меня зашёл в бой игрок ' + enemyName);
                 CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
                 skip = true;
             }

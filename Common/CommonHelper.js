@@ -641,23 +641,30 @@ class CommonHelper {
         "Dragon_Sword"
     ];
 
-    static async isTraumaMoreOrEqual(more = 5) {
+    static isTraumaMoreOrEqual(more = 5) {
         try {
+            more = parseInt(more, 10);
             let trauma = [...document.querySelectorAll('.status-item')].find(item => item.innerHTML.includes('Травма')).innerText.trim();
 
             if (!trauma) {
                 return false;
             };
 
-            [hour, minute] = trauma.split(':');
-            hour = parseInt(hour, 10);
+            let time = trauma.split(':');
+            let hour = parseInt(time[0], 10);
 
-            if (trauma >= more) {
+            if (hour) {
+                CommonHelper.log('Есть травма - ' + hour);
+            }
+
+            if (hour >= more) {
+                CommonHelper.log('Травма больше чем заданная, ' + hour + ' >= ' + more + ", ничего не делаем.");
                 return true;
             }
 
             return false;
         } catch (error) {
+            CommonHelper.log(error);
             CommonHelper.log('Произошла ошибка во время вычисления травмы, считаем что травмы много!');
             return true;
         }
