@@ -2,10 +2,10 @@
     ({ wor_bandits_active: fightStatus } = await chrome.storage.local.get(["wor_bandits_active"]));
 
     if (fightStatus) {
-        // CommonHelper.createDisableButton('Отключить разбойников', () => {
-        //     CommonHelper.turnBandits(false);
-        //     CommonHelper.reloadPage();
-        // });
+        CommonHelper.createDisableButton('Отключить разбойников', () => {
+            CommonHelper.turnBandits(false);
+            CommonHelper.reloadPage();
+        });
 
         await CommonHelper.log('Мы на странице боя c разбойником!');
 
@@ -16,8 +16,8 @@
             // Сюда можно дописать нужных мобов для пропуска
         ]);
 
-        fight.needPotHP = await CommonHelper.getExtStorage('wor_bandits_pot_hp_active');
-        fight.needPotMP = await CommonHelper.getExtStorage('wor_bandits_pot_mp_active');
+        fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_hp_active');
+        fight.needPotMP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
 
         // Действие если моб из стоп листа
         fight.enemiesSkipListCallback = async function (enemyName, _enemyLevel, fightClass) {
@@ -31,10 +31,10 @@
 
         await process(fight);
     } else {
-        // CommonHelper.createDisableButton('Включить разбойников', () => {
-        //     CommonHelper.turnBandits(true);
-        //     CommonHelper.reloadPage();
-        // });
+        CommonHelper.createDisableButton('Включить разбойников', () => {
+            CommonHelper.turnBandits(true);
+            CommonHelper.reloadPage();
+        });
     }
 })();
 
@@ -69,6 +69,18 @@ async function process(fightClass) {
         }
     } else {
         await CommonHelper.log('Имя противника не найдено, значит ниче не делаем');
+        return;
+    }
+
+    fightClass.levelToSkip = await (async function () {
+        let lvl = await CommonHelper.getExtStorage('wor_fight_level_to_skip');
+        return lvl ? parseInt(lvl, 10) : null;
+    })();
+
+    if (fightClass.levelToSkip && enemyLevel >= fightClass.levelToSkip) {
+        CommonHelper.sendTelegramMessage('Скип боя, так как противник больше ' + fightClass.levelToSkip + ' уровня');
+        await CommonHelper.delay(15000);
+        await CommonHelper.reloadPage();
         return;
     }
 

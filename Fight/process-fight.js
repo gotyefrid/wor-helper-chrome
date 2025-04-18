@@ -18,13 +18,6 @@
         fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_hp_active');
         fight.needPotMP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
 
-        fight.levelToSkip = (() => {
-            let storedValue = CommonHelper.getLocalStorage('wor_fight_level_to_skip');
-            let parsedValue = parseInt(storedValue, 10);
-
-            return Number.isInteger(parsedValue) ? parsedValue : null;
-        })()
-
         // Действие если моб из стоп листа
         fight.enemiesSkipListCallback = async function (enemyName, _enemyLevel, fightClass) {
             let nothingToDoList = Fight.BOSS_NAMES.map(name => name.toLowerCase());

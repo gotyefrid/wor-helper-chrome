@@ -230,3 +230,25 @@ input:checked + .slider:before {
     outline: none;
     border-color: #007BFF;
 }
+
+.info-tooltip {
+    cursor: help;
+    margin-left: 5px;
+    color: red;
+    font-weight: bold;
+}
+.info-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #ccc;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 6px;
+    cursor: help;
+    font-family: Arial, sans-serif;
+}

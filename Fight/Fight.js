@@ -123,6 +123,11 @@ class Fight {
                 }
             }
 
+            this.levelToSkip = await (async function () {
+                let lvl = await CommonHelper.getExtStorage('wor_fight_level_to_skip');
+                return lvl ? parseInt(lvl, 10) : null;
+            })();
+
             if (this.levelToSkip && enemyLevel >= this.levelToSkip && skip === false) {
                 if (typeof this.levelSkipCallback === "function") {
                     CommonHelper.log('Выполняем фукнцию скипа противника по уровню');

@@ -41,12 +41,7 @@ async function processCheckboxes() {
         toggleFightingPotMP: { storageKey: "wor_fight_pot_mp_active", },
         toggleFightingCheckTrauma: { storageKey: "wor_fight_check_trauma", },
 
-        toggleBandits: {
-            storageKey: "wor_bandits_active",
-            hasSubOptions: true,
-        },
-        toggleBanditsOptPotHP: { storageKey: "wor_bandits_pot_hp_active" },
-        toggleBanditsOptPotMP: { storageKey: "wor_bandits_pot_mp_active" },
+        toggleBandits: { storageKey: "wor_bandits_active" },
 
         toggleParsing: {
             storageKey: "wor_parsing_active",
@@ -76,6 +71,15 @@ async function processCheckboxes() {
 
         // Добавляем обработчик события
         input.addEventListener("change", function () {
+            if ('toggleBandits' === id && input.checked === true) {
+                chrome.storage.local.set({ "wor_fight_active": false }, function () {
+                    let fightingCheckbox = document.querySelector("#toggleFighting");
+                    if (fightingCheckbox) {
+                        fightingCheckbox.checked = false;
+                    }
+                });
+            }
+
             if ('toggleMapHistory' === id) {
                 chrome.storage.local.set({ ['visitedLocations']: {} });
             }
@@ -225,7 +229,6 @@ async function processInputs() {
         inputPlayerName: { storageKey: "wor_chat_player_name" },
         inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
         inputFightingMaxTrauma: { storageKey: "wor_fight_max_trauma" },
-        inputBanditsOptLevelToSkip: { storageKey: "wor_bandits_level_to_skip" },
         inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
         inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
         inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },

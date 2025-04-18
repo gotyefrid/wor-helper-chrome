@@ -61,7 +61,7 @@ window.addEventListener("load", async function () {
         let cleanedScript = removeDynamicValues(hpScript.innerText);
         cleanedScript = cleanedScript.replace(/\s+/g, '');
 
-        if (captcha.fnv1aHash(cleanedScript) !== 1682956088) {
+        if (captcha.fnv1aHash(cleanedScript) !== 3842083230) {
             CommonHelper.log(cleanedScript);
             CommonHelper.log('Хэш плавающего скрипта изменился! Ничего не делаем');
             CommonHelper.sendTelegramMessage('Хэш плавающего скрипта изменился! Ничего не делаем');
