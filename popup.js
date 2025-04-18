@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Обработчик рыбалки
     processFishing();
+
+    // Обработчик выбора боссов
+    processFightingBossesModal();
 });
 
 async function processCheckboxes() {
@@ -49,7 +52,7 @@ async function processCheckboxes() {
             storageKey: "wor_parsing_active",
             hasSubOptions: true,
         },
-        toggleParsingOptInvertSearch:  { storageKey: "wor_parsing_invert_search_active" },
+        toggleParsingOptInvertSearch: { storageKey: "wor_parsing_invert_search_active" },
 
         toggleTelegram: {
             storageKey: "wor_tg_notifications_active",
@@ -134,18 +137,10 @@ async function processMergeButton() {
 }
 
 async function processParsing() {
-    function openModal() {
-        document.getElementById('modal').style.display = 'block';
-        document.querySelector('body').style.width = '400px';
-    }
-
-    function closeModal() {
-        document.getElementById('modal').style.display = 'none';
-        document.querySelector('body').style.width = '220px';
-    }
+    let modalId = 'modal_parsing';
 
     // Инициализация select2 для модалки
-    $('#modal-links, #modal-targets').select2({
+    $('#modal-parsing-links, #modal-parsing-targets').select2({
         tags: true,
         width: '100%',
         placeholder: 'Введите значение...',
@@ -159,40 +154,51 @@ async function processParsing() {
             const links = data.wor_parsing_links || [];
             const targets = data.wor_parsing_targets || [];
 
-            const $links = $('#modal-links').empty();
+            const $links = $('#modal-parsing-links').empty();
             links.forEach(item => {
                 const option = new Option(item, item, true, true);
                 $links.append(option);
             });
             $links.trigger('change');
 
-            const $targets = $('#modal-targets').empty();
+            const $targets = $('#modal-parsing-targets').empty();
             targets.forEach(item => {
                 const option = new Option(item, item, true, true);
                 $targets.append(option);
             });
             $targets.trigger('change');
-            openModal();
+            openModal(modalId);
         });
     });
 
     // Сохранение
-    document.getElementById('modal-save').addEventListener('click', () => {
-        const links = $('#modal-links').val();
-        const targets = $('#modal-targets').val();
+    document.getElementById('modal-parsing-save').addEventListener('click', () => {
+        const links = $('#modal-parsing-links').val();
+        const targets = $('#modal-parsing-targets').val();
 
         chrome.storage.local.set({
             wor_parsing_links: links,
             wor_parsing_targets: targets
         });
 
-        closeModal();
+        closeModal(modalId);
     });
 
     // Закрытие модалки (крестик)
-    document.querySelector('.modal-close').addEventListener('click', () => {
-        closeModal();
+    document.querySelector('#modal-parsing-close').addEventListener('click', () => {
+        closeModal(modalId);
     });
+}
+
+
+function openModal(id) {
+    document.getElementById(id).style.display = 'block';
+    document.querySelector('body').style.width = '400px';
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+    document.querySelector('body').style.width = '220px';
 }
 
 async function processFishing() {
@@ -244,4 +250,48 @@ async function processInputs() {
             chrome.storage.local.set({ [storageKey]: value });
         });
     }
+}
+
+async function processFightingBossesModal() {
+    let modalId = 'modal-fighting-bosses';
+
+    // Инициализация select2 для модалки
+    let select = $('#modal-fighting-bosses-to-fight').select2({
+        tags: true,
+        width: '100%',
+        placeholder: 'Введите значение...',
+        tokenSeparators: [',']
+    });
+
+    // Открытие модалки
+    document.getElementById('toggleFightingOptBossesToFight').addEventListener('click', async () => {
+        let data = await chrome.storage.local.get(['wor_fighting_bosses_to_fight']);
+        const bosses = data.wor_fighting_bosses_to_fight || [];
+
+        const $bosses = select.empty();
+        bosses.forEach(item => {
+            const option = new Option(item, item, true, true);
+            $bosses.append(option);
+        });
+
+        $bosses.trigger('change');
+
+        openModal(modalId);
+    });
+
+    // Сохранение
+    document.getElementById('modal-fighting-bosses-save').addEventListener('click', () => {
+        const bosses = $('#modal-fighting-bosses-to-fight').val();
+
+        chrome.storage.local.set({
+            wor_fighting_bosses_to_fight: bosses,
+        });
+
+        closeModal(modalId);
+    });
+
+    // Закрытие модалки (крестик)
+    document.querySelector('#modal-fighting-bosses-close').addEventListener('click', () => {
+        closeModal(modalId);
+    });
 }

@@ -182,7 +182,7 @@ input:checked + .slider:before {
     font-weight: bold;
 }
 
-#modal-save {
+.modal-save {
     margin-top: 12px;
     padding: 8px 12px;
     background-color: #007BFF;
@@ -193,7 +193,7 @@ input:checked + .slider:before {
     width: 100%;
 }
 
-#modal-save:hover {
+.modal-save:hover {
     background-color: #0056b3;
 }
 
