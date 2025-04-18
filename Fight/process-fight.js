@@ -16,7 +16,7 @@
         ]);
 
         fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_hp_active');
-        fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
+        fight.needPotMP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
 
         fight.levelToSkip = (() => {
             let storedValue = CommonHelper.getLocalStorage('wor_fight_level_to_skip');

@@ -83,6 +83,13 @@ class Chemistry {
 
         if (!shouldContinue) return; // Если выбрали "Нет" — прерываем выполнение
 
+        let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url');
+
+        if (exitUrl) {
+            document.location = exitUrl;
+            return;
+        }
+
         let toTerritoryButton = [...document.querySelectorAll('a')].find(text => text.textContent.includes('Природа'));
 
         if (toTerritoryButton) {

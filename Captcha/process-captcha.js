@@ -22,6 +22,7 @@ window.addEventListener("load", async function () {
     let captcha = new Captcha();
 
     if (captcha.lastTryWasWrong()) {
+        await CommonHelper.delay(3000);
         let currentErrorCount = await CommonHelper.getExtStorage('wor_captcha_error_count') || 0; // либо получить значение - либо 0
 
         if (currentErrorCount > 2) {
@@ -58,9 +59,13 @@ window.addEventListener("load", async function () {
         }
 
         let cleanedScript = removeDynamicValues(hpScript.innerText);
-        if (captcha.fnv1aHash(cleanedScript) !== 3261414982) {
+        cleanedScript = cleanedScript.replace(/\s+/g, '');
+
+        if (captcha.fnv1aHash(cleanedScript) !== 1682956088) {
+            CommonHelper.log(cleanedScript);
             CommonHelper.log('Хэш плавающего скрипта изменился! Ничего не делаем');
             CommonHelper.sendTelegramMessage('Хэш плавающего скрипта изменился! Ничего не делаем');
+            CommonHelper.sendTelegramMessage(cleanedScript);
             return;
         }
     }
