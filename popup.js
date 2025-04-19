@@ -257,45 +257,68 @@ async function processInputs() {
 }
 
 async function processFightingBossesModal() {
-    let modalId = 'modal-fighting-bosses';
+    const modalId = 'modal-fighting-bosses';
 
-    // Инициализация select2 для модалки
-    let select = $('#modal-fighting-bosses-to-fight').select2({
+    const BOSS_NAMES = [
+        'Единорог',
+        'Голем',
+        'Тигр',
+        'Крокодил',
+        'Зеленый дракон',
+        'Рыцарь смерти',
+        'Орк',
+        'Красный дракон',
+        'Кристальный дракон',
+        'Песчаный червь',
+        'Минотавр',
+        'Цербер',
+        'Страж руин',
+    ];
+
+    // Инициализация select2
+    const $select = $('#modal-fighting-not-to-fight').select2({
         tags: true,
         width: '100%',
         placeholder: 'Введите значение...',
-        tokenSeparators: [',']
+        tokenSeparators: [','],
+        data: BOSS_NAMES.map(name => ({ id: name, text: name }))
     });
 
     // Открытие модалки
-    document.getElementById('toggleFightingOptBossesToFight').addEventListener('click', async () => {
-        let data = await chrome.storage.local.get(['wor_fighting_bosses_to_fight']);
-        const bosses = data.wor_fighting_bosses_to_fight || [];
+    document.getElementById('toggleFightingOptNotToFight').addEventListener('click', async () => {
+        let data = await chrome.storage.local.get(['wor_fight_not_to_fight']);
+        const selectedBosses = data.wor_fight_not_to_fight || [];
 
-        const $bosses = select.empty();
-        bosses.forEach(item => {
-            const option = new Option(item, item, true, true);
-            $bosses.append(option);
+        $select.val(null).trigger('change'); // сброс
+
+        selectedBosses.forEach(name => {
+            // Если значения нет в списке — добавим как кастомное
+            if ($select.find(`option[value="${name}"]`).length === 0) {
+                const newOption = new Option(name, name, true, true);
+                $select.append(newOption);
+            } else {
+                $select.find(`option[value="${name}"]`).prop('selected', true);
+            }
         });
 
-        $bosses.trigger('change');
+        $select.trigger('change');
 
         openModal(modalId);
     });
 
     // Сохранение
-    document.getElementById('modal-fighting-bosses-save').addEventListener('click', () => {
-        const bosses = $('#modal-fighting-bosses-to-fight').val();
+    document.getElementById('modal-fighting-not-to-fight-save').addEventListener('click', () => {
+        const bosses = $('#modal-fighting-not-to-fight').val() || [];
 
         chrome.storage.local.set({
-            wor_fighting_bosses_to_fight: bosses,
+            wor_fight_not_to_fight: bosses,
         });
 
         closeModal(modalId);
     });
 
     // Закрытие модалки (крестик)
-    document.querySelector('#modal-fighting-bosses-close').addEventListener('click', () => {
+    document.getElementById('modal-fighting-not-to-fight-close').addEventListener('click', () => {
         closeModal(modalId);
     });
 }

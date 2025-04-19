@@ -85,7 +85,7 @@ class Fight {
             if (isNullDamage) {
                 CommonHelper.log('Я бью 0, что-то тут не так, ничего не делаю больше');
                 CommonHelper.sendTelegramMessage('Я бью 0, что-то тут не так, ничего не делаю больше');
-                // CommonHelper.sendMessageToChat('.zvezdy.');
+                // CommonHelper.sendMessageToChat('?');
                 // CommonHelper.turnAlchemistry(false);
                 // CommonHelper.turnFighting(false);
                 // CommonHelper.setFightExitUrl('');
@@ -120,12 +120,18 @@ class Fight {
 
             let enemyLevel = parseInt(enemyName.match(/\d+/)[0], 10);
 
-            let isEnemyNeedSkip = this.enemiesSkipListHas(enemyName);
+            if (this.enemiesToSkip) {
+                if (this.enemiesSkipListHas(enemyName)) {
+                    if (typeof this.enemiesSkipListCallback === "function") {
+                        CommonHelper.log('Выполняем кастомную фукнцию скипа противника');
+                        await this.enemiesSkipListCallback(enemyName, enemyLevel, this);
+                        return;
+                    }
 
-            if (isEnemyNeedSkip && skip === false) {
-                if (typeof this.enemiesSkipListCallback === "function") {
-                    CommonHelper.log('Выполняем фукнцию скипа противника по списку запрещённых');
-                    await this.enemiesSkipListCallback(enemyName, enemyLevel, this);
+                    CommonHelper.sendTelegramMessage('Бой с запрещённым мобом ' + enemyName, 'common', true, 'html', 120);
+                    CommonHelper.log('Бой с запрещённым мобом ' + enemyName);
+                    await CommonHelper.delay(10000);
+                    CommonHelper.reloadPage();
                     return;
                 }
             }

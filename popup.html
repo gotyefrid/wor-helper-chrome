@@ -92,9 +92,9 @@
 
     <div class="sub-toggle-wrapper" id="toggleFightingOptionsWrapper">
         <div class="toggle-wrapper">
-            <span class="toggle-title small">Каких боссов бить</span>
+            <span class="toggle-title small">Кого НЕ бить</span>
             <label class="">
-                <a id="toggleFightingOptBossesToFight">Редактировать</a>
+                <a id="toggleFightingOptNotToFight">Редактировать</a>
             </label>
         </div>
         <div class="toggle-wrapper">
@@ -240,12 +240,13 @@
     <!-- Модальное окно -->
     <div id="modal-fighting-bosses" class="modal">
         <div class="modal-content">
-            <span class="modal-close" id="modal-fighting-bosses-close">&times;</span>
-            <h3>Редактировать боссов</h3>
+            <span class="modal-close" id="modal-fighting-not-to-fight-close">&times;</span>
+            <h3>Редактировать список</h3>
 
-            <label class="modal-label">Кого бить</label>
-            <select id="modal-fighting-bosses-to-fight" class="select2" multiple></select>
-            <button id="modal-fighting-bosses-save" class="modal-save">Сохранить</button>
+            <label class="modal-label">Кого НЕ бить
+                <span class="info-icon" title="Можно указать часть имени, например не бить всех мобов, в имени которых есть буква 'a', можно указать конкретного монстра вместе с уровнем, например: 'Серебряный дракон [25]'">?</span></label>
+            <select id="modal-fighting-not-to-fight" class="select2" multiple></select>
+            <button id="modal-fighting-not-to-fight-save" class="modal-save">Сохранить</button>
         </div>
     </div>
 </body>

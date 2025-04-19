@@ -11,36 +11,14 @@
 
         await CommonHelper.log('Мы на странице боя!');
 
+        let skipList = await CommonHelper.getExtStorage('wor_fight_not_to_fight');
+        skipList = skipList.map(name => name.toLowerCase().trim());
+
         // Пропускать боссов
-        fight.enemiesToSkip = Fight.BOSS_NAMES.concat([
-        ]);
+        fight.enemiesToSkip = skipList;
 
         fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_hp_active');
         fight.needPotMP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
-
-        // Действие если моб из стоп листа
-        fight.enemiesSkipListCallback = async function (enemyName, _enemyLevel, fightClass) {
-            let nothingToDoList = Fight.BOSS_NAMES.map(name => name.toLowerCase());
-
-            if (nothingToDoList.some(name => enemyName.toLowerCase().includes(name))) {
-                CommonHelper.sendTelegramMessage('Бой с боссом ' + enemyName, 'common', true, 'html', 120);
-                // let fightNumber = fightClass.getFightNumber();
-
-                // if (fightNumber) {
-                //     // будет спамить сильно, нужно 
-                //     let message = '[log]' + fightNumber + '[/log]';
-                //     CommonHelper.sendMessageToChat(message)
-                //     CommonHelper.log('Отправили в игровой чат сообщение:' + message);
-                // }
-
-                CommonHelper.log('Бой с боссом, бьём руками.');
-                await CommonHelper.delay(10000);
-                CommonHelper.reloadPage();
-                return;
-            }
-
-            await fightClass.processEnemyNotAllowed(enemyName);
-        };
 
         // Ссылка выхода из файта
         let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
