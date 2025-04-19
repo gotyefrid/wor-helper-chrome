@@ -38,7 +38,6 @@
                 "Chat/luxon.js",
                 "Chat/Chat.js",
                 "Common/process-common.js",
-                "Common/move-to-coords.js",
                 "Common/process-commands.js"
             ]
         },
@@ -124,7 +123,8 @@
                 "http://185.212.47.8/wap/teritory*"
             ],
             "js": [
-                "Territory/map-history.js"
+                "Territory/map-history.js",
+                "Territory/move-to-coords.js"
             ]
         }
     ]

@@ -15,20 +15,53 @@ async function start() {
 
 
 function getCurrentLocation() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get("l");
+    const link = document.querySelector('a[href*="l="]');
+
+    if (link) {
+        const urlParams = new URLSearchParams(link.href.split('?')[1]);
+        const lValue = urlParams.get("l");
+        return lValue;
+    }
+
+    return null;
 }
 
+
 function highlightVisited(visitedLocations) {
+    injectHighlightStyles(); // один раз при загрузке
     let currentLocation = getCurrentLocation();
     if (!currentLocation || !visitedLocations[currentLocation]) return;
 
     visitedLocations[currentLocation].forEach(id => {
         let visitedElement = document.getElementById(id);
         if (visitedElement) {
-            visitedElement.style.outline = "2px solid white";
+            visitedElement.classList.add("visited-highlight");
         }
     });
+}
+
+
+function injectHighlightStyles() {
+    const style = document.createElement("style");
+    style.textContent = `
+        .visited-highlight {
+            position: relative !important;
+        }
+        .visited-highlight::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            z-index: 10;
+            pointer-events: none;
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 function trackPosition(visitedLocations) {
