@@ -2,6 +2,7 @@ class Fight {
     isFightPage = false;
     isExitPage = false;
     isWaitPage = false;
+    isAttackPage = false;
     beforeProcessCallback = null;
     enemiesToSkip = [];
     enemiesSkipListCallback = null;
@@ -36,6 +37,12 @@ class Fight {
         // Определяем, является ли текущая страница страницей боя
         this.isFightPage = fightPaths.some(path => window.location.pathname.includes(path)) ||
             document.querySelector('input[name="bitvraga"]') !== null;
+
+        this.isAttackPage = window.location.href.includes('boj');
+
+        if (this.isAttackPage) {
+            this.reversePotItems();
+        }
 
         if (this.isFightPage) {
             // Проверяем наличие ссылки "Выход из боя"
@@ -426,5 +433,36 @@ class Fight {
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
         return `[log]${fightNumber}[/log] ${randomMessage}`;
+    }
+
+    //sortItemsByOrder(['10 МА', '20 МА', '100 МА', '250 МА', '500 МА']);
+    sortItemsByOrder(order) {
+        const slider = document.querySelector('.item-slider');
+        const items = Array.from(slider.querySelectorAll('.item-image-wrapper'));
+
+        // Создаём карту приоритетов
+        const priorityMap = new Map(order.map((value, index) => [value, index]));
+
+        // Сортируем элементы
+        items.sort((a, b) => {
+            const aValue = a.querySelector('.item-count')?.textContent.trim() || '';
+            const bValue = b.querySelector('.item-count')?.textContent.trim() || '';
+
+            const aPriority = priorityMap.has(aValue) ? priorityMap.get(aValue) : Infinity;
+            const bPriority = priorityMap.has(bValue) ? priorityMap.get(bValue) : Infinity;
+
+            return aPriority - bPriority;
+        });
+
+        // Удаляем все элементы и добавляем по-новому в отсортированном порядке
+        items.forEach(item => slider.appendChild(item));
+    }
+
+    reversePotItems() {
+        const slider = document.querySelector('.item-slider');
+        const items = Array.from(slider.querySelectorAll('.item-image-wrapper'));
+
+        // Просто в обратном порядке добавляем в родительский контейнер
+        items.reverse().forEach(item => slider.appendChild(item));
     }
 }

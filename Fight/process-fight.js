@@ -1,5 +1,7 @@
 (async function () {
     ({ wor_fight_active: fightStatus } = await chrome.storage.local.get(["wor_fight_active"]));
+    // Настройка сражения
+    let fight = new Fight();
 
     if (fightStatus) {
         CommonHelper.createDisableButton('Отключить сражение', () => {
@@ -9,8 +11,6 @@
 
         await CommonHelper.log('Мы на странице боя!');
 
-        // Настройка сражения
-        let fight = new Fight();
         // Пропускать боссов
         fight.enemiesToSkip = Fight.BOSS_NAMES.concat([
         ]);

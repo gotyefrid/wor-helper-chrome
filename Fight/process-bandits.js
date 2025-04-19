@@ -1,16 +1,17 @@
 (async function () {
     ({ wor_bandits_active: fightStatus } = await chrome.storage.local.get(["wor_bandits_active"]));
 
+    // Настройка сражения
+    let fight = new Fight();
+    
     if (fightStatus) {
-        CommonHelper.createDisableButton('Отключить разбойников', () => {
-            CommonHelper.turnBandits(false);
-            CommonHelper.reloadPage();
-        });
+        // CommonHelper.createDisableButton('Отключить разбойников', () => {
+        //     CommonHelper.turnBandits(false);
+        //     CommonHelper.reloadPage();
+        // });
 
         await CommonHelper.log('Мы на странице боя c разбойником!');
 
-        // Настройка сражения
-        let fight = new Fight();
         // Пропускать боссов
         fight.enemiesToSkip = Fight.BOSS_NAMES.concat([
             // Сюда можно дописать нужных мобов для пропуска
@@ -31,10 +32,10 @@
 
         await process(fight);
     } else {
-        CommonHelper.createDisableButton('Включить разбойников', () => {
-            CommonHelper.turnBandits(true);
-            CommonHelper.reloadPage();
-        });
+        // CommonHelper.createDisableButton('Включить разбойников', () => {
+        //     CommonHelper.turnBandits(true);
+        //     CommonHelper.reloadPage();
+        // });
     }
 })();
 

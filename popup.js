@@ -40,6 +40,7 @@ async function processCheckboxes() {
         toggleFightingPotHP: { storageKey: "wor_fight_pot_hp_active", },
         toggleFightingPotMP: { storageKey: "wor_fight_pot_mp_active", },
         toggleFightingCheckTrauma: { storageKey: "wor_fight_check_trauma", },
+        toggleFightingActivatePrimanka: { storageKey: "wor_fight_activate_primanka", },
 
         toggleBandits: { storageKey: "wor_bandits_active" },
 

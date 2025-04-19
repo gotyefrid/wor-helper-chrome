@@ -15,6 +15,20 @@
     if (document.location.href.includes('forum=12&topic=2289')) {
         sendRandomFact();
     }
+
+    let isNeedActivatePrimanka = await CommonHelper.getExtStorage('wor_fight_activate_primanka');
+
+    if (isNeedActivatePrimanka && document.location.href.includes('teritory')) {
+        CommonHelper.log("Ищем кнопку активации приманки");
+        let activateLink = [...document.querySelectorAll('span')]?.find(span => span.innerText.includes('подкинуть новую приманку'));
+
+        if (activateLink) {
+            CommonHelper.log('Активируем приманку');
+            CommonHelper.clickAndWait(activateLink.parentElement);
+        } else {
+            CommonHelper.log('Не нашли кнопку для активации приманки');
+        }
+    }
 })();
 
 async function parsing() {
