@@ -73,18 +73,6 @@ async function process(fightClass) {
         return;
     }
 
-    fightClass.levelToSkip = await (async function () {
-        let lvl = await CommonHelper.getExtStorage('wor_fight_level_to_skip');
-        return lvl ? parseInt(lvl, 10) : null;
-    })();
-
-    if (fightClass.levelToSkip && enemyLevel >= fightClass.levelToSkip) {
-        CommonHelper.sendTelegramMessage('Скип боя, так как противник больше ' + fightClass.levelToSkip + ' уровня');
-        await CommonHelper.delay(15000);
-        await CommonHelper.reloadPage();
-        return;
-    }
-
     // Если мы тут - значит мы на странице боя
     await CommonHelper.log('Атакуем');
     await CommonHelper.delay(CommonHelper.getRandomNumber(200, 500));
