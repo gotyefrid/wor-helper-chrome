@@ -144,6 +144,8 @@ class Captcha {
 
         cleanedHTML = cleanedHTML.replace('вводится1разна<spanclass="svet">12</span>групп', '');
         cleanedHTML = cleanedHTML.replace('вводится1разна<spanclass="svet">10</span>сборов', '');
+        cleanedHTML = cleanedHTML.replaceAll('primanka.php', 'cap.php');
+
         return cleanedHTML;
     }
 
