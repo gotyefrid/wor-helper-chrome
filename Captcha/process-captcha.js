@@ -75,11 +75,10 @@ window.addEventListener("load", async function () {
     let actualHtmlHash = captcha.fnv1aHash(cleanedHtml);
     CommonHelper.log('Актуал хэш страницы:' + actualHtmlHash);
     CommonHelper.log('Актуал хэш ресурсов:' + actualCacheAllResourses);
-    console.log(cleanedHtml);
 
     if (actualHtmlHash !== captcha.HTML_HASH) {
+        CommonHelper.log(cleanedHtml);
         CommonHelper.log('Хэш HTML изменился! Ничего не делаем');
-        console.log(cleanedHtml);
         CommonHelper.sendTelegramMessage('Хэш HTML изменился! Ничего не делаем');
         return;
     }

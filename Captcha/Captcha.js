@@ -1,5 +1,6 @@
 class Captcha {
-    HTML_HASH = 1942182699;
+    // <html><head><metaname="viewport"content="width=device-width,initial-scale=1"><metaname="keywords"content="онлайнигра,RPG,WOR,WorldOfRest,рпгигра,браузернаямобильнаяигра,рпгдляандроид"><metahttp-equiv="Content-Type"content="text/html;charset=utf-8"><metahttp-equiv="refresh"content="200"><title>WoR:Проверка</title><linkrel="stylesheet"type="text/css"href="style54.css?v=20250019"><scripttype="text/javascript"src="/jquery-3.7.1.min.js"></script></head><body><style>#captcha-container{position:relative;width:300px;height:200px;border:1pxsolid#ccc;margin:10px;background:#eee;}#captcha-containerimg{display:block;}#puzzle-piece{position:absolute;width:50px;height:50px;cursor:move;top:0;left:0;z-index:10;}.button{display:block;margin:10px;}</style><divclass="cont"><divclass="menu_div"align="left"><ul><li><ahref="main.php?uni=&amp;hash="><imgsrc="icons/glavnoe_menyu.gif"border="0"style="vertical-align:middle"width="30"height="30"alt="">Главноеменю</a></li></ul></div></div><divstyle="margin:10px">Перетянитепазлпримернонаегоместо:</div><divid="captcha-container"><imgsrc="captcha_main.php?uni=&amp;hash="width="300"height="200"alt=""><imgsrc="images/cap_puzzle.png"id="puzzle-piece"alt=""class="ui-draggableui-draggable-handle"></div><formaction="cap.php?enter&amp;uni=&amp;hash="method="post"id="captcha-form"><inputtype="hidden"name="piece_x"id="piece_x"value=""><inputtype="hidden"name="piece_y"id="piece_y"value=""><inputtype="submit"value="Готово"class="button"></form><divstyle="margin:10px"><br><br><aclass="btninv"href="cap.php?shuffle=1&amp;uni=&amp;hash=">Сменитькартинку</a><br><spanstyle="font-size:10px">разрешаетсянеболее10развчас</span></div><scriptsrc="/jquery-ui.min.js?v001"></script><scriptsrc="/jquery.ui.touch-punch.min.js"></script><script>$(function(){$("#puzzle-piece").draggable({containment:"#captcha-container"});$("#captcha-form").submit(function(e){varpos=$("#puzzle-piece").position();$("#piece_x").val(Math.round(pos.left));$("#piece_y").val(Math.round(pos.top));returntrue;});});</script><divclass="foot">©WoR2025[<ahref="exit.php">x</a>]<br></div></body></html>
+    HTML_HASH = 4151032727;
     RESOURCES_HASH = 2039952467;
 
     constructor() {
@@ -139,9 +140,10 @@ class Captcha {
         htmlWithoutChat = htmlWithoutChat.replace(/hash=[^&"' ]*/g, 'hash=');
 
         // Удаляем все пробелы, табы и переносы строк
-        const cleanedHTML = htmlWithoutChat.replace(/\s+/g, '');
+        let cleanedHTML = htmlWithoutChat.replace(/\s+/g, '');
 
-        // console.log(cleanedHTML);
+        cleanedHTML = cleanedHTML.replace('вводится1разна<spanclass="svet">12</span>групп', '');
+        cleanedHTML = cleanedHTML.replace('вводится1разна<spanclass="svet">10</span>сборов', '');
         return cleanedHTML;
     }
 
