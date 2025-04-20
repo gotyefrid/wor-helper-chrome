@@ -2,6 +2,7 @@
     ({ wor_fight_active: fightStatus } = await chrome.storage.local.get(["wor_fight_active"]));
     // Настройка сражения
     let fight = new Fight();
+    fight.potOrder();
 
     if (fightStatus) {
         CommonHelper.createDisableButton('Отключить сражение', () => {

@@ -38,13 +38,9 @@ class Fight {
         this.isFightPage = fightPaths.some(path => window.location.pathname.includes(path)) ||
             document.querySelector('input[name="bitvraga"]') !== null;
 
-        this.isAttackPage = window.location.href.includes('boj');
-
-        if (this.isAttackPage) {
-            this.reversePotItems();
-        }
-
         if (this.isFightPage) {
+            this.isAttackPage = window.location.href.includes('boj');
+
             // Проверяем наличие ссылки "Выход из боя"
             this.isExitPage = !!([...document.querySelectorAll('a')].find(text => text.textContent.includes('Выход из боя')));
 
@@ -221,104 +217,64 @@ class Fight {
         return false;
     }
 
-    async potHP() {
+    // Unified potion consumption for HP and МА
+    async consumePotion(selector, resourceLabel) {
         try {
-            let HP = document.querySelector('#hp_text').innerText.split('/');
-            let currentHP = parseInt(HP[0], 10);
-            let maxHP = parseInt(HP[1], 10);
-            let differ = maxHP - currentHP;
+            const [current, max] = document
+                .querySelector(selector)
+                .innerText.split('/')
+                .map(n => parseInt(n, 10));
 
-            if (differ > 0) {
-                await CommonHelper.log('У меня не хватает ' + differ + ' HP');
+            const percent = (current / max) * 100;
+            await CommonHelper.log(`Текущее ${resourceLabel}: ${current}/${max} (${percent.toFixed(2)}%)`);
 
-                let potionName = "250 HP";
-
-                // Явные проверки для каждой банки
-                if (differ <= 15) {
-                    potionName = "10 HP";
-                } else if (differ <= 30) {
-                    potionName = "20 HP";
-                } else if (differ <= 70) {
-                    potionName = "50 HP";
-                } else if (differ <= 150) {
-                    potionName = "100 HP";
-                } else if (differ <= 250) {
-                    potionName = "250 HP";
-                } else if (differ <= 500) {
-                    potionName = "500 HP";
-                } else {
-                    await CommonHelper.log(`Не нашли совпадений, пьём стандартную ${potionName} на всякий случай`);
-                }
-
-                await CommonHelper.log(`Будем использовать банку ${potionName}, так как differ = ${differ}`);
-
-                if (potionName) {
-                    await CommonHelper.log(`Пьём банку ${potionName}`);
-
-                    let potionElement = [...document.querySelectorAll('span.item-count')]
-                        .find(span => span.innerText.trim() === potionName);
-
-                    if (potionElement) {
-                        potionElement.parentElement.firstElementChild.click();
-                    } else {
-                        // await CommonHelper.sendTelegramMessage(`Не найдено зелье: ${potionName}`);
-                        await CommonHelper.log(`Не найдено зелье: ${potionName}`);
-                    }
-                } else {
-                    await CommonHelper.log("Нет подходящей банки для лечения.");
-                }
+            // Формируем список приоритетных банок в зависимости от процента ресурса
+            let potionPriority = [];
+            if (percent <= 10) {
+                potionPriority = [`500 ${resourceLabel}`];
+            } else if (percent <= 20) {
+                potionPriority = [`250 ${resourceLabel}`];
+            } else if (percent <= 30) {
+                potionPriority = [`100 ${resourceLabel}`];
+            } else if (percent <= 40) {
+                potionPriority = [`50 ${resourceLabel}`];
+            } else if (percent <= 50) {
+                potionPriority = [`10 ${resourceLabel}`, `20 ${resourceLabel}`]; // пробуем 10, если нет — 20
             }
-        } catch (error) { }
+
+            if (potionPriority.length === 0) {
+                await CommonHelper.log(`${resourceLabel} выше 50%, пить ничего не не нужно.`);
+                return;
+            }
+
+            await CommonHelper.log(`Выбраны банки: ${potionPriority.join(', ')} в зависимости от ${resourceLabel}%`);
+
+            // Ищем первую доступную банку из списка приоритета
+            for (const potionName of potionPriority) {
+                const potionElement = [...document.querySelectorAll('span.item-count')]
+                    .find(span => span.innerText.trim() === potionName);
+
+                if (potionElement) {
+                    await CommonHelper.log(`Пьём банку ${potionName}`);
+                    potionElement.parentElement.firstElementChild.click();
+                    return; // выпили банку — выходим
+                }
+
+                await CommonHelper.log(`Не найдено зелье: ${potionName}`);
+            }
+
+            await CommonHelper.log(`Подходящих банок (${potionPriority.join(', ')}) не найдено. Ничего не пьём.`);
+        } catch (error) {
+            await CommonHelper.log(`Ошибка в consumePotion(${resourceLabel}): ${error}`);
+        }
+    }
+
+    async potHP() {
+        await this.consumePotion('#hp_text', 'HP');
     }
 
     async potMP() {
-        try {
-            let HP = document.querySelector('#mana_text').innerText.split('/');
-            let currentMP = parseInt(HP[0], 10);
-            let maxMP = parseInt(HP[1], 10);
-            let differ = maxMP - currentMP;
-
-            if (differ > 0) {
-                await CommonHelper.log('У меня не хватает ' + differ + ' MP');
-
-                let potionName = "250 МА";
-
-                // Явные проверки для каждой банки
-                if (differ <= 15) {
-                    potionName = "10 МА";
-                } else if (differ <= 30) {
-                    potionName = "20 МА";
-                } else if (differ <= 70) {
-                    potionName = "50 МА";
-                } else if (differ <= 150) {
-                    potionName = "100 МА";
-                } else if (differ <= 250) {
-                    potionName = "250 МА";
-                } else if (differ <= 500) {
-                    potionName = "500 МА";
-                } else {
-                    await CommonHelper.log(`Не нашли совпадений, пьём стандартную ${potionName} на всякий случай`);
-                }
-
-                await CommonHelper.log(`Будем использовать банку ${potionName}, так как differ = ${differ}`);
-
-                if (potionName) {
-                    await CommonHelper.log(`Пьём банку ${potionName}`);
-
-                    let potionElement = [...document.querySelectorAll('span.item-count')]
-                        .find(span => span.innerText.trim() === potionName);
-
-                    if (potionElement) {
-                        potionElement.parentElement.firstElementChild.click();
-                    } else {
-                        // await CommonHelper.sendTelegramMessage(`Не найдено зелье: ${potionName}`);
-                        await CommonHelper.log(`Не найдено зелье: ${potionName}`);
-                    }
-                } else {
-                    await CommonHelper.log("Нет подходящей банки для лечения.");
-                }
-            }
-        } catch (error) { }
+        await this.consumePotion('#mana_text', 'МА');
     }
 
     async processEnemyNotAllowed(enemyName) {
@@ -464,7 +420,11 @@ class Fight {
         items.forEach(item => slider.appendChild(item));
     }
 
-    reversePotItems() {
+    potOrder() {
+        if (!this.isAttackPage) {
+            return;
+        }
+
         const slider = document.querySelector('.item-slider');
         const items = Array.from(slider.querySelectorAll('.item-image-wrapper'));
 
