@@ -63,6 +63,7 @@ function showTimeRequired() {
 
 async function processGetFishButton() {
     CommonHelper.log("Ожидаем появление кнопки 'Подсечь!'...");
+    CommonHelper.setFightExitUrl(document.location.href);
 
     return new Promise((resolve) => {
         // Выбираем элемент по ID
@@ -78,7 +79,7 @@ async function processGetFishButton() {
 
                         if (getButton) {
                             CommonHelper.log("Подсекаем!");
-                            await CommonHelper.delay(CommonHelper.getRandomNumber(2000, 4000)); // Ждем перед нажатием
+                            await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1000)); // Ждем перед нажатием
                             observer.disconnect(); // Останавливаем наблюдение
                             getButton.click();
 
@@ -108,7 +109,7 @@ async function processSetFishingLocation() {
     }
 
     // Получаем последнюю сохранённую локацию
-    let savedLocation = CommonHelper.getExtStorage("wor_fishing_last_location_index");
+    let savedLocation = await CommonHelper.getExtStorage("wor_fishing_last_location_index");
     savedLocation = savedLocation !== null ? Number(savedLocation) : null; // Приводим к числу, если есть
 
     // Получаем последний отчёт
