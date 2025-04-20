@@ -24,7 +24,6 @@
 
         if (activateLink) {
             CommonHelper.log('Активируем приманку');
-            await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 2000));
             await CommonHelper.clickAndWait(activateLink.parentElement);
         } else {
             CommonHelper.log('Не нашли кнопку для активации приманки');

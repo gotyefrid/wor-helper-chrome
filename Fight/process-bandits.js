@@ -1,8 +1,5 @@
 (async function () {
     ({ wor_bandits_active: fightStatus } = await chrome.storage.local.get(["wor_bandits_active"]));
-
-    // Настройка сражения
-    let fight = new Fight();
     
     if (fightStatus) {
         // CommonHelper.createDisableButton('Отключить разбойников', () => {
@@ -12,6 +9,8 @@
 
         await CommonHelper.log('Мы на странице боя c разбойником!');
 
+        // Настройка сражения
+        let fight = new Fight();
         // Пропускать боссов
         fight.enemiesToSkip = Fight.BOSS_NAMES.concat([
             // Сюда можно дописать нужных мобов для пропуска
