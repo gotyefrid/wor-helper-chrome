@@ -102,6 +102,7 @@
                 "http://185.212.47.8/wap/lovit*"
             ],
             "js": [
+                "Fishing/FishingClass.js",
                 "Fishing/fishing.js"
             ]
         },

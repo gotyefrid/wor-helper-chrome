@@ -669,4 +669,27 @@ class CommonHelper {
             return true;
         }
     }
+
+    static async fetchChat() {
+        try {
+            let chatUrl = document.querySelector('a[href*=chat2]')?.href;
+
+            if (!chatUrl) {
+                console.log('Нету ссылки на чат');
+                return null;
+            }
+
+            let result = await fetch(chatUrl);
+            let html = await result.text();
+
+            let parser = new DOMParser();
+            let htmlPage = parser.parseFromString(html, 'text/html');
+            let msgBox = htmlPage.querySelector('#msg_box');
+            let formattedMessages = Chat.getParsedMessages(msgBox);
+
+            return formattedMessages;
+        } catch (err) {
+            console.log('Ошибка при получении сообщений чата: + ', JSON.stringify(err));
+        }
+    }
 }
