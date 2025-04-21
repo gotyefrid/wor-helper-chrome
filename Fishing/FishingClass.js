@@ -89,8 +89,6 @@ class Fishing {
             .includes('рыба игнорирует ваши старания');
 
         if (isWaiting) {
-            CommonHelper.setFightExitUrl(location.href);
-
             CommonHelper.log('Ждём подсечки...');
             // «Подсечь» — кликаем, когда появится
             this.#waitForPodsech()
@@ -108,6 +106,10 @@ class Fishing {
                     await CommonHelper.reloadPage();
                 })
                 .catch(console.error);
+        } else {
+            // Кликаем Подсечь
+            await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 1500));
+            await CommonHelper.clickAndWait(bp);
         }
     }
 
