@@ -109,7 +109,7 @@ class Fishing {
         } else {
             // Кликаем Подсечь
             await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 1500));
-            await CommonHelper.clickAndWait(bp);
+            await CommonHelper.clickAndWait(bp.querySelector('a'));
         }
     }
 

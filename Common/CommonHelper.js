@@ -265,6 +265,7 @@ class CommonHelper {
                     { command: 'start_chemistry', description: 'Включить алхимию' },
                     { command: 'start_fishing', description: 'Включить рыбалку' },
                     { command: 'start_fighting', description: 'Включить сражение' },
+                    { command: 'start_bandits', description: 'Включить разбойников' },
                     { command: 'start_captcha', description: 'Включить капчу' },
                     { command: 'refresh_commands_list', description: 'Обновить команды' }
                 ]

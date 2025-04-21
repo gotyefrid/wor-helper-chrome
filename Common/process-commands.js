@@ -33,63 +33,73 @@ async function handleTelegramCommands(command) {
             await CommonHelper.turnFighting(false);
             await CommonHelper.turnFishing(false);
             await CommonHelper.turnCaptcha(false);
+            await CommonHelper.turnBandits(false);
             await CommonHelper.sendTelegramMessage('Выполнено, выключено всё.', 'common');
             CommonHelper.reloadPage();
             break;
         case '/start_chemistry':
-            CommonHelper.log('Пришла команда включить алхимию');
+            await CommonHelper.log('Пришла команда включить алхимию');
             await CommonHelper.turnAlchemistry(true);
             await CommonHelper.turnFighting(true);
             await CommonHelper.sendTelegramMessage('Алхимия включена', 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
             break;
         case '/start_captcha':
-            CommonHelper.log('Пришла команда включить капчу');
+            await CommonHelper.log('Пришла команда включить капчу');
             await CommonHelper.turnCaptcha(true);
             await CommonHelper.sendTelegramMessage('Каптча включена', 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
             break;
         case '/start_fishing':
-            CommonHelper.log('Пришла команда включить рыбалку');
+            awaitCommonHelper.log('Пришла команда включить рыбалку');
             await CommonHelper.turnFishing(true);
             await CommonHelper.sendTelegramMessage('Рыбалка включена', 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
             break;
         case '/start_fighting':
-            CommonHelper.log('Пришла команда включить сражение');
+            await CommonHelper.log('Пришла команда включить сражение');
             await CommonHelper.turnFighting(true);
             await CommonHelper.sendTelegramMessage('Сражение включено', 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
+            break;
+        case '/start_bandits':
+            await CommonHelper.log('Пришла команда включить разбойников');
+            await CommonHelper.turnBandits(true);
+            await CommonHelper.setExtStorage('wor_fight_pot_mp_active', true);
+            await CommonHelper.sendTelegramMessage('Разбойники включены', 'common');
+            await CommonHelper.reloadPage();
             break;
         case '/refresh_page':
-            CommonHelper.log('Пришла команда перезагрузить страницу');
+            await CommonHelper.log('Пришла команда перезагрузить страницу');
             await CommonHelper.sendTelegramMessage('Перезагрузка выполнена', 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
             break;
         case '/refresh_commands_list':
-            CommonHelper.log('Пришла команда обновить команды');
+            await CommonHelper.log('Пришла команда обновить команды');
             await CommonHelper.setTelegramBotCommands('common');
             await CommonHelper.sendTelegramMessage('Команды обновлены', 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
             break;
         case '/status':
-            CommonHelper.log('Пришла команда показать статус бота');
+            await CommonHelper.log('Пришла команда показать статус бота');
             let chemistry = await CommonHelper.getExtStorage('wor_chemistry_active');
             let fishing = await CommonHelper.getExtStorage('wor_fishing_active');
             let fignhting = await CommonHelper.getExtStorage('wor_fight_active');
+            let bandits = await CommonHelper.getExtStorage('wor_bandits_active');
             let captcha = await CommonHelper.getExtStorage('wor_captcha_active');
 
             let statuses =
                 'Алхимия: ' + (chemistry ? '✔️' : '❌') + '\n' +
                 'Рыбалка: ' + (fishing ? '✔️' : '❌') + '\n' +
                 'Сражение: ' + (fignhting ? '✔️' : '❌') + '\n' +
+                'Разбойники: ' + (bandits ? '✔️' : '❌') + '\n' +
                 'Капча: ' + (captcha ? '✔️' : '❌');
 
             await CommonHelper.sendTelegramMessage(statuses, 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
             break;
         case '/to_exit_url':
-            CommonHelper.log('Пришла команда перейти на URL сохранённый');
+            await CommonHelper.log('Пришла команда перейти на URL сохранённый');
             let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
 
             if (exitUrl) {
