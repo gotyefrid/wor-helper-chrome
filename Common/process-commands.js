@@ -28,14 +28,14 @@ async function handleTelegramCommands(command) {
 
     switch (text) {
         case '/stop':
-            CommonHelper.log('Пришла команда остановить бота');
+            await CommonHelper.log('Пришла команда остановить бота');
             await CommonHelper.turnAlchemistry(false);
             await CommonHelper.turnFighting(false);
             await CommonHelper.turnFishing(false);
             await CommonHelper.turnCaptcha(false);
             await CommonHelper.turnBandits(false);
             await CommonHelper.sendTelegramMessage('Выполнено, выключено всё.', 'common');
-            CommonHelper.reloadPage();
+            await CommonHelper.reloadPage();
             break;
         case '/start_chemistry':
             await CommonHelper.log('Пришла команда включить алхимию');
@@ -51,7 +51,7 @@ async function handleTelegramCommands(command) {
             await CommonHelper.reloadPage();
             break;
         case '/start_fishing':
-            awaitCommonHelper.log('Пришла команда включить рыбалку');
+            await CommonHelper.log('Пришла команда включить рыбалку');
             await CommonHelper.turnFishing(true);
             await CommonHelper.sendTelegramMessage('Рыбалка включена', 'common');
             await CommonHelper.reloadPage();
