@@ -202,7 +202,7 @@ class Fishing {
         const firstMatched = messages.find(m => m.text?.includes('Вы подсекли и выловили')      // проверяем подстроку
         );
 
-        return firstMatched.text ?? null;
+        return firstMatched?.text ?? null;
     }
 
     showTimeRequired() {
