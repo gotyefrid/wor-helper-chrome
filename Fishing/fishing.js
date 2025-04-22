@@ -14,6 +14,17 @@
 
         // Настройка алхимика
         let fishing = new Fishing();
+
+        if (fishing.isTerritoryPage) {
+            await fishing.processTerritoryPage();
+            return;
+        }
+
+        if (fishing.isGamePage || fishing.isMainPage) {
+            await fishing.processMainAndGamePages();
+            return;
+        }
+
         fishing.showTimeRequired();
 
         if (fishing.isFishingPage) {

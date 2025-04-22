@@ -2,23 +2,25 @@ class Fishing {
     isFishingPage = false;
     isWaitingFishPage = false;
     isSetLocationPage = false;
+    isTerritoryPage = false;
+    isMainPage = false;
+    isGamePage = false;
 
     constructor() {
         this.#checkCurrentPage();
     }
 
     #checkCurrentPage() {
-        const fishingPaths = ["/wap/lovit"];
-
-        this.isFishingPage = fishingPaths.some(path =>
-            location.pathname.includes(path));
+        const fishingPaths = ["/wap/lovit", "/wap/teritory", "/wap/main", "wap/game"];
+        this.isFishingPage = fishingPaths.some(path => location.pathname.includes(path));
 
         if (this.isFishingPage) {
             const zag = [...document.querySelectorAll('.zagolovok')];
-            this.isWaitingFishPage = zag
-                .some(div => div.textContent.toLowerCase().includes('удочка закинута'));
-            this.isSetLocationPage = zag
-                .some(div => div.textContent.toLowerCase().includes('куда закинуть удочку'));
+            this.isWaitingFishPage = zag.some(div => div.textContent.toLowerCase().includes('удочка закинута'));
+            this.isSetLocationPage = zag.some(div => div.textContent.toLowerCase().includes('куда закинуть удочку'));
+            this.isTerritoryPage = document.location.pathname.includes("/wap/teritory");
+            this.isMainPage = document.location.pathname.includes("/wap/main");;
+            this.isGamePage = document.location.pathname.includes("/wap/game");;
         }
     }
 
@@ -27,15 +29,13 @@ class Fishing {
         const bp = document.getElementById('bp');
         if (!bp) return Promise.reject(new Error('#bp not found'));
 
-        const isLinkOk = el =>
-            el.matches('a[href*="tjanu="]') ||
-            el.textContent.toLowerCase().includes('подсечь');
+        const isLinkOk = el => el.matches('a[href*="tjanu="]') || el.textContent.toLowerCase().includes('подсечь');
 
         const ready = [...bp.querySelectorAll('a')].find(isLinkOk);
         if (ready) return Promise.resolve(ready);
 
         return new Promise(resolve => {
-            const observer = new MutationObserver(([{ addedNodes }], obs) => {
+            const observer = new MutationObserver(([{addedNodes}], obs) => {
                 for (const node of addedNodes) {
                     if (node.nodeType === 1 && isLinkOk(node)) {
                         obs.disconnect();
@@ -44,7 +44,7 @@ class Fishing {
                     }
                 }
             });
-            observer.observe(bp, { childList: true });
+            observer.observe(bp, {childList: true});
         });
     }
 
@@ -54,10 +54,7 @@ class Fishing {
         const box = document.getElementById('msg_box');
         if (!box) return Promise.reject(new Error('#msg_box not found'));
 
-        const isBattleMsg = el =>
-            el.nodeType === 1 &&
-            el.classList.contains('contur') &&
-            el.textContent.includes('В бой:');
+        const isBattleMsg = el => el.nodeType === 1 && el.classList.contains('contur') && el.textContent.includes('В бой:');
 
         // мгновенная проверка
         if ([...box.querySelectorAll('.contur')].some(isBattleMsg)) {
@@ -76,7 +73,7 @@ class Fishing {
                     }
                 }
             });
-            observer.observe(box, { childList: true, subtree: true });
+            observer.observe(box, {childList: true, subtree: true});
         });
     }
 
@@ -149,7 +146,7 @@ class Fishing {
                 CommonHelper.log("Подсекли рыбу, которую не хотим", false);
                 if (savedLocation !== null) {
                     // Запоминаем исходные индексы кнопок
-                    let indexedButtons = placeButtons.map((button, index) => ({ index, button }));
+                    let indexedButtons = placeButtons.map((button, index) => ({index, button}));
 
                     // log(
                     //     "Была сохранённая локация (" + indexedButtons.find(b => b.index === savedLocation)?.button.innerText.trim() + "), туда не идём.",
@@ -202,13 +199,12 @@ class Fishing {
             return null;
         }
 
-        const firstMatched = messages.find(
-            m => m.text?.includes('Вы подсекли и выловили')      // проверяем подстроку
+        const firstMatched = messages.find(m => m.text?.includes('Вы подсекли и выловили')      // проверяем подстроку
         );
 
         return firstMatched.text ?? null;
     }
-    
+
     showTimeRequired() {
         // Находим <span> с id="mf"
         const mfElement = document.getElementById("mf");
@@ -232,5 +228,47 @@ class Fishing {
                 mfElement.insertAdjacentHTML("afterend", `<span> из ${nnValue}</span>`);
             }
         }
+    }
+    async processMainAndGamePages() {
+        let shouldContinue = await CommonHelper.askWithTimeout('Рыбалка включена, продолжить скрипт?', 5000);
+
+        if (!shouldContinue) return; // Если выбрали "Нет" — прерываем выполнение
+
+        let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url');
+
+        if (exitUrl) {
+            document.location = exitUrl;
+            return;
+        }
+
+        let toTerritoryButton = [...document.querySelectorAll('a')].find(text => text.textContent.includes('Природа'));
+
+        if (toTerritoryButton) {
+            await CommonHelper.log('Выходим на природу');
+            await CommonHelper.clickAndWait(toTerritoryButton);
+            return;
+        }
+
+        await CommonHelper.sendTelegramMessage('На странице нету ссылки на природу, что-то тут не так:' + document.location.href);
+        await CommonHelper.turnFishing(false);
+        await CommonHelper.turnFighting(false);
+    }
+
+    async processTerritoryPage() {
+        let shouldContinue = await CommonHelper.askWithTimeout('Рыбалка включена, продолжить скрипт?', 5000);
+
+        if (!shouldContinue) return; // Если выбрали "Нет" — прерываем выполнение
+
+        let startFishingButton = [...document.querySelectorAll('a')].find(a => a.innerText.toLowerCase().includes('ловить рыбу'));
+
+        if (startFishingButton) {
+            await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1500));
+            await CommonHelper.clickAndWait(startFishingButton);
+            return;
+        }
+
+        await CommonHelper.sendTelegramMessage('На странице нету ссылки на Ловить рыбу, что-то тут не так:' + document.location.href);
+        await CommonHelper.turnFishing(false);
+        await CommonHelper.turnFighting(false);
     }
 }
