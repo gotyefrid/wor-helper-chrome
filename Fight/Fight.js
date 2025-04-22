@@ -62,13 +62,13 @@ class Fight {
 
         if (this.isWaitPage) {
             CommonHelper.log('Мы на странице ожидания, обновляемся...');
-            await this.processWaitPage();
+            await this.processWaitPage(CommonHelper.getRandomNumber(300, 800));
             return;
         }
 
         if (this.isExitPage) {
             CommonHelper.log('Мы на странице выхода из боя!');
-            await this.exitFromFight(exitUrl, beforeExitCallback);
+            await this.exitFromFight(exitUrl, beforeExitCallback, CommonHelper.getRandomNumber(300, 800));
             return;
         }
 
@@ -169,13 +169,13 @@ class Fight {
 
         // Если мы тут - значит мы на странице боя
         await CommonHelper.log('Атакуем');
-        await CommonHelper.delay(CommonHelper.getRandomNumber(500, 2000));
 
         if (this.needPotHP) await this.potHP();
-
         if (this.needPotMP) await this.potMP();
 
         let hitButton = document.querySelector('input[name=bitvraga]');
+
+        await CommonHelper.delay(CommonHelper.getRandomNumber(400, 1000));
 
         if (hitButton) {
             await CommonHelper.clickAndWait(hitButton);
