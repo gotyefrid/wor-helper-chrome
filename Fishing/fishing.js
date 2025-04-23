@@ -12,7 +12,7 @@
             await CommonHelper.reloadPage();
         });
 
-        // Настройка алхимика
+        // Настройка рыбалки
         let fishing = new Fishing();
 
         if (fishing.isTerritoryPage) {
@@ -25,6 +25,7 @@
             return;
         }
 
+        // Показать сколько времени нужно ждать всего
         fishing.showTimeRequired();
 
         if (fishing.isFishingPage) {
