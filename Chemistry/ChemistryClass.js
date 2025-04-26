@@ -1,5 +1,5 @@
 class Chemistry {
-    isChemistryPage = false;
+    isMiningPage = false;
     isWaitingPage = false;
     isGetLootPage = false;
     isMainPage = false;
@@ -13,9 +13,9 @@ class Chemistry {
         const paths = ["/wap/poisktrav", "/wap/teritory", "/wap/main", "wap/game"];
 
         // Определяем, является ли текущая страница страницей боя
-        this.isChemistryPage = paths.some(path => window.location.pathname.includes(path));
+        this.isMiningPage = paths.some(path => window.location.pathname.includes(path));
 
-        if (this.isChemistryPage) {
+        if (this.isMiningPage) {
             this.isWaitingPage = document.querySelector('#progressBar') ? true : false;
             this.isGetLootPage = document.querySelector('input[value=Собрать]') ? true : false;
             this.isTerritoryPage = document.location.href.includes('teritory');

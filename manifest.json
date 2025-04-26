@@ -81,6 +81,28 @@
         },
         {
             "matches": [
+                "*://wor.com.ua/wap/kopat*",
+                "*://wor.com.ua/wap/shaxtap*",
+                "*://wor.com.ua/wap/shaxtal*",
+                "*://wor.com.ua/wap/shaxtar*",
+                "*://wor.com.ua/wap/teritory*",
+                "*://wor.com.ua/wap/main*",
+                "*://wor.com.ua/wap/game*",
+                "http://185.212.47.8/wap/kopat*",
+                "http://185.212.47.8/wap/shaxtap*",
+                "http://185.212.47.8/wap/shaxtal*",
+                "http://185.212.47.8/wap/shaxtar*",
+                "http://185.212.47.8/wap/teritory*",
+                "http://185.212.47.8/wap/main*",
+                "http://185.212.47.8/wap/game*"
+            ],
+            "js": [
+                "Mining/Mining.js",
+                "Mining/process-mining.js"
+            ]
+        },
+        {
+            "matches": [
                 "*://wor.com.ua/wap/attackhouse*",
                 "*://wor.com.ua/wap/boj*",
                 "*://wor.com.ua/wap/wait*",

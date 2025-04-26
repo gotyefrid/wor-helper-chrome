@@ -17,7 +17,7 @@
         // Настройка алхимика
         let chemistry = new Chemistry();
 
-        if (chemistry.isChemistryPage) {
+        if (chemistry.isMiningPage) {
             if (chemistry.isMainPage || chemistry.isGamePage) {
                 await chemistry.processMainAndGamePages();
                 return;

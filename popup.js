@@ -24,6 +24,7 @@ async function processCheckboxes() {
             hasSubOptions: true,
         },
         toggleAlchemistry: { storageKey: "wor_chemistry_active" },
+        toggleMining: { storageKey: "wor_mining_active" },
         toggleMoving: { storageKey: "wor_moving_active" },
         toggleCaptcha: {
             storageKey: "wor_captcha_active",

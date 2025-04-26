@@ -283,6 +283,10 @@ class CommonHelper {
         await CommonHelper.setExtStorage('wor_chemistry_active', active);
     }
 
+    static async turnMining(active = true) {
+        await CommonHelper.setExtStorage('wor_mining_active', active);
+    }
+
     static async turnFighting(active = true) {
         await CommonHelper.setExtStorage('wor_fight_active', active);
     }
