@@ -3,6 +3,10 @@ import { CommonHelperBackground } from './CommonHelperBackground.js';
 export class Chat {
     isChatPage = false;
 
+    /**
+     * @param {array}  array  – массив сообщений со страницы
+     * @param {object} target – объект последнего отправленного сообщения
+     */
     removeFromMatch(array, target) {
         if (!array) {
             return [];
@@ -12,6 +16,9 @@ export class Chat {
             return array;
         }
 
+        // помощник: "2025-04-26 10:00:16" →  Date-timestamp
+        const toMs = s => Date.parse(s.replace(' ', 'T'));
+
         const index = array.findIndex(item =>
             item.type === target.type &&
             item.time === target.time &&
@@ -19,7 +26,22 @@ export class Chat {
         );
 
         if (index !== -1) {
-            array.splice(index); // удаляет с найденного индекса и до конца
+            array.splice(index);            // удаляем сообщение-совпадение и всё после него
+        } else {
+            // ╔══ добавлено: обрезка старых сообщений ══╗
+            const tgtMs = toMs(target.time);
+
+            // ищем первый элемент, НЕ старее цели
+            const firstNewerIdx = array.findIndex(msg => toMs(msg.time) >= tgtMs);
+
+            if (firstNewerIdx === -1) {
+                // все сообщения старее – очищаем массив
+                array.length = 0;
+            } else if (firstNewerIdx > 0) {
+                // удаляем всё до firstNewerIdx (сам элемент newer остаётся)
+                array.splice(0, firstNewerIdx);
+            }
+            // ╚════════════════════════════════════════╝
         }
 
         return array;
@@ -53,6 +75,19 @@ export class Chat {
         }
 
         if (isToMe) {
+            await CommonHelperBackground.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
+        }
+
+        if (
+            msg.type === 'system' &&
+            (
+                msg.text.includes('изъята и возвращена') ||
+                msg.text.includes('получена и будет доступна') ||
+                msg.text.includes('штраф') ||
+                msg.text.includes('травм') ||
+                msg.text.includes(playerName)
+            )
+        ) {
             await CommonHelperBackground.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
         }
 

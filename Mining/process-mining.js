@@ -6,14 +6,13 @@
     let chemistryStatus = await CommonHelper.getExtStorage('wor_mining_active') ?? false;
 
     if (chemistryStatus) {
-        CommonHelper.createDisableButton('Отключить рудокопа', async () => {
-            CommonHelper.turnMining(false);
-            CommonHelper.turnFighting(false);
-            await CommonHelper.reloadPage();
-        });
+        // CommonHelper.createDisableButton('Отключить рудокопа', async () => {
+        //     CommonHelper.turnMining(false);
+        //     CommonHelper.turnFighting(false);
+        //     await CommonHelper.reloadPage();
+        // });
 
         CommonHelper.log('Мы на одной из страниц рудокопа!');
-
         // Настройка алхимика
         let mining = new Mining();
 
@@ -41,7 +40,9 @@
             }
 
             if (mining.isWaitingPage) {
-                CommonHelper.setFightExitUrl(location.origin + '/wap/' + mining.extractKopatLink(document));
+                let exitUrl = location.origin + '/wap/' + mining.extractKopatLink(document);
+                CommonHelper.setFightExitUrl(exitUrl);
+                document.querySelector('#progressBar')?.insertAdjacentHTML('afterend', '<a href="' + exitUrl + '">Обновить</a>')
                 await mining.processWaitPage();
                 return;
             }
@@ -61,10 +62,10 @@
             CommonHelper.log('Процессинг рудокопа запущен не на странице доступной для рудокопства. Ничего не делаем');
         }
     } else {
-        CommonHelper.createDisableButton('Включить рудокопа', () => {
-            CommonHelper.turnMining(true);
-            CommonHelper.turnFighting(true);
-            CommonHelper.reloadPage();
-        });
+        // CommonHelper.createDisableButton('Включить рудокопа', () => {
+        //     CommonHelper.turnMining(true);
+        //     CommonHelper.turnFighting(true);
+        //     CommonHelper.reloadPage();
+        // });
     }
 })();

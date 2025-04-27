@@ -85,7 +85,7 @@ async function processCheckboxes() {
             if ('toggleMapHistory' === id) {
                 chrome.storage.local.set({ ['visitedLocations']: {} });
             }
-            if ('toggleAlchemistry' === id) {
+            if ('toggleAlchemistry' === id || id === 'toggleMining') {
                 chrome.storage.local.set({ "wor_fight_active": input.checked }, function () {
                     let fightingCheckbox = document.querySelector("#toggleFighting");
                     if (fightingCheckbox) {

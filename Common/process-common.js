@@ -110,7 +110,7 @@ async function checkFlashNotifications() {
         return;
     }
 
-    if (html.innerText.includes('Награда:')) {
+    if (html.innerText.includes('Скрыть сообщение')) {
         CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 300);
     }
 
