@@ -72,6 +72,17 @@ class Fight {
             return;
         }
 
+        let isPlayerInitiatedBattle = await this.isPlayerInitiatedBattle();
+
+        if (isPlayerInitiatedBattle) {
+            await CommonHelper.log('В этот бой игрок вмешался сам, бот ничего не должен делать. Жду 5сек.');
+            await CommonHelper.delay(5000);
+            await CommonHelper.reloadPage();
+            return;
+        } else {
+            await CommonHelper.log('Обычный бой, без вмешательства');
+        }
+
         let enemyName = this.getEnemyName();
 
         if (enemyName) {
@@ -184,6 +195,68 @@ class Fight {
         }
     }
 
+    async isPlayerInitiatedBattle() {
+        const CACHE_PERIOD = 20 * 1000;                         // 20 с
+        const CACHE_KEY = 'wor_fight_player_initiated_battle';
+
+        try {
+            const now = Date.now();
+            const cache = await CommonHelper.getExtStorage(CACHE_KEY);
+
+            // --- 1. если проверяли < 20 с назад – берём кэш -----------------------
+            if (cache && cache.lastCheck && now - cache.lastCheck < CACHE_PERIOD) {
+                await CommonHelper.log('Берём «вмешательство» из кэша');
+                return !!cache.intervened;
+            }
+
+            await CommonHelper.log('Проверяем «вмешательство» по чату');
+
+            // --- 2. грузим HTML чата ---------------------------------------------
+            const chatUrl = document.querySelector('a[href*=chat2]')?.href;
+            if (!chatUrl) {
+                CommonHelper.log('Нет ссылки на чат');
+                return false;
+            }
+
+            const html = await (await fetch(chatUrl)).text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const msgBox = doc.querySelector('#msg_box');
+            const messages = Chat.getParsedMessages(msgBox);      // newest → oldest
+
+            // --- 3. ищем первое релевантное system-сообщение ----------------------
+            const endedRe = /Бой №\d+\s+закончен/i;
+            let intervened = false;
+
+            for (const msg of messages) {
+                if (msg.type !== 'system') continue;
+
+                if (endedRe.test(msg.text)) {       // бой закончился
+                    intervened = false;
+                    break;
+                }
+
+                if (msg.text.includes('Вы вмешались в бой!')) {
+                    intervened = true;                // бой ещё идёт
+                    break;
+                }
+            }
+
+            // --- 4. сохраняем кэш -------------------------------------------------
+            await CommonHelper.setExtStorage(CACHE_KEY, {
+                lastCheck: now,
+                intervened,
+            });
+
+            return intervened;
+
+        } catch (err) {
+            CommonHelper.log('Ошибка при получении сообщений чата: ' +
+                JSON.stringify(err));
+            return false;
+        }
+    }
+
+
     async handleGiveUp() {
         CommonHelper.log('Нажимаем кнопку Сдаться!');
         await CommonHelper.delay(1000);
@@ -210,7 +283,12 @@ class Fight {
         info = info.replace(/\[\d+\]/g, '[]');
         let playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
 
-        if (info.includes(`Игрок ${playerName}[] нанес критический магический удар 0`) || info.includes(`Игрок ${playerName}[] нанес магический удар 0`)) {
+        if (
+            info.includes(`Игрок ${playerName}[] нанес критический магический удар 0`) ||
+            info.includes(`Игрок ${playerName}[] нанес магический удар 0`) ||
+            info.includes(`Игрок ${playerName}[] нанес критический удар 0`) ||
+            info.includes(`Игрок ${playerName}[] нанес удар 0`)
+        ) {
             return true;
         }
 
