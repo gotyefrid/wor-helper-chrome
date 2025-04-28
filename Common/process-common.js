@@ -152,10 +152,43 @@ function backgroundListener() {
             return true;
         }
 
-        if (message.action === "mergeContent") {
+        if (message.type === "mergeContent") {
             CommonHelper.log("Вызываем mergeContent()");
             mergeContent();
             sendResponse({ success: true });
+        }
+    });
+}
+
+function mergeContent() {
+    CommonHelper.log('Объединяем вещи', false);
+    // Находим все div с классом invcell
+    const invCells = document.querySelectorAll("div.invcell");
+
+    // Создаем карту для хранения текста itemlink и соответствующих div.invcell
+    const itemMap = new Map();
+
+    invCells.forEach(invCell => {
+        const itemLink = invCell.querySelector("a[href^='itemlink']");
+        if (itemLink) {
+            const itemText = itemLink.nextSibling.textContent.trim();
+            if (!itemMap.has(itemText)) {
+                itemMap.set(itemText, []);
+            }
+            itemMap.get(itemText).push(invCell);
+        }
+    });
+
+    // Проходим по сохраненным данным и открываем новую вкладку, если itemText встречается более одного раза
+    itemMap.forEach((cells, itemText) => {
+        if (cells.length > 1) { // Если такой же текст есть в нескольких div.invcell
+            let tosoedLink = cells[0].querySelector("a[href^='tosoed']");
+            if (tosoedLink) {
+                let href = tosoedLink.href;
+
+                // Открываем новую вкладку
+                window.open(href, "_blank");
+            }
         }
     });
 }

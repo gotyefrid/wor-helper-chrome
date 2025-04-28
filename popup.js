@@ -132,7 +132,7 @@ async function processMergeButton() {
         }
 
         console.log("Отправляем сообщение в content script");
-        chrome.tabs.sendMessage(tab.id, { action: "mergeContent" }, (response) => {
+        chrome.tabs.sendMessage(tab.id, { type: "mergeContent" }, (response) => {
             if (chrome.runtime.lastError) {
                 console.error("Ошибка при отправке сообщения:", chrome.runtime.lastError.message);
             } else {
