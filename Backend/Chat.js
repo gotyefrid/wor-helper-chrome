@@ -26,9 +26,9 @@ export class Chat {
         );
 
         if (index !== -1) {
-            array.splice(index);            // удаляем сообщение-совпадение и всё после него
+            array.splice(index);
         } else {
-            // ╔══ добавлено: обрезка старых сообщений ══╗
+            // ╔══ обрезка старых сообщений ══╗
             const tgtMs = toMs(target.time);
 
             // ищем первый элемент, НЕ старее цели
