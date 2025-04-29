@@ -92,6 +92,8 @@ class Fight {
             if (isNullDamage) {
                 CommonHelper.log('Я бью 0, что-то тут не так, ничего не делаю больше');
                 CommonHelper.sendTelegramMessage('Я бью 0, что-то тут не так, ничего не делаю больше');
+                await CommonHelper.delay(10000);
+                await CommonHelper.reloadPage();
                 // CommonHelper.sendMessageToChat('?');
                 // CommonHelper.turnAlchemistry(false);
                 // CommonHelper.turnFighting(false);
