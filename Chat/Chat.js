@@ -96,7 +96,7 @@ class Chat {
              */
             function attachDate(timeStr) {
                 const zone = 'Europe/Kyiv';
-                const now = DateTime.now().setZone(zone).plus({seconds: 2});
+                const now = DateTime.now().setZone(zone).plus({seconds: 1});
                 const today = now.toFormat('yyyy-MM-dd');
                 const parseFormat = 'yyyy-MM-dd HH:mm:ss';
 
