@@ -3,9 +3,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     processCheckboxes();
     processInputs();
 
-    // Обработчик кнопки "Объединить"
-    processMergeButton();
-
     // Обработчики парсинга
     processParsing();
 
@@ -120,26 +117,6 @@ async function processCheckboxes() {
             }
         }
     }
-}
-
-async function processMergeButton() {
-    document.getElementById("mergeButton").addEventListener("click", async () => {
-        let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-        if (!tab || !tab.id) {
-            console.error("Не найдена активная вкладка!");
-            return;
-        }
-
-        console.log("Отправляем сообщение в content script");
-        chrome.tabs.sendMessage(tab.id, { type: "mergeContent" }, (response) => {
-            if (chrome.runtime.lastError) {
-                console.error("Ошибка при отправке сообщения:", chrome.runtime.lastError.message);
-            } else {
-                console.log("Ответ от content script:", response);
-            }
-        });
-    });
 }
 
 async function processParsing() {

@@ -1,177 +1,149 @@
-if (document.location.href.includes('game.php')) {
+(async function () {
+    while (typeof CommonHelper === 'undefined') {
+        await new Promise(r => setTimeout(r, 50));
+    }
 
-    (function () {
-        const fishData = {
-            "Карась": { price: 7, smokedPrice: 17, woodPrice: 4.6, smokedName: "Жареный карась" },
-            "Окунь": { price: 8, smokedPrice: 18, woodPrice: 4.6, smokedName: "Жареный окунь" },
-            "Карп": { price: 10, smokedPrice: 20, woodPrice: 4.6, smokedName: "Жареный карп" },
-            "Лещ": { price: 12, smokedPrice: 24, woodPrice: 5.5, smokedName: "Копченый лещ" },
-            "Судак": { price: 15, smokedPrice: 28, woodPrice: 5.5, smokedName: "Копченый судак" },
-            "Сом": { price: 20, smokedPrice: 34, woodPrice: 5.5, smokedName: "Копченый сом" },
-            "Щука": { price: 20, smokedPrice: 36, woodPrice: 6.6, smokedName: "Копченая щука" },
-            "Угорь": { price: 22, smokedPrice: 40, woodPrice: 6.6, smokedName: "Копченый угорь" },
-            "Форель": { price: 25, smokedPrice: 45, woodPrice: 7.9, smokedName: "Копченая форель" },
-            "Осётр": { price: 30, smokedPrice: 50, woodPrice: 7.9, smokedName: "Копченый осётр" },
-        };
+    await mergeButton();
+})();
 
-        const herbsData = {
-            "Корни алтея": [15, 20],
-            "Корни арала": [18, 24],
-            "Корни арники": [15, 20],
-            "Корни володуши": [16, 21],
-            "Корни галеги": [18, 24],
-            "Корни горечи": [21, 28],
-            "Корни гравилата": [16, 21],
-            "Корни девясила": [24, 32],
-            "Корни женьшеня": [23, 31],
-            "Корни лопуха": [16, 21],
-            "Корни мелиссы": [23, 31],
-            "Корни чистотела": [24, 32],
-            "Гриб дождевик": [40, 53],
-            "Гриб лазурный": [44, 58],
-            "Гриб мухомор": [42, 56],
-            "Гриб паутинник": [42, 56],
-            "Гриб родотус": [44, 58],
-            "Гриб свинух": [40, 53],
-        };
+async function mergeButton() {
+    /* 1. находим тот самый <td> через любую из уже-существующих ссылок
+          (берём ближайшую родительскую ячейку)                       */
+    const td = document.querySelector('#toggle-checkboxes')?.closest('td');
+    if (!td) return;                  // safety-check: вдруг разметка изменилась
 
-        const resourcePrices = {
-            "Уголь": [3.0, 1, 6],
-            "Камень": [3.3, 1, 7],
-            "Руда": [1.8, 1],
-            "Серебро": [2.0, 1],
-            "Медь": [3.2, 1, 6],
-            "Золото": [3.3, 1, 7],
-            "Фионид": [6.6, 3, 4],
-            "Сапфир": [3.6, 1, 9],
-            "Ясень": [4.6, 4, 6],
-            "Клён": [5.5, 2, 9],
-            "Дуб": [6.6, 3, 4],
-            "Кр. дерево": [7.9, 4, 1],
-            "Обр. камень": [4.5, 2, 4],
-            "Сл. руды": [2.6, 1, 4],
-            "Сл. серебра": [2.9, 1, 5],
-            "Сл. меди": [4.5, 2, 3],
-            "Сл. золота": [8.8, 2, 4],
-            "Сл. фионида": [9.3, 4, 9],
-        };
+    /* 2. создаём новую ссылку «Объеденить предметы» */
+    const link = document.createElement('a');
+    link.href = '#';
+    link.id = 'merge-items';        // пригодится, если потом понадобятся стили
+    link.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 16 16"
+               style="vertical-align:middle;"
+               xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M2 3v2h5v2l3-3L7 1v2H2zm0 8v2h5v2l3-3-3-3v2H2z"
+                  fill="currentColor"/>
+          </svg>Объеденить&nbsp;всё`;
 
-        const rows = Array.from(document.querySelectorAll("table.table_modern tr"));
-        const inventory = {};
+    /* 3. навешиваем обработчик-заглушку */
+    link.addEventListener('click', event => {
+        event.preventDefault();         // не даём браузеру перейти по «#»
+        mergeContent();
+    });
 
-        rows.forEach(row => {
-            const tds = row.querySelectorAll("td");
-            if (tds.length === 3) {
-                const name = tds[1].innerText.trim();
-                const count = parseInt(tds[2].innerText.trim());
-                inventory[name] = count;
+    /* 4. добавляем ссылку в конец содержимого <td> */
+    td.appendChild(document.createTextNode(' ')); // пробел перед новой ссылкой
+    td.appendChild(link);
+}
+
+
+function mergeContent() {
+    CommonHelper.log('Объединяем вещи, если есть что объединять', false);
+    // Находим все div с классом invcell
+    const invCells = document.querySelectorAll("div.invcell");
+
+    // Создаем карту для хранения текста itemlink и соответствующих div.invcell
+    const itemMap = new Map();
+
+    invCells.forEach(invCell => {
+        const itemLink = invCell.querySelector("a[href^='itemlink']");
+
+        if (itemLink) {
+            let itemText = itemLink.nextSibling.textContent.trim();
+            let invText = invCell.innerText;
+            invText = invText.replace('Объединить', '');
+            invText = invText.replace('Разделить', '');
+            invText = invText.replace('Использовать', '');
+            // только с одинаковыми требованиями
+            let dop1 = invText.match(/Требования:\s*([\s\S]*?)\s*Свойства:/i);
+            dop1 = dop1 ? dop1[1].trim() : '';
+            // только с одинаковыми свойствами, исключая ёмкости
+            let dop2 = invText.match(/Свойства:\s*([\s\S]*?)\s*Продать/i);
+            dop2 = dop2 ? dop2[1].trim() : '';
+            dop2 = dop2.replace(/\s*Емкость:\s*\d+\s*/gi, '');
+
+            // и одинаковая картинка
+            let srcImg = invCell.querySelectorAll('img')[1]?.src?.split('/')?.pop();
+
+            itemText = itemText + dop1 + dop2 + srcImg, toString();
+
+            if (!itemMap.has(itemText)) {
+                itemMap.set(itemText, []);
             }
-        });
 
-        // Подсчёты
-        let resourceTotal = 0;
-        for (let name in resourcePrices) {
-            const [buyPrice, sellPrice] = resourcePrices[name];
-            const qty = inventory[name] || 0;
+            itemMap.get(itemText).push(invCell);
+        }
+    });
 
-            resourceTotal += qty * sellPrice;
+    (async () => {
+        /* ► скрытый iframe-приёмник */
+        let bgFrame = document.getElementById('bgMergeFrame');
+        if (!bgFrame) {
+            bgFrame = document.createElement('iframe');
+            bgFrame.name = 'bgMergeFrame';
+            bgFrame.id = 'bgMergeFrame';
+            bgFrame.style.display = 'none';
+            document.body.appendChild(bgFrame);
         }
 
-        let rawFishTotal = 0;
-        let smokedFishTotal = 0;
-        let allFishActual = 0;
-        let allFishHypothetical = 0;
+        /* ► util-пауза */
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-        for (let fish in fishData) {
-            const rawQty = inventory[fish] || 0;
-            const smokedName = fishData[fish].smokedName;
-            const smokedQty = inventory[smokedName] || 0;
-            const basePrice = fishData[fish].price;
-            const woodPrice = fishData[fish].woodPrice;
-            const smokedPrice = fishData[fish].smokedPrice;
+        /* ► счётчики */
+        let success = 0;
+        let fail = 0;
+        let touched = 0;         // сколько предметов вообще пытались объединить
 
-            rawFishTotal += rawQty * basePrice;
-            smokedFishTotal += smokedQty * smokedPrice;
-            allFishActual += rawQty * basePrice + smokedQty * smokedPrice;
-            allFishHypothetical += ((rawQty + smokedQty) * smokedPrice) - woodPrice;
-        }
+        /* ► основной цикл */
+        for (const [itemText, cells] of itemMap) {
+            if (cells.length <= 1) continue;                 // нужен дубликат
+            const link = cells[0].querySelector("a[href^='tosoed']");
+            if (!link) continue;
 
-        let herbTotal = 0;
-        let decoctionTotal = 0;
-        let decoctionHypotheticalTotal = 0;
+            touched++;
 
-        for (let herb in herbsData) {
-            const qty = inventory[herb] || 0;
-            const [unitPrice, decoctionPrice] = herbsData[herb];
-            herbTotal += qty * unitPrice;
-            decoctionHypotheticalTotal += qty * decoctionPrice;
-        }
+            try {
+                /* 1) тянем HTML «объединить» */
+                const resp = await fetch(link.href, {
+                    credentials: 'include',
+                    redirect: 'follow'      // разрешаем 3xx
+                });
+                if (!resp.ok) throw `HTTP ${resp.status}`;
 
-        for (let name in inventory) {
-            if (name.toLowerCase().includes("отвар")) {
-                const words = name.trim().split(' ');
-                const lastWord = words.at(-1); // или words[words.length - 1]
-                const herbPartName = lastWord.slice(0, 4);
-                const herbName = Object.keys(herbsData).find(key => key.includes(herbPartName));
+                const html = await resp.text();
 
-                if (herbsData[herbName]) {
-                    const price = herbsData[herbName][1];
-                    decoctionTotal += inventory[name] * price;
-                }
+                /* 2) достаём form#form2 */
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const form = doc.getElementById('form2');
+                if (!form) throw 'form2 not found';
+
+                /* 3) клонируем, задаём target, прячем, вставляем */
+                const cloned = form.cloneNode(true);
+                cloned.id = 'mergeForm_' + Date.now();
+                cloned.target = bgFrame.name;
+                cloned.style.display = 'none';
+                document.body.appendChild(cloned);
+
+                /* 4) сабмит */
+                cloned.requestSubmit?.() || cloned.submit();
+                success++;
+                CommonHelper.log(`✔ "${itemText}" объединён`);
+
+            } catch (err) {
+                fail++;
+                console.warn(`✖ "${itemText}" — ошибка:`, err);
             }
+
+            /* 5) пауза 300 мс */
+            await sleep(300);
         }
 
-        if (decoctionTotal) {
-            decoctionHypotheticalTotal += decoctionTotal;
-        }
-
-        const totalUnprocessed = resourceTotal + rawFishTotal + herbTotal;
-        const totalProcessed = resourceTotal + allFishHypothetical + decoctionTotal;
-        const totalHypothetical = resourceTotal + allFishHypothetical + decoctionHypotheticalTotal;
-
-        // Формируем HTML таблицу
-        const statsTable = document.createElement("table");
-        statsTable.className = "table_modern";
-        statsTable.style.cssText = "border:0; max-width:360px; margin-bottom:20px";
-
-        const rowsHTML = [
-            ["📊 Статистика по всем ресурсам", ''],
-            ["📦 Стоимость ресурсов", resourceTotal],
-            // ["🐟 Стоимость всех сырых рыб", rawFishTotal],
-            // ["🔥 Стоимость всех копчёных рыб", smokedFishTotal],
-            // ["🎣 Фактическая стоимость всех рыб (сырые + копчёные)", allFishActual],
-            ["💭 Гипотетическая стоимость всех рыб (если всё закоптить)", allFishHypothetical],
-            // ["🌿 Стоимость всех трав/корней/грибов (не отваров)", herbTotal],
-            ["🧪 Стоимость всех отваров (реально в наличии)", decoctionTotal],
-            ["🌡️ Гипотетическая стоимость отваров (если все травы превратить в отвары)", decoctionHypotheticalTotal],
-            // ["📊 Общая стоимость необработанных продуктов", totalUnprocessed],
-            // ["⚗️ Общая стоимость обработанных продуктов", totalProcessed],
-            ["🧠 Общая гипотетическая стоимость (ресурсы + все рыбы закопчены + все травы в отвары)", totalHypothetical],
-        ];
-
-        const tbody = document.createElement("tbody");
-
-        rowsHTML.forEach(([label, value]) => {
-            const tr = document.createElement("tr");
-            if (typeof value === "number") {
-                tr.innerHTML = `
-                    <td colspan="2" style="font-size:12px">${label}</td>
-                    <td align="center" style="font-size:15px">${value.toFixed(0)}</td>
-                `;
-            } else {
-                tr.innerHTML = `
-                    <td colspan="3">${label}</td>
-                `;
-            }
-            tbody.appendChild(tr);
-        });
-
-        statsTable.appendChild(tbody);
-
-        // Вставка перед первой таблицей с ресурсами
-        const firstTable = document.querySelector("table.table_modern");
-        if (firstTable) {
-            firstTable.parentNode.insertBefore(statsTable, firstTable);
+        /* ► итоговое уведомление */
+        if (touched === 0) {
+            alert('Подходящих предметов для объединения не найдено.');
+        } else if (fail === 0) {
+            alert(`Все ${success} предмет(ов) успешно объединены!`);
+        } else {
+            alert(`Объединение завершено.\nУспешно: ${success}\nОшибки: ${fail}`);
         }
     })();
 }

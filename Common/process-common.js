@@ -151,63 +151,8 @@ function backgroundListener() {
 
             return true;
         }
-
-        if (message.type === "mergeContent") {
-            CommonHelper.log("Вызываем mergeContent()");
-            mergeContent();
-            sendResponse({ success: true });
-        }
     });
 }
-
-function mergeContent() {
-    CommonHelper.log('Объединяем вещи, если есть что объединять', false);
-    // Находим все div с классом invcell
-    const invCells = document.querySelectorAll("div.invcell");
-
-    // Создаем карту для хранения текста itemlink и соответствующих div.invcell
-    const itemMap = new Map();
-
-    invCells.forEach(invCell => {
-        const itemLink = invCell.querySelector("a[href^='itemlink']");
-
-        if (itemLink) {
-            let itemText = itemLink.nextSibling.textContent.trim();
-            // только с одинаковыми требованиями
-            let dop1 = invCell.innerText.match(/Требования:\s*([\s\S]*?)\s*Свойства:/i);
-            dop1 = dop1 ? dop1[1].trim() : '';
-            // только с одинаковыми свойствами, исключая ёмкости
-            let dop2 = invCell.innerText.match(/Свойства:\s*([\s\S]*?)\s*Продать/i);
-            dop2 = dop2 ? dop2[1].trim() : '';
-            dop2 = dop2.replace(/\s*Емкость:\s*\d+\s*/gi, '');
-
-            // и одинаковая картинка
-            let srcImg = invCell.querySelectorAll('img')[1]?.src?.split('/')?.pop();
-
-            itemText = itemText + dop1 + dop2 + srcImg,toString();
-
-            if (!itemMap.has(itemText)) {
-                itemMap.set(itemText, []);
-            }
-
-            itemMap.get(itemText).push(invCell);
-        }
-    });
-
-    // Проходим по сохраненным данным и открываем новую вкладку, если itemText встречается более одного раза
-    itemMap.forEach((cells, itemText) => {
-        if (cells.length > 1) { // Если такой же текст есть в нескольких div.invcell
-            let tosoedLink = cells[0].querySelector("a[href^='tosoed']");
-            if (tosoedLink) {
-                let href = tosoedLink.href;
-
-                // Открываем новую вкладку
-                window.open(href, "_blank");
-            }
-        }
-    });
-}
-
 
 async function sendRandomFact() {
     try {
