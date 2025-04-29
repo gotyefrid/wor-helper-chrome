@@ -19,6 +19,9 @@ class CommonHelper {
 
     static async log(message, showInFront = true, important, toConsole = true) {
         try {
+            const time = (new Date()).toLocaleTimeString('ru-RU', { hour12: false });
+
+            message = time + ' ' + message;
             let logActive = await CommonHelper.getExtStorage('wor_log_active');
 
             if (showInFront) {
