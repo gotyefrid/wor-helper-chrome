@@ -267,6 +267,7 @@ class CommonHelper {
                     { command: 'start_fighting', description: 'Включить сражение' },
                     { command: 'start_bandits', description: 'Включить разбойников' },
                     { command: 'start_captcha', description: 'Включить капчу' },
+                    { command: 'to_gorod', description: 'Телепорт в город' },
                     { command: 'refresh_commands_list', description: 'Обновить команды' }
                 ]
             })

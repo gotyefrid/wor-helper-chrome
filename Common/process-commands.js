@@ -109,6 +109,12 @@ async function handleTelegramCommands(command) {
 
             await CommonHelper.sendTelegramMessage('Ссылка редиректа не назначена', 'common');
             break;
+        case '/to_gorod':
+            await CommonHelper.log('Пришла команда уйти в город');
+            let r = await fetch('/wap/teleport.php');
+            await CommonHelper.sendTelegramMessage('Ушли в город', 'common');
+            await CommonHelper.reloadPage();
+            break;
         default:
     }
 
