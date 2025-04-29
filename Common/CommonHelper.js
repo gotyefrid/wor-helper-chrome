@@ -701,4 +701,16 @@ class CommonHelper {
             console.log('Ошибка при получении сообщений чата: + ', JSON.stringify(err));
         }
     }
+    
+    /**
+     * Возвращает значение GET-параметра из текущего URL.
+     * @param {string} name – имя параметра (без «?»).
+     * @return {string|null} значение параметра или null, если не найден.
+     */
+    static getQueryParam(name) {
+        // Создаём объект URL из адреса текущей страницы
+        const url = new URL(window.location.href);
+        // Используем встроенный интерфейс URLSearchParams
+        return url.searchParams.get(name);
+    }
 }

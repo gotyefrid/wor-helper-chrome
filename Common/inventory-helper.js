@@ -4,6 +4,7 @@
     }
 
     await mergeButton();
+    await dynamicSearch()
 })();
 
 async function mergeButton() {
@@ -34,7 +35,6 @@ async function mergeButton() {
     td.appendChild(document.createTextNode(' ')); // пробел перед новой ссылкой
     td.appendChild(link);
 }
-
 
 function mergeContent() {
     CommonHelper.log('Объединяем вещи, если есть что объединять', false);
@@ -130,7 +130,7 @@ function mergeContent() {
 
             } catch (err) {
                 fail++;
-                console.warn(`✖ "${itemText}" — ошибка:`, err);
+                CommonHelper.log(`✖ "${itemText}" — ошибка:`, err);
             }
 
             /* 5) пауза 300 мс */
@@ -142,8 +142,46 @@ function mergeContent() {
             alert('Подходящих предметов для объединения не найдено.');
         } else if (fail === 0) {
             alert(`Все ${success} предмет(ов) успешно объединены!`);
+            CommonHelper.reloadPage();
         } else {
             alert(`Объединение завершено.\nУспешно: ${success}\nОшибки: ${fail}`);
+            CommonHelper.reloadPage();
         }
     })();
+}
+
+async function dynamicSearch() {
+    const td = document.querySelector('#toggle-checkboxes')?.closest('td');
+    if (!td) return;
+
+    const searchDiv = document.createElement('div');
+
+    searchDiv.id = 'fast-searsh-items';
+    searchDiv.style.marginTop = '2px';
+    searchDiv.style.marginBottom = '5px';
+    searchDiv.innerHTML = `<input id="fastserach" type="text" placeholder="Быстрый поиск" class="checkbox">`;
+
+    searchDiv.addEventListener('input', async (event) => {
+        event.preventDefault();
+        if (event.target.value) {
+            [...document.querySelectorAll('.navigation')].map(div => div.style.display = 'none');
+        } else {
+            [...document.querySelectorAll('.navigation')].map(div => div.style.display = 'block');
+        }
+
+        let sel = CommonHelper.getQueryParam('sel');
+        let result = await (await fetch('/wap/inventar.php?sel=' + sel + '&search=' + event.target.value)).text();
+        const doc = new DOMParser().parseFromString(result, 'text/html');
+        const cells = doc.querySelector('div[style*="display: flex; flex-wrap: wrap;"');
+
+        if (cells) {
+            document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = cells.outerHTML;
+        } else {
+            document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = `<div style="display: flex; flex-wrap: wrap;">
+			<div style="margin: 10px 0">Нет вещей в секции</div>        </div>`
+        }
+    });
+
+    td.appendChild(document.createTextNode(' '));
+    td.appendChild(searchDiv);
 }

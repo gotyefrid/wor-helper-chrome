@@ -61,7 +61,7 @@ class Mining {
         const progressBar = document.querySelector('#progressBar');
 
         if (!progressBar) {
-            console.warn('Элемент progressBar не найден');
+            CommonHelper.log('Элемент progressBar не найден');
             return;
         }
 
