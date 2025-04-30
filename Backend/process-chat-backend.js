@@ -32,6 +32,7 @@ export async function sendMessagesFromChat() {
 
                 if (oldMessages.length === 0) {
                     newMessages = actualMessages;
+                    await CommonHelperBackground.sendTelegramMessage('Очередь пуста, беру все сообщения.');
                 } else {
                     newMessages = chat.removeFromMatch(actualMessages, oldNewestMessage);
                 }

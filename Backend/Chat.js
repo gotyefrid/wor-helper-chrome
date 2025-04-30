@@ -4,48 +4,70 @@ export class Chat {
     isChatPage = false;
 
     /**
-     * @param {array}  array  – массив сообщений со страницы
-     * @param {object} target – объект последнего отправленного сообщения
+     * Оставляет в массиве только те сообщения, которые новее, чем target.
+     * Работет ХЗ как - ЧатЖпт писал. Решает проблему переходящих суток.
+     *
+     * @param {Array}  array  – массив сообщений, отсортированный от новых к старым
+     * @param {Object} target – объект последнего известного сообщения { type, time, text }
+     * @return {Array}        – отфильтрованный массив только с новыми сообщениями
      */
     removeFromMatch(array, target) {
-        if (!array) {
+        if (!Array.isArray(array) || array.length === 0) {
             return [];
         }
-
-        if (!target) {
+        if (!target || !target.time) {
+            // если нет target — ничего не отрезаем
             return array;
         }
 
-        // помощник: "2025-04-26 10:00:16" →  Date-timestamp
-        const toMs = s => Date.parse(s.replace(' ', 'T'));
+        // 1) Вспомогательная: парсит "HH:MM:SS" → число секунд
+        const timeToSec = str => {
+            const [h, m, s] = str.split(':').map(Number);
+            return h * 3600 + m * 60 + s;
+        };
 
-        const index = array.findIndex(item =>
-            item.type === target.type &&
-            item.time === target.time &&
-            item.text === target.text
-        );
+        // 2) Преобразуем все времена в секунды
+        const secs = array.map(msg => timeToSec(msg.time));
 
-        if (index !== -1) {
-            array.splice(index);
-        } else {
-            // ╔══ обрезка старых сообщений ══╗
-            const tgtMs = toMs(target.time);
-
-            // ищем первый элемент, НЕ старее цели
-            const firstNewerIdx = array.findIndex(msg => toMs(msg.time) >= tgtMs);
-
-            if (firstNewerIdx === -1) {
-                // все сообщения старее – очищаем массив
-                array.length = 0;
-            } else if (firstNewerIdx > 0) {
-                // удаляем всё до firstNewerIdx (сам элемент newer остаётся)
-                array.splice(0, firstNewerIdx);
-            }
-            // ╚════════════════════════════════════════╝
+        // 3) Построим массив offsets — «номер» дня для каждого сообщения
+        //    offset = 0 для самого нового (array[0]), инкрементится, когда время растёт (т.е. мы пересекли полночь)
+        const offsets = new Array(array.length);
+        offsets[0] = 0;
+        for (let i = 1; i < array.length; i++) {
+            // если время current > время предыдущего, значит текущий лежит в «еще более старом» дне
+            offsets[i] = offsets[i - 1] + (secs[i] > secs[i - 1] ? 1 : 0);
         }
 
-        return array;
+        // 4) Найдем максимальное время в исходном «дне 0» (offset = 0).
+        //    Всё, что больше этого — уже на следующий день
+        let maxSecDay0 = 0;
+        for (let i = 0; i < array.length && offsets[i] === 0; i++) {
+            if (secs[i] > maxSecDay0) {
+                maxSecDay0 = secs[i];
+            }
+        }
+
+        // 5) Парсим target.time и определяем его offset:
+        //    если целевой time-of-day больше любого времени из day0,
+        //    значит target лежит в предыдущем дне (offset = 1), иначе — в текущем (0)
+        const secTarget = timeToSec(target.time);
+        const targetOffset = secTarget > maxSecDay0 ? 1 : 0;
+
+        // 6) Фильтруем: сообщение новее target, если
+        //    — его offset < targetOffset  (оно из более «свежего» дня),
+        //    или
+        //    — offset === targetOffset и его time-of-day больше secTarget
+        return array.filter((msg, i) => {
+            if (offsets[i] < targetOffset) {
+                return true;
+            }
+            if (offsets[i] > targetOffset) {
+                return false;
+            }
+            return secs[i] > secTarget;
+        });
     }
+
 
     async sendMessagesToTelegram(msg) {
         let isToMe = false;

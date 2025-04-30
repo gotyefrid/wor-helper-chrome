@@ -89,32 +89,8 @@ class Chat {
             // Определяем тип (первое слово в строке)
             let type = parts.shift(); // "system" или "chat"
 
-            /**
-             * Берёт строку "HH:MM:SS", приклеивает к ней today,
-             * парсит и, если получилось позже текущего момента —
-             * отнимает один день.
-             */
-            function attachDate(timeStr) {
-                const zone = 'Europe/Kyiv';
-                const now = DateTime.now().setZone(zone).plus({seconds: 1});
-                const today = now.toFormat('yyyy-MM-dd');
-                const parseFormat = 'yyyy-MM-dd HH:mm:ss';
-
-                // 1) склеиваем дату + время
-                let dt = DateTime.fromFormat(`${today} ${timeStr}`, parseFormat, {zone});
-
-                // 2) если получилось > «сейчас», то это вчерашний день
-                if (dt > now) {
-                    dt = dt.minus({days: 1});
-                }
-
-                return dt.toFormat(parseFormat);
-            }
-
             // Вытаскиваем время (оно всегда в формате HH:MM:SS)
             let time = parts.shift();
-            let DateTime = luxon.DateTime;
-            time = attachDate(time);
 
             // Остальную часть склеиваем обратно в строку
             let remainingText = parts.join(" ");
