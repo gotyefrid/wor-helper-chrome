@@ -40,6 +40,18 @@ export async function sendMessagesFromChat() {
                 let resultMessages = [...newMessages, ...oldMessages];
                 await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
 
+                if (resultMessages.length > 50) {
+                    console.log('actualMessages');
+                    console.log(actualMessages);
+                    console.log('oldMessages');
+                    console.log(oldMessages);
+                    console.log('newMessages');
+                    console.log(newMessages);
+                    console.log('oldNewestMessage');
+                    console.log(oldNewestMessage);
+                    await CommonHelperBackground.sendTelegramMessage('Отправляем все сообщения со страницы');
+                }
+
                 while (resultMessages.length > 1) {
                     // Вырезаем последний элемент
                     const lastElement = resultMessages.pop();

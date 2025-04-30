@@ -1,0 +1,106 @@
+<script>
+    function removeFromMatch(array, target) {
+        if (!Array.isArray(array) || array.length === 0) {
+            return [];
+        }
+        if (!target || !target.time) {
+            // если нет target — ничего не отрезаем
+            return array;
+        }
+
+        // 1) Вспомогательная: парсит "HH:MM:SS" → число секунд
+        const timeToSec = str => {
+            const [h, m, s] = str.split(':').map(Number);
+            return h * 3600 + m * 60 + s;
+        };
+
+        // 2) Преобразуем все времена в секунды
+        const secs = array.map(msg => timeToSec(msg.time));
+
+        // 3) Построим массив offsets — «номер» дня для каждого сообщения
+        //    offset = 0 для самого нового (array[0]), инкрементится, когда время растёт (т.е. мы пересекли полночь)
+        const offsets = new Array(array.length);
+        offsets[0] = 0;
+        for (let i = 1; i < array.length; i++) {
+            // если время current > время предыдущего, значит текущий лежит в «еще более старом» дне
+            offsets[i] = offsets[i - 1] + (secs[i] > secs[i - 1] ? 1 : 0);
+        }
+
+        // 4) Найдем максимальное время в исходном «дне 0» (offset = 0).
+        //    Всё, что больше этого — уже на следующий день
+        let maxSecDay0 = 0;
+        for (let i = 0; i < array.length && offsets[i] === 0; i++) {
+            if (secs[i] > maxSecDay0) {
+                maxSecDay0 = secs[i];
+            }
+        }
+
+        // 5) Парсим target.time и определяем его offset:
+        //    если целевой time-of-day больше любого времени из day0,
+        //    значит target лежит в предыдущем дне (offset = 1), иначе — в текущем (0)
+        const secTarget = timeToSec(target.time);
+        const targetOffset = secTarget > maxSecDay0 ? 1 : 0;
+
+        // 6) Фильтруем: сообщение новее target, если
+        //    — его offset < targetOffset  (оно из более «свежего» дня),
+        //    или
+        //    — offset === targetOffset и его time-of-day больше secTarget
+        return array.filter((msg, i) => {
+            if (offsets[i] < targetOffset) {
+                return true;
+            }
+            if (offsets[i] > targetOffset) {
+                return false;
+            }
+            return secs[i] > secTarget;
+        });
+    }
+
+    let r = [
+        {
+            "type": "chat",
+            "time": "01:25:23",
+            "from": "Последний",
+            "to": "Пустой Стакан",
+            "text": "Я второй день тебе ору .biggrin. уже охрип .biggrin."
+        },
+        {
+            "type": "system",
+            "time": "00:25:18",
+            "from": "system",
+            "to": "",
+            "text": "Найдено Корни алтея!"
+        },
+        {
+            "type": "chat",
+            "time": "23:25:09",
+            "from": "Gwatlow",
+            "to": "",
+            "text": "Квесты охотника! .flag2."
+        },
+        {
+            "type": "system",
+            "time": "23:11:32",
+            "from": "system",
+            "to": "",
+            "text": "Найдено Гриб свинух!"
+        },
+        {
+            "type": "chat",
+            "time": "22:15:44",
+            "from": "Tipa40",
+            "to": "First blood",
+            "text": "01.11.23 .biggrin."
+        }
+    ];
+
+    let t =
+    {
+        "type": "",
+        "time": "22:11:44",
+        "from": "",
+        "to": "",
+        "text": "333"
+    };
+    console.log(removeFromMatch(r, t));
+</script>
