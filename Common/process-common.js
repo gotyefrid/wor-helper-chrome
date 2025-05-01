@@ -151,6 +151,10 @@ async function processPrimanka(messages) {
         const isNeed = await CommonHelper.getExtStorage('wor_fight_activate_primanka');
         if (!isNeed) return;
 
+        if (document.location.href.includes('cap') || document.location.href.includes('primanka')) {
+            return;
+        }
+
         for (const msg of messages) {
             if (msg.type !== 'system') continue;
 
@@ -169,25 +173,30 @@ async function processPrimanka(messages) {
                 } else {
                     CommonHelper.log("Не удалось найти число приманок");
                 }
+
+                return;
             }
 
             if (msg.text.includes('Приманка закончилась')) {
                 const response = await fetch('/wap/teritory.php?uni=1746025807&hash=713bc86');
+
                 if (!response.ok) {
                     await CommonHelper.sendTelegramMessage(
-                        `Ошибка загрузки страницы Природы: ${response.status}`
+                        `Ошибка загрузки страницы Природы для приманки: ${response.status}`
                     );
                     return;
                 }
+
+                if (!response.url.includes('teritory')) {
+                    CommonHelper.log('Запрос приманки вернул другую страницу, не Природу. Попробуем позже.');
+                    return;
+                }
+
                 const html = await response.text();
                 const parser = new DOMParser();
                 const newDoc = parser.parseFromString(html, 'text/html');
 
                 if (!html.includes('Мини-карта')) {
-                    console.log(html);
-                    await CommonHelper.sendTelegramMessage(
-                        'Проблема с включением приманки — не попадаем на страницу Природы'
-                    );
                     return;
                 }
 
@@ -206,6 +215,8 @@ async function processPrimanka(messages) {
                     }
                 } else {
                     CommonHelper.log('Не нашли кнопку для активации приманки');
+                    CommonHelper.log(html);
+                    await CommonHelper.sendTelegramMessage('Проблема с включением приманки — нет кнопки Активации приманки');
                 }
 
                 return;
