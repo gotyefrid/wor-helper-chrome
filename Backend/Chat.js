@@ -1,11 +1,11 @@
-import { CommonHelperBackground } from './CommonHelperBackground.js';
+import {CommonHelperBackground} from './CommonHelperBackground.js';
 
 export class Chat {
     isChatPage = false;
 
     /**
      * Оставляет в массиве только те сообщения, которые новее, чем target.
-     * Работет ХЗ как - ЧатЖпт писал. Решает проблему переходящих суток.
+     * Работает ХЗ как - ЧатЖпт писал. Решает проблему переходящих суток.
      *
      * @param {Array}  array  – массив сообщений, отсортированный от новых к старым
      * @param {Object} target – объект последнего известного сообщения { type, time, text }
@@ -16,47 +16,39 @@ export class Chat {
             return [];
         }
         if (!target || !target.time) {
-            // если нет target — ничего не отрезаем
             return array;
         }
 
-        // 1) Вспомогательная: парсит "HH:MM:SS" → число секунд
+        // парсер "HH:MM:SS" → секунды
         const timeToSec = str => {
             const [h, m, s] = str.split(':').map(Number);
             return h * 3600 + m * 60 + s;
         };
 
-        // 2) Преобразуем все времена в секунды
-        const secs = array.map(msg => timeToSec(msg.time));
+        const secTarget = timeToSec(target.time);
+        const secLatest = timeToSec(array[0].time);
+        // *** вот эта проверка ***
+        // если target случился позже, чем самое свежее сообщение в array,
+        // то новых сообщений просто нет:
+        if (secTarget > secLatest) {
+            return [];
+        }
 
-        // 3) Построим массив offsets — «номер» дня для каждого сообщения
-        //    offset = 0 для самого нового (array[0]), инкрементится, когда время растёт (т.е. мы пересекли полночь)
+        // дальше — ваша прежняя логика для учёта перехода через полночь
+        const secs = array.map(msg => timeToSec(msg.time));
         const offsets = new Array(array.length);
         offsets[0] = 0;
         for (let i = 1; i < array.length; i++) {
-            // если время current > время предыдущего, значит текущий лежит в «еще более старом» дне
+            // если время возросло — значит мы перешли в "еще более старый" день
             offsets[i] = offsets[i - 1] + (secs[i] > secs[i - 1] ? 1 : 0);
         }
 
-        // 4) Найдем максимальное время в исходном «дне 0» (offset = 0).
-        //    Всё, что больше этого — уже на следующий день
-        let maxSecDay0 = 0;
-        for (let i = 0; i < array.length && offsets[i] === 0; i++) {
-            if (secs[i] > maxSecDay0) {
-                maxSecDay0 = secs[i];
-            }
-        }
-
-        // 5) Парсим target.time и определяем его offset:
-        //    если целевой time-of-day больше любого времени из day0,
-        //    значит target лежит в предыдущем дне (offset = 1), иначе — в текущем (0)
-        const secTarget = timeToSec(target.time);
+        // найдём границу "нулевого дня":
+        let maxSecDay0 = secs[0];
+        // определяем смещение дня для target (0 — текущий, 1 — предыдущий)
         const targetOffset = secTarget > maxSecDay0 ? 1 : 0;
 
-        // 6) Фильтруем: сообщение новее target, если
-        //    — его offset < targetOffset  (оно из более «свежего» дня),
-        //    или
-        //    — offset === targetOffset и его time-of-day больше secTarget
+        // фильтруем: оставляем те, которые строго новее таргета
         return array.filter((msg, i) => {
             if (offsets[i] < targetOffset) {
                 return true;
