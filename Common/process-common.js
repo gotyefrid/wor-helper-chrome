@@ -16,20 +16,6 @@
         sendRandomFact();
     }
 
-    let isNeedActivatePrimanka = await CommonHelper.getExtStorage('wor_fight_activate_primanka');
-
-    if (isNeedActivatePrimanka && document.location.href.includes('teritory')) {
-        CommonHelper.log("Ищем кнопку активации приманки");
-        let activateLink = [...document.querySelectorAll('span')]?.find(span => span.innerText.includes('подкинуть новую приманку'));
-
-        if (activateLink) {
-            CommonHelper.log('Активируем приманку');
-            await CommonHelper.clickAndWait(activateLink.parentElement);
-        } else {
-            CommonHelper.log('Не нашли кнопку для активации приманки');
-        }
-    }
-
     backgroundListener();
 })();
 
@@ -142,6 +128,8 @@ function backgroundListener() {
                     let msgBox = htmlPage.querySelector('#msg_box');
                     let formattedMessages = Chat.getParsedMessages(msgBox);
 
+                    processActualMessages(formattedMessages);
+
                     sendResponse({ formattedMessages });
                 } catch (err) {
                     CommonHelper.log('Ошибка при получении сообщений чата: + ', JSON.stringify(err));
@@ -152,6 +140,81 @@ function backgroundListener() {
             return true;
         }
     });
+}
+
+async function processActualMessages(messages) {
+    await processPrimanka(messages);
+}
+
+async function processPrimanka(messages) {
+    try {
+        const isNeed = await CommonHelper.getExtStorage('wor_fight_activate_primanka');
+        if (!isNeed) return;
+
+        for (const msg of messages) {
+            if (msg.type !== 'system') continue;
+
+            if (msg.text.includes('Приманка активирована!')) {
+                CommonHelper.log('Приманка ещё активна');
+                return;
+            }
+
+            if (msg.text.includes('Приманки осталось на')) {
+                const regex = /Приманки осталось на\s*(\d+)\s*раз/i;
+                const match = msg.text.match(regex);
+
+                if (match) {
+                    const remaining = Number(match[1]);
+                    CommonHelper.log('До активации приманки еще ' + remaining + ' нападений');
+                } else {
+                    CommonHelper.log("Не удалось найти число приманок");
+                }
+            }
+
+            if (msg.text.includes('Приманка закончилась')) {
+                const response = await fetch('/wap/teritory.php?uni=1746025807&hash=713bc86');
+                if (!response.ok) {
+                    await CommonHelper.sendTelegramMessage(
+                        `Ошибка загрузки страницы Природы: ${response.status}`
+                    );
+                    return;
+                }
+                const html = await response.text();
+                const parser = new DOMParser();
+                const newDoc = parser.parseFromString(html, 'text/html');
+
+                if (!html.includes('Мини-карта')) {
+                    console.log(html);
+                    await CommonHelper.sendTelegramMessage(
+                        'Проблема с включением приманки — не попадаем на страницу Природы'
+                    );
+                    return;
+                }
+
+                CommonHelper.log("Ищем кнопку активации приманки");
+                const activateSpan = Array.from(newDoc.querySelectorAll('span'))
+                    .find(s => s.textContent.includes('подкинуть новую приманку'));
+
+                if (activateSpan) {
+                    const link = activateSpan.closest('a');
+                    if (link && link.href) {
+                        CommonHelper.log('Активируем приманку, переходим по ссылке');
+                        await CommonHelper.delay(1000);
+                        window.location.href = link.href;
+                    } else {
+                        CommonHelper.log('Нашли span, но не смогли получить <a>');
+                    }
+                } else {
+                    CommonHelper.log('Не нашли кнопку для активации приманки');
+                }
+
+                return;
+            }
+        }
+    } catch (e) {
+        CommonHelper.log('Ошибка в processPrimanka: ' + e.message);
+        await CommonHelper.sendTelegramMessage('Ошибка при обработке приманки: ' + e.stack);
+    }
 }
 
 async function sendRandomFact() {
