@@ -1,4 +1,4 @@
-import {CommonHelperBackground} from './CommonHelperBackground.js';
+import { CommonHelperBackground } from './CommonHelperBackground.js';
 
 export class Chat {
     isChatPage = false;
@@ -19,6 +19,15 @@ export class Chat {
         // 2. target falsy или без time → возвращает исходный array
         if (!target || typeof target.time !== 'string') {
             return arr;
+        }
+        // 8. ранний выход: если есть элемент с тем же time и text → всё до него
+        if (typeof target.text === 'string') {
+            const idx = arr.findIndex(
+                m => m.time === target.time && m.text === target.text
+            );
+            if (idx !== -1) {
+                return arr.slice(0, idx);
+            }
         }
 
         // Парсер времени "HH:MM:SS" → секунды с начала дня
@@ -46,7 +55,7 @@ export class Chat {
             return result;
         } else {
             // --- Случай с переходом через полночь ---
-            // Находим индекс, где начинается "предыдущий день"
+            // Находим точку разрыва (где секунды начинают расти)
             let splitIndex = -1;
             for (let i = 1; i < arrSecs.length; i++) {
                 if (arrSecs[i] > arrSecs[i - 1]) {
@@ -54,8 +63,8 @@ export class Chat {
                     break;
                 }
             }
-            // Если не нашли точку разрыва, обрабатываем как без перехода
             if (splitIndex === -1) {
+                // не нашли — обрабатывать как без перехода
                 const result = [];
                 for (let i = 0; i < arr.length; i++) {
                     if (arrSecs[i] >= targetSec) {
@@ -68,57 +77,40 @@ export class Chat {
             }
 
             // Границы зон
-            const prefixMax = arrSecs[0];
-            const prefixMin = arrSecs[splitIndex - 1];
-            const suffixMax = arrSecs[splitIndex];
-            const suffixMin = arrSecs[arrSecs.length - 1];
+            const prefixMax = arrSecs[0],            // самое раннее после полуночи
+                prefixMin = arrSecs[splitIndex - 1],
+                suffixMax = arrSecs[splitIndex],
+                suffixMin = arrSecs[arrSecs.length - 1];
 
-            // Определяем, в какой "зоне" лежит target
+            // Определяем зону target
             let zone = null;
             if (targetSec <= prefixMax && targetSec >= prefixMin) {
                 zone = 'prefix';
             } else if (targetSec <= suffixMax && targetSec >= suffixMin) {
                 zone = 'suffix';
             }
-            // Если target вне диапазона — решаем, older или newer
+            // target вне диапазона
             if (!zone) {
-                // новее всех → []
                 if (targetSec > prefixMax) return [];
-                // старше всех → весь массив
                 if (targetSec < suffixMin) return arr;
-                // на всякий случай
                 return [];
             }
 
-            // Собираем результат по зонам
+            // Формируем результат
             const result = [];
             for (let i = 0; i < arr.length; i++) {
-                const itemSec = arrSecs[i];
-
+                const sec = arrSecs[i];
                 if (zone === 'prefix') {
-                    // в "утренней" части до полуночи
                     if (i < splitIndex) {
-                        if (itemSec >= targetSec) {
-                            result.push(arr[i]);
-                        } else {
-                            break;
-                        }
-                    } else {
-                        // дальше — предыдущий день
-                        break;
-                    }
+                        if (sec >= targetSec) result.push(arr[i]);
+                        else break;
+                    } else break;
                 } else {
-                    // zone === 'suffix'
                     if (i < splitIndex) {
-                        // все утренние события — после цели
                         result.push(arr[i]);
                     } else {
-                        // в "вечерней" части до полуночи
-                        if (itemSec >= targetSec) {
-                            result.push(arr[i]);
-                        } else {
-                            break;
-                        }
+                        if (sec >= targetSec) result.push(arr[i]);
+                        else break;
                     }
                 }
             }
