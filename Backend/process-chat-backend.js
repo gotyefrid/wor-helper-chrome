@@ -21,24 +21,41 @@ export async function sendMessagesFromChat() {
             if (response.error) {
                 return;
             }
-            
+
             (async () => {
                 let chat = new Chat();
                 let newMessages = [];
+                let resultMessages = [];
 
                 let actualMessages = response.formattedMessages;
                 let oldMessages = await CommonHelperBackground.getExtStorage('wor_chat_message_queue') || [];
-                let oldNewestMessage = oldMessages[0] ?? [];
+                let oldNewestMessage = oldMessages[0] ?? {};
+                // console.log('oldNewestMessage');
+                // console.log(oldNewestMessage);
 
                 if (oldMessages.length === 0) {
-                    newMessages = actualMessages;
+                    resultMessages = actualMessages
                     await CommonHelperBackground.sendTelegramMessage('Очередь пуста, беру все сообщения.');
-                } else {
+                } else if (oldNewestMessage) {
                     newMessages = chat.removeFromMatch(actualMessages, oldNewestMessage);
+                    // console.log('newMessages');
+                    // console.log(...newMessages);
+                    resultMessages = [...newMessages, ...oldMessages];
                 }
 
-                let resultMessages = [...newMessages, ...oldMessages];
+                // if (oldNewestMessage) {
+                //     resultMessages = resultMessages.filter(msg =>
+                //         !(
+                //             msg.text === oldNewestMessage.text &&
+                //             msg.time === oldNewestMessage.time &&
+                //             msg.type === oldNewestMessage.type
+                //         )
+                //     );
+                // }
                 await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
+                console.log('queue=resultMessages');
+                console.log(...resultMessages);
+
 
                 if (resultMessages.length > 50) {
                     console.log('actualMessages');
@@ -52,10 +69,40 @@ export async function sendMessagesFromChat() {
                     await CommonHelperBackground.sendTelegramMessage('Отправляем все сообщения со страницы');
                 }
 
-                while (resultMessages.length > 1) {
+                while (resultMessages.length >= 1) {
+                    if (resultMessages.length == 1 && resultMessages[0] !== undefined) {
+                        // console.log('oldNewestMessage');
+                        // console.log(oldNewestMessage);
+                        // console.log('resultMessages[0]');
+                        // console.log(resultMessages[0]);
+
+                        if (resultMessages[0].sended == true) {
+                            break;
+                        }
+
+                        resultMessages[0].sended = true;
+                        await chat.sendMessagesToTelegram(resultMessages[0]);
+                        await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
+                        break;
+                    }
+
                     // Вырезаем последний элемент
                     const lastElement = resultMessages.pop();
-                    await chat.sendMessagesToTelegram(lastElement);
+
+                    if (lastElement.sended != true) {
+                        await chat.sendMessagesToTelegram(lastElement);
+                    }
+                    // if (
+                    //     resultMessages.length == 1 &&
+                    //     oldNewestMessage &&
+                    //     oldNewestMessage.text == lastElement.text &&
+                    //     oldNewestMessage.time == lastElement.time &&
+                    //     oldNewestMessage.type == lastElement.type
+                    // ) {
+                    //     console.log('here')
+                    //     break;
+                    // }
+
                     await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
                 }
 
