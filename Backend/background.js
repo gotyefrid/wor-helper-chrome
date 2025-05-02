@@ -2,7 +2,7 @@ import { sendMessagesFromChat } from './process-chat-backend.js';
 
 chrome.runtime.onInstalled.addListener(() => {
     chrome.alarms.create('sendMessagesAlarm', {
-        periodInMinutes: 0.1 // 15 секунд (0.25 мин)
+        periodInMinutes: 0.25 // 15 секунд (0.25 мин)
     });
 });
 

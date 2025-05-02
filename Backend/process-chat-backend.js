@@ -30,32 +30,16 @@ export async function sendMessagesFromChat() {
                 let actualMessages = response.formattedMessages;
                 let oldMessages = await CommonHelperBackground.getExtStorage('wor_chat_message_queue') || [];
                 let oldNewestMessage = oldMessages[0] ?? {};
-                // console.log('oldNewestMessage');
-                // console.log(oldNewestMessage);
 
                 if (oldMessages.length === 0) {
                     resultMessages = actualMessages
                     await CommonHelperBackground.sendTelegramMessage('Очередь пуста, беру все сообщения.');
                 } else if (oldNewestMessage) {
                     newMessages = chat.removeFromMatch(actualMessages, oldNewestMessage);
-                    // console.log('newMessages');
-                    // console.log(...newMessages);
                     resultMessages = [...newMessages, ...oldMessages];
                 }
 
-                // if (oldNewestMessage) {
-                //     resultMessages = resultMessages.filter(msg =>
-                //         !(
-                //             msg.text === oldNewestMessage.text &&
-                //             msg.time === oldNewestMessage.time &&
-                //             msg.type === oldNewestMessage.type
-                //         )
-                //     );
-                // }
                 await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
-                console.log('queue=resultMessages');
-                console.log(...resultMessages);
-
 
                 if (resultMessages.length > 50) {
                     console.log('actualMessages');
@@ -71,10 +55,6 @@ export async function sendMessagesFromChat() {
 
                 while (resultMessages.length >= 1) {
                     if (resultMessages.length == 1 && resultMessages[0] !== undefined) {
-                        // console.log('oldNewestMessage');
-                        // console.log(oldNewestMessage);
-                        // console.log('resultMessages[0]');
-                        // console.log(resultMessages[0]);
 
                         if (resultMessages[0].sended == true) {
                             break;
@@ -92,16 +72,6 @@ export async function sendMessagesFromChat() {
                     if (lastElement.sended != true) {
                         await chat.sendMessagesToTelegram(lastElement);
                     }
-                    // if (
-                    //     resultMessages.length == 1 &&
-                    //     oldNewestMessage &&
-                    //     oldNewestMessage.text == lastElement.text &&
-                    //     oldNewestMessage.time == lastElement.time &&
-                    //     oldNewestMessage.type == lastElement.type
-                    // ) {
-                    //     console.log('here')
-                    //     break;
-                    // }
 
                     await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
                 }
