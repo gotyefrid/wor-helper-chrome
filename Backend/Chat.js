@@ -11,53 +11,119 @@ export class Chat {
      * @param {Object} target – объект последнего известного сообщения { type, time, text }
      * @return {Array}        – отфильтрованный массив только с новыми сообщениями
      */
-    removeFromMatch(array, target) {
-        if (!Array.isArray(array) || array.length === 0) {
+    removeFromMatch(arr, target) {
+        // 1. array non-array или пустой → []
+        if (!Array.isArray(arr) || arr.length === 0) {
             return [];
         }
-        if (!target || !target.time) {
-            return array;
+        // 2. target falsy или без time → возвращает исходный array
+        if (!target || typeof target.time !== 'string') {
+            return arr;
         }
 
-        // парсер "HH:MM:SS" → секунды
-        const timeToSec = str => {
-            const [h, m, s] = str.split(':').map(Number);
+        // Парсер времени "HH:MM:SS" → секунды с начала дня
+        const parseTimeSec = (timeStr) => {
+            const [h, m, s] = timeStr.split(':').map(Number);
             return h * 3600 + m * 60 + s;
         };
 
-        const secTarget = timeToSec(target.time);
-        const secLatest = timeToSec(array[0].time);
-        // *** вот эта проверка ***
-        // если target случился позже, чем самое свежее сообщение в array,
-        // то новых сообщений просто нет:
-        if (secTarget > secLatest) {
-            return [];
-        }
+        const arrSecs = arr.map(item => parseTimeSec(item.time));
+        const targetSec = parseTimeSec(target.time);
 
-        // дальше — ваша прежняя логика для учёта перехода через полночь
-        const secs = array.map(msg => timeToSec(msg.time));
-        const offsets = new Array(array.length);
-        offsets[0] = 0;
-        for (let i = 1; i < array.length; i++) {
-            // если время возросло — значит мы перешли в "еще более старый" день
-            offsets[i] = offsets[i - 1] + (secs[i] > secs[i - 1] ? 1 : 0);
-        }
+        // Проверяем, есть ли переход через полночь
+        const wrap = arrSecs[0] < arrSecs[arrSecs.length - 1];
 
-        // найдём границу "нулевого дня":
-        let maxSecDay0 = secs[0];
-        // определяем смещение дня для target (0 — текущий, 1 — предыдущий)
-        const targetOffset = secTarget > maxSecDay0 ? 1 : 0;
-
-        // фильтруем: оставляем те, которые строго новее таргета
-        return array.filter((msg, i) => {
-            if (offsets[i] < targetOffset) {
-                return true;
+        if (!wrap) {
+            // --- Простой случай: без перехода суток ---
+            const result = [];
+            for (let i = 0; i < arr.length; i++) {
+                if (arrSecs[i] >= targetSec) {
+                    result.push(arr[i]);
+                } else {
+                    break;
+                }
             }
-            if (offsets[i] > targetOffset) {
-                return false;
+            return result;
+        } else {
+            // --- Случай с переходом через полночь ---
+            // Находим индекс, где начинается "предыдущий день"
+            let splitIndex = -1;
+            for (let i = 1; i < arrSecs.length; i++) {
+                if (arrSecs[i] > arrSecs[i - 1]) {
+                    splitIndex = i;
+                    break;
+                }
             }
-            return secs[i] > secTarget;
-        });
+            // Если не нашли точку разрыва, обрабатываем как без перехода
+            if (splitIndex === -1) {
+                const result = [];
+                for (let i = 0; i < arr.length; i++) {
+                    if (arrSecs[i] >= targetSec) {
+                        result.push(arr[i]);
+                    } else {
+                        break;
+                    }
+                }
+                return result;
+            }
+
+            // Границы зон
+            const prefixMax = arrSecs[0];
+            const prefixMin = arrSecs[splitIndex - 1];
+            const suffixMax = arrSecs[splitIndex];
+            const suffixMin = arrSecs[arrSecs.length - 1];
+
+            // Определяем, в какой "зоне" лежит target
+            let zone = null;
+            if (targetSec <= prefixMax && targetSec >= prefixMin) {
+                zone = 'prefix';
+            } else if (targetSec <= suffixMax && targetSec >= suffixMin) {
+                zone = 'suffix';
+            }
+            // Если target вне диапазона — решаем, older или newer
+            if (!zone) {
+                // новее всех → []
+                if (targetSec > prefixMax) return [];
+                // старше всех → весь массив
+                if (targetSec < suffixMin) return arr;
+                // на всякий случай
+                return [];
+            }
+
+            // Собираем результат по зонам
+            const result = [];
+            for (let i = 0; i < arr.length; i++) {
+                const itemSec = arrSecs[i];
+
+                if (zone === 'prefix') {
+                    // в "утренней" части до полуночи
+                    if (i < splitIndex) {
+                        if (itemSec >= targetSec) {
+                            result.push(arr[i]);
+                        } else {
+                            break;
+                        }
+                    } else {
+                        // дальше — предыдущий день
+                        break;
+                    }
+                } else {
+                    // zone === 'suffix'
+                    if (i < splitIndex) {
+                        // все утренние события — после цели
+                        result.push(arr[i]);
+                    } else {
+                        // в "вечерней" части до полуночи
+                        if (itemSec >= targetSec) {
+                            result.push(arr[i]);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
     }
 
 
