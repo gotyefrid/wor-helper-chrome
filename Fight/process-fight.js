@@ -13,7 +13,8 @@
         await CommonHelper.log('Мы на странице боя!');
 
         let skipList = await CommonHelper.getExtStorage('wor_fight_not_to_fight');
-        skipList = skipList.map(name => name.toLowerCase().trim());
+
+        skipList = skipList?.map(name => name.toLowerCase().trim()) ?? [];
 
         // Пропускать боссов
         fight.enemiesToSkip = skipList;
