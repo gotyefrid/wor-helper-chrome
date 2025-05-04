@@ -52,7 +52,8 @@ export class Chat {
                     break;
                 }
             }
-            return result;
+            // если ничего не подошло (target свежее всех) — вернуть самый свежий
+            return result.length ? result : [arr[0]];
         } else {
             // --- Случай с переходом через полночь ---
             // Находим точку разрыва (где секунды начинают расти)
@@ -73,11 +74,11 @@ export class Chat {
                         break;
                     }
                 }
-                return result;
+                return result.length ? result : [arr[0]];
             }
 
             // Границы зон
-            const prefixMax = arrSecs[0],            // самое раннее после полуночи
+            const prefixMax = arrSecs[0],            // самое свежее после полуночи
                 prefixMin = arrSecs[splitIndex - 1],
                 suffixMax = arrSecs[splitIndex],
                 suffixMin = arrSecs[arrSecs.length - 1];
@@ -91,12 +92,15 @@ export class Chat {
             }
             // target вне диапазона
             if (!zone) {
-                if (targetSec > prefixMax) return [];
+                // свежее всех → вернуть самый свежий
+                if (targetSec > prefixMax) return [arr[0]];
+                // старше всех → весь массив
                 if (targetSec < suffixMin) return arr;
-                return [];
+                // на всякий случай
+                return [arr[0]];
             }
 
-            // Формируем результат
+            // Формируем результат по зонам
             const result = [];
             for (let i = 0; i < arr.length; i++) {
                 const sec = arrSecs[i];
@@ -105,7 +109,7 @@ export class Chat {
                         if (sec >= targetSec) result.push(arr[i]);
                         else break;
                     } else break;
-                } else {
+                } else { // 'suffix'
                     if (i < splitIndex) {
                         result.push(arr[i]);
                     } else {
