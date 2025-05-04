@@ -3,6 +3,12 @@ import { CommonHelperBackground } from './CommonHelperBackground.js';
 
 export async function sendMessagesFromChat() {
     try {
+        let notification = await CommonHelperBackground.getExtStorage('wor_tg_notifications_active');
+
+        if (!notification) {
+            return;
+        }
+
         const tabs = await chrome.tabs.query({});
         // Находим первую вкладку, где в URL есть "/wap/"
         const targetTab = tabs.find(tab => tab.url && tab.url.includes("/wap/"));

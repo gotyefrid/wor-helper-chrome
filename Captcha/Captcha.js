@@ -32,20 +32,36 @@ class Captcha {
     }
 
     async getCoorditanes(image) {
-        const CAPTCHA_HOST = await CommonHelper.getExtStorage('wor_captcha_host');
-        let detectFormData = new FormData();
-        detectFormData.append("file", image);
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
 
-        let detectResponse = await fetch(CAPTCHA_HOST + "/detect_puzzle", {
-            method: "POST",
-            body: detectFormData
+            reader.onload = function () {
+                const base64Image = reader.result;
+
+                chrome.runtime.sendMessage({
+                    action: "sendRequestResoleCaptcha",
+                    data: {imageBase64: base64Image}
+                }, function (response) {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError.message);
+                    } else if (!response) {
+                        reject("Нет ответа от background");
+                    } else if (response.success) {
+                        resolve(response.data); // <- вернёт то, что прислал сервер
+                    } else {
+                        reject(response.error || "Ошибка при распознавании");
+                    }
+                });
+            };
+
+            reader.onerror = function () {
+                reject("Ошибка чтения файла");
+            };
+
+            reader.readAsDataURL(image);
         });
-
-        if (!detectResponse.ok) throw new Error("Ошибка при запросе detect_puzzle");
-        let detectResult = await detectResponse.json();
-
-        return detectResult;
     }
+
 
     getImageFromDOM(imgElement, filename = "image.jpg") {
         try {
