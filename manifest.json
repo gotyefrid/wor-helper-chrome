@@ -164,6 +164,15 @@
                 "Territory/map-history.js",
                 "Territory/move-to-coords.js"
             ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/chat2*",
+                "http://185.212.47.8/wap/chat2*"
+            ],
+            "js": [
+                "Chat/process-chat.js"
+            ]
         }
     ]
 }
