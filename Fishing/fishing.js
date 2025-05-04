@@ -36,7 +36,7 @@
             }
 
             if (fishing.isSetLocationPage){
-                await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 1500));
+                await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
                 CommonHelper.setFightExitUrl(document.location.href);
                 fishing.processSetLocationPage();
                 return;

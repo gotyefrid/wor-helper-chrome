@@ -69,7 +69,7 @@ class Chemistry {
     async processGetLootPage() {
         let getLootButton = document.querySelector('input[value=Собрать]');
         CommonHelper.log('Жмём кнопку "Собрать"');
-        await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1500));
+        await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
         await CommonHelper.clickAndWait(getLootButton);
     }
 

@@ -41,7 +41,7 @@
 
 async function process(fightClass) {
     if (!fightClass.isFightPage) {
-        await CommonHelper.delay(CommonHelper.getRandomNumber(200, 500));
+        await CommonHelper.delay(CommonHelper.SMALL_RANDOM);
         await CommonHelper.log('Процессинг боя запущен на на странице боя. Обновляем страницу!');
         CommonHelper.reloadPage();
         return;
@@ -49,7 +49,7 @@ async function process(fightClass) {
 
     if (fightClass.isWaitPage) {
         CommonHelper.log('Мы на странице ожидания, обновляемся...');
-        await fightClass.processWaitPage(CommonHelper.getRandomNumber(1000, 2000));
+        await fightClass.processWaitPage(CommonHelper.SMALL_MID_RANDOM);
         return;
     }
 
@@ -75,7 +75,7 @@ async function process(fightClass) {
 
     // Если мы тут - значит мы на странице боя
     await CommonHelper.log('Атакуем');
-    await CommonHelper.delay(CommonHelper.getRandomNumber(200, 500));
+    await CommonHelper.delay(CommonHelper.EXTRA_SMALL_RANDOM);
 
     if (fightClass.needPotHP) {
         await fightClass.potHP();

@@ -1,5 +1,21 @@
 class CommonHelper {
-    static delay(ms) {
+    static EXTRA_SMALL_RANDOM = CommonHelper.getRandomNumber(100, 300);
+    static SMALL_RANDOM = CommonHelper.getRandomNumber(300, 700);
+    static SMALL_MID_RANDOM = CommonHelper.getRandomNumber(500, 1000);
+    static MEDIUM_RANDOM = CommonHelper.getRandomNumber(1000, 3000);
+    static LARGE_RANDOM = CommonHelper.getRandomNumber(3000, 5000);
+    static EXTRA_LARGE_RANDOM = CommonHelper.getRandomNumber(5000, 7000);
+    static XXL_RANDOM = CommonHelper.getRandomNumber(7000, 15000);
+
+    static delay(msFrom, msTo = null) {
+        let ms = 0;
+
+        if (msTo) {
+            ms = CommonHelper.getRandomNumber(msFrom, msTo)
+        } else {
+            ms = msFrom;
+        }
+
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 

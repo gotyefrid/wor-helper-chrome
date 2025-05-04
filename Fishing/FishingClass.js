@@ -90,7 +90,7 @@ class Fishing {
             // «Подсечь» — кликаем, когда появится
             this.#waitForPodsech()
                 .then(async (link) => {
-                    await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 1500));
+                    await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
                     await CommonHelper.clickAndWait(link);
                 })
                 .catch(console.error);
@@ -105,7 +105,7 @@ class Fishing {
                 .catch(console.error);
         } else {
             // Кликаем Подсечь
-            await CommonHelper.delay(CommonHelper.getRandomNumber(1500, 2000));
+            await CommonHelper.delay(2000, 2500);
             await CommonHelper.clickAndWait(bp.querySelector('a'));
         }
     }
@@ -262,7 +262,7 @@ class Fishing {
         let startFishingButton = [...document.querySelectorAll('a')].find(a => a.innerText.toLowerCase().includes('ловить рыбу'));
 
         if (startFishingButton) {
-            await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1500));
+            await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
             await CommonHelper.clickAndWait(startFishingButton);
             return;
         }

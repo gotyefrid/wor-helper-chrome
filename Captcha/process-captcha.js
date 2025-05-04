@@ -22,7 +22,7 @@ window.addEventListener("load", async function () {
     let captcha = new Captcha();
 
     if (captcha.lastTryWasWrong()) {
-        await CommonHelper.delay(3000);
+        await CommonHelper.delay(CommonHelper.MEDIUM_RANDOM);
         let currentErrorCount = await CommonHelper.getExtStorage('wor_captcha_error_count') || 0; // либо получить значение - либо 0
 
         if (currentErrorCount > 2) {
@@ -114,13 +114,13 @@ window.addEventListener("load", async function () {
             if (dx > randomOffset || dy > randomOffset) {
                 CommonHelper.sendTelegramMessage('🛑 Пазл не достиг цели');
                 CommonHelper.log('🛑 Пазл не достиг цели');
-                await CommonHelper.delay(2000);
+                await CommonHelper.delay(CommonHelper.MEDIUM_RANDOM);
                 CommonHelper.reloadPage();
             } else {
                 // ✅ Всё ок
                 CommonHelper.log("✅ Пазл на месте");
                 await CommonHelper.setExtStorage('wor_captcha_error_count', 0);
-                await CommonHelper.delay(CommonHelper.getRandomNumber(3000, 15000));
+                await CommonHelper.delay(1000, 10000);
 
                 CommonHelper.clickAndWait(document.querySelector('input[type=submit]'));
                 return;

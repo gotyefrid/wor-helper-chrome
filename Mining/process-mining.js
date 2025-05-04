@@ -34,7 +34,7 @@
 
             if (mining.isGetLootPage) {
                 await CommonHelper.setFightExitUrl(document.location.href);
-                await CommonHelper.delay(CommonHelper.getRandomNumber(200, 700));
+                await CommonHelper.delay(CommonHelper.SMALL_RANDOM);
                 await mining.processGetLootPage();
                 return;
             }
@@ -52,7 +52,7 @@
 
             if (mining.isTerritoryPage && inspectButton) {
                 await CommonHelper.setFightExitUrl(inspectButton.href);
-                await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1000));
+                await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
                 await mining.processTerritoryPage(inspectButton);
                 return;
             } else {

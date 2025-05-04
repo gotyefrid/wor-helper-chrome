@@ -188,7 +188,7 @@ class Fight {
 
         let hitButton = document.querySelector('input[name=bitvraga]');
 
-        await CommonHelper.delay(CommonHelper.getRandomNumber(400, 1000));
+        await CommonHelper.delay(CommonHelper.SMALL_RANDOM);
 
         if (hitButton) {
             await CommonHelper.clickAndWait(hitButton);
@@ -261,16 +261,18 @@ class Fight {
 
     async handleGiveUp() {
         CommonHelper.log('Нажимаем кнопку Сдаться!');
-        await CommonHelper.delay(1000);
+        await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
         let giveUpButton = document.querySelector('a[href*=killme]');
 
         if (giveUpButton) {
             await CommonHelper.clickAndWait(giveUpButton);
         }
 
-        await CommonHelper.log('Не нашлась кнопка Сдаться, буду бить');
-        await CommonHelper.delay(1000);
+        CommonHelper.log('Не нашлась кнопка Сдаться, ничего не делаем.');
         await CommonHelper.sendTelegramMessage('Не нашлась кнопка Сдаться, ничего не делаем.');
+        
+        await CommonHelper.delay(30000);
+        await CommonHelper.reloadPage();
     }
 
     async isNullDamage() {
@@ -440,12 +442,12 @@ class Fight {
         return this.enemiesToSkip.some(mob => enemyName.toLowerCase().includes(mob.toLowerCase()));
     }
 
-    async processWaitPage(delay = CommonHelper.getRandomNumber(1000, 2000)) {
+    async processWaitPage(delay = CommonHelper.MEDIUM_RANDOM) {
         await CommonHelper.delay(delay);
         await CommonHelper.reloadPage();
     }
 
-    async exitFromFight(exitUrl = null, beforeExitCallback = null, delay = CommonHelper.getRandomNumber(1000, 2000)) {
+    async exitFromFight(exitUrl = null, beforeExitCallback = null, delay = CommonHelper.MEDIUM_RANDOM) {
         if (typeof beforeExitCallback === "function") {
             await CommonHelper.log('Делаем указанную логику перед выходом из боя');
             await beforeExitCallback();

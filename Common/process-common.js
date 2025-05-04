@@ -44,7 +44,7 @@ async function parsing() {
             }));
 
             for (const item of data) {
-                await CommonHelper.delay(CommonHelper.getRandomNumber(1000, 2000));
+                await CommonHelper.delay(1000, 2000);
                 CommonHelper.log(`[Parser] Проверка ${item.type}...`);
                 await CommonHelper.parsingPage(item.url, item.textToFind, item.type, invert);
             }
@@ -208,7 +208,7 @@ async function processPrimanka(messages) {
                     const link = activateSpan.closest('a');
                     if (link && link.href) {
                         CommonHelper.log('Активируем приманку, переходим по ссылке');
-                        await CommonHelper.delay(1000);
+                        await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
                         window.location.href = link.href;
                     } else {
                         CommonHelper.log('Нашли span, но не смогли получить <a>');

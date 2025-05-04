@@ -95,7 +95,7 @@ class Mining {
 
         CommonHelper.log('Жмём кнопку "Продолжить поиски"');
         await CommonHelper.setFightExitUrl('');
-        await CommonHelper.delay(CommonHelper.getRandomNumber(500, 1500));
+        await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
         await CommonHelper.clickAndWait(continueButton);
     }
 
