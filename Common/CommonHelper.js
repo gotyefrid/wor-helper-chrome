@@ -156,7 +156,7 @@ class CommonHelper {
         if (!notification) {
             return;
         }
-        
+
         let { botToken, chatId } = await CommonHelper.getTgData(bot);
 
         if (!botToken || !chatId) {
@@ -285,13 +285,13 @@ class CommonHelper {
                 commands: [
                     { command: 'stop', description: 'Остановить бота' },
                     { command: 'status', description: 'Статусы бота' },
-                    { command: 'refresh_page', description: 'Перезагрзуить страницу' },
+                    { command: 'start_chemistry', description: 'Aлхимия' },
+                    { command: 'start_fishing', description: 'Рыбалка' },
+                    { command: 'start_fighting', description: 'Сражение' },
+                    { command: 'start_bandits', description: 'Разбойники' },
+                    { command: 'start_captcha', description: 'Капча' },
+                    { command: 'refresh_page', description: 'Перезагрузить страницу' },
                     { command: 'to_exit_url', description: 'Перейти на сохранённый URL' },
-                    { command: 'start_chemistry', description: 'Включить алхимию' },
-                    { command: 'start_fishing', description: 'Включить рыбалку' },
-                    { command: 'start_fighting', description: 'Включить сражение' },
-                    { command: 'start_bandits', description: 'Включить разбойников' },
-                    { command: 'start_captcha', description: 'Включить капчу' },
                     { command: 'to_gorod', description: 'Телепорт в город' },
                     { command: 'refresh_commands_list', description: 'Обновить команды' }
                 ]
