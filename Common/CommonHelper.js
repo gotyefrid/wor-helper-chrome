@@ -151,6 +151,12 @@ class CommonHelper {
     }
 
     static async sendTelegramMessage(text, bot = 'common', notify = true, parseMode = 'html', expireInSeconds = 60) {
+        let notification = await CommonHelper.getExtStorage('wor_tg_notifications_active');
+
+        if (!notification) {
+            return;
+        }
+        
         let { botToken, chatId } = await CommonHelper.getTgData(bot);
 
         if (!botToken || !chatId) {

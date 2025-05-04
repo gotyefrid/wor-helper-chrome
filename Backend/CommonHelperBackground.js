@@ -59,18 +59,36 @@ export class CommonHelperBackground {
         return { botToken, chatId };
     }
 
-    static async sendTelegramMessage(text, bot = 'common', notify = true, parseMode = 'html') {
+    static async sendTelegramMessage(text, bot = 'common', notify = true, parseMode = 'html', expireInSeconds = 60) {
         let notification = await CommonHelperBackground.getExtStorage('wor_tg_notifications_active');
 
         if (!notification) {
             return;
         }
-        
         let { botToken, chatId } = await CommonHelperBackground.getTgData(bot);
 
         if (!botToken || !chatId) {
-            console.log('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в Stroage');
+            console.error('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в localStroage');
             return;
+        }
+
+        if (bot === 'common') {
+            const now = Math.floor(Date.now() / 1000);
+
+            const lastMessage = await CommonHelperBackground.getExtStorage('wor_tg_common_last_message');
+            const isSameText = lastMessage?.text === text;
+            const isNotExpired = lastMessage && (now - lastMessage.timestamp) < lastMessage.expire;
+
+            if (isSameText && isNotExpired) {
+                CommonHelperBackground.log('Сообщение уже отправлялось недавно. Пропускаем отправку.');
+                return;
+            }
+
+            await CommonHelperBackground.setExtStorage('wor_tg_common_last_message', {
+                text,
+                timestamp: now,
+                expire: expireInSeconds,
+            });
         }
 
         const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
