@@ -3,6 +3,12 @@
         await new Promise(r => setTimeout(r, 50));
     }
 
+    let notification = await CommonHelper.getExtStorage('wor_tg_notifications_active');
+
+    if (!notification) {
+        return;
+    }
+
     while (true) {
         try {
             // Отправка сообщений из чата в Telegram
