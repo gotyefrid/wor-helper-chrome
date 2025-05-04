@@ -90,7 +90,7 @@ class Fishing {
             // «Подсечь» — кликаем, когда появится
             this.#waitForPodsech()
                 .then(async (link) => {
-                    await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
+                    await CommonHelper.delay(CommonHelper.MEDIUM_RANDOM);
                     await CommonHelper.clickAndWait(link);
                 })
                 .catch(console.error);
