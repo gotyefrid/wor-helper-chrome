@@ -60,6 +60,12 @@ export class CommonHelperBackground {
     }
 
     static async sendTelegramMessage(text, bot = 'common', notify = true, parseMode = 'html') {
+        let notification = await CommonHelperBackground.getExtStorage('wor_tg_notifications_active');
+
+        if (!notification) {
+            return;
+        }
+        
         let { botToken, chatId } = await CommonHelperBackground.getTgData(bot);
 
         if (!botToken || !chatId) {
