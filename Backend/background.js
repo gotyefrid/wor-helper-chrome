@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 formData.append("file", blob, "captcha.png");
 
                 const CAPTCHA_HOST = await CommonHelperBackground.getExtStorage('wor_captcha_host');
-                let response = await fetch(CAPTCHA_HOST, {
+                let response = await fetch(CAPTCHA_HOST + '/detect_puzzle', {
                     method: "POST",
                     body: formData
                 });
