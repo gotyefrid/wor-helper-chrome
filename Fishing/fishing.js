@@ -2,7 +2,7 @@
     while (typeof CommonHelper === 'undefined') {
         await new Promise(r => setTimeout(r, 50));
     }
-    
+
     let fishingStatus = await CommonHelper.getExtStorage('wor_fishing_active') ?? false;
 
     if (fishingStatus) {
@@ -25,17 +25,30 @@
             return;
         }
 
-        // Показать сколько времени нужно ждать всего
-        fishing.showTimeRequired();
-
         if (fishing.isFishingPage) {
             if (fishing.isWaitingFishPage) {
                 CommonHelper.setFightExitUrl(document.location.href);
+
+                // Cколько времени нужно ждать всего
+                let time = fishing.getTimeRequired();
+
+                if (time !== null) {
+                    showTimeRequired(time);
+
+                    if (time == 0) {
+                        (async () => {
+                            CommonHelper.log('Баг 0 секунд, перезагрузим страницу через 4 секунды.');
+                            await CommonHelper.delay(4000);
+                            CommonHelper.reloadPage();
+                        })();
+                    }
+                }
+
                 fishing.processWaitingFishPage();
                 return;
             }
 
-            if (fishing.isSetLocationPage){
+            if (fishing.isSetLocationPage) {
                 await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
                 CommonHelper.setFightExitUrl(document.location.href);
                 fishing.processSetLocationPage();
@@ -50,3 +63,13 @@
         });
     }
 })();
+
+function showTimeRequired(value) {
+    // Находим <span> с id="mf"
+    const mfElement = document.getElementById("mf");
+
+    if (mfElement) {
+        // Создаем новый <span> и вставляем после #mf (без лишних операций)
+        mfElement.insertAdjacentHTML("afterend", `<span> из ${value}</span>`);
+    }
+}

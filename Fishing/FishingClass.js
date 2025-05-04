@@ -35,7 +35,7 @@ class Fishing {
         if (ready) return Promise.resolve(ready);
 
         return new Promise(resolve => {
-            const observer = new MutationObserver(([{addedNodes}], obs) => {
+            const observer = new MutationObserver(([{ addedNodes }], obs) => {
                 for (const node of addedNodes) {
                     if (node.nodeType === 1 && isLinkOk(node)) {
                         obs.disconnect();
@@ -44,7 +44,7 @@ class Fishing {
                     }
                 }
             });
-            observer.observe(bp, {childList: true});
+            observer.observe(bp, { childList: true });
         });
     }
 
@@ -73,7 +73,7 @@ class Fishing {
                     }
                 }
             });
-            observer.observe(box, {childList: true, subtree: true});
+            observer.observe(box, { childList: true, subtree: true });
         });
     }
 
@@ -146,7 +146,7 @@ class Fishing {
                 CommonHelper.log("Подсекли рыбу, которую не хотим", false);
                 if (savedLocation !== null) {
                     // Запоминаем исходные индексы кнопок
-                    let indexedButtons = placeButtons.map((button, index) => ({index, button}));
+                    let indexedButtons = placeButtons.map((button, index) => ({ index, button }));
 
                     // log(
                     //     "Была сохранённая локация (" + indexedButtons.find(b => b.index === savedLocation)?.button.innerText.trim() + "), туда не идём.",
@@ -205,7 +205,7 @@ class Fishing {
         return firstMatched?.text ?? null;
     }
 
-    showTimeRequired() {
+    getTimeRequired() {
         // Находим <span> с id="mf"
         const mfElement = document.getElementById("mf");
 
@@ -224,11 +224,13 @@ class Fishing {
             }
 
             if (nnValue !== null) {
-                // Создаем новый <span> и вставляем после #mf (без лишних операций)
-                mfElement.insertAdjacentHTML("afterend", `<span> из ${nnValue}</span>`);
+                return nnValue;
             }
         }
+
+        return 0;
     }
+
     async processMainAndGamePages() {
         let shouldContinue = await CommonHelper.askWithTimeout('Рыбалка включена, продолжить скрипт?', 5000);
 
