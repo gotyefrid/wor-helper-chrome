@@ -88,6 +88,18 @@ async function start() {
 
                     document.location = '/wap/teritory.php';
                     break;
+                case 'KeyF': // Ударить физой
+                    try {
+                        let form = document.querySelector("form");
+                        let type = form.querySelector('[name=udartype]')
+                        type.value = "1";
+                        document.querySelector("form").submit();
+                        return;
+                    } catch {
+                    }
+
+                    document.location = '/wap/teritory.php';
+                    break;
             }
         } catch (error) {
             // Получаем сообщение об ошибке
