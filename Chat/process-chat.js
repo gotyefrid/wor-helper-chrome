@@ -11,43 +11,80 @@
 
 
 function contextMenu() {
+    // === ВСТРАИВАЕМ СТИЛИ ДЛЯ МЕНЮ ===
+    const style = document.createElement('style');
+    style.textContent = `
+        #customContextMenu {
+            position: absolute;
+            display: none;
+            background: rgba(30, 30, 30, 0.85);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 10000;
+            cursor: pointer;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            min-width: 160px;
+            border-radius: 6px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        #customContextMenu div {
+            padding: 8px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-family: sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            color: #ccc;
+            transition: background 0.2s, color 0.2s, text-shadow 0.2s;
+        }
+        #customContextMenu div:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+        }
+        #customContextMenu div:last-child {
+            border-bottom: none;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // === СОЗДАЁМ МЕНЮ ===
     const menu = document.createElement('div');
     menu.id = 'customContextMenu';
-    menu.style.position = 'absolute';
-    menu.style.display = 'none';
-    menu.style.background = '#fff';
-    menu.style.border = '1px solid #ccc';
-    menu.style.zIndex = 10000;
-    menu.style.cursor = 'pointer';
-    menu.style.color = 'black';
-    menu.style.boxShadow = '2px 2px 6px rgba(0,0,0,0.2)';
-    menu.style.minWidth = '150px';
-
     document.body.appendChild(menu);
 
     let currentTarget = null;
 
-    // Массив пунктов меню (расширяемый)
+    // === ПУНКТЫ МЕНЮ ===
     const menuItems = [
         {
-            label: 'Перейти в профиль',
+            label: '👤 Перейти в профиль',
             onClick: (nickname) => {
                 window.open(`/wap/infouser.php?name=${encodeURIComponent(nickname)}`, '_blank');
             }
         },
         {
-            label: 'Отправить WR',
+            label: '💰 Отправить WR',
             onClick: (nickname) => {
-                showWRModal(nickname);
+                showWRModal(nickname); // предполагается, что эта функция уже определена
             }
         }
-        // Добавляй новые пункты здесь
     ];
 
-    // Показываем меню
+    // === ОБРАБОТЧИК КОНТЕКСТНОГО МЕНЮ ===
     document.addEventListener('contextmenu', (e) => {
         const el = e.target.closest('a[onclick*="chatline.komy"]');
+
+        if (el && e.shiftKey) {
+            return;
+        }
+
         if (el) {
+            e.preventDefault();
             currentTarget = el;
 
             const onclickAttr = el.getAttribute('onclick') || '';
@@ -56,64 +93,58 @@ function contextMenu() {
 
             if (!nickname) return;
 
-            // Очистить старое меню
-            menu.innerHTML = '';
+            menu.innerHTML = ''; // очистить старое
 
-            // Добавить пункты заново
             menuItems.forEach(item => {
                 const div = document.createElement('div');
                 div.textContent = item.label;
-                div.style.padding = '6px 10px';
-                div.style.cursor = 'pointer';
-                div.style.borderBottom = '1px solid #eee';
-
                 div.addEventListener('click', (e) => {
                     e.stopPropagation();
                     item.onClick(nickname);
-                    menu.style.display = 'none';
+                    hideMenu();
                 });
-
-                div.addEventListener('mouseenter', () => {
-                    div.style.background = '#f0f0f0';
-                });
-                div.addEventListener('mouseleave', () => {
-                    div.style.background = '';
-                });
-
                 menu.appendChild(div);
             });
 
-            // Подготовка для измерения высоты
             menu.style.display = 'block';
-            menu.style.visibility = 'hidden'; // скрыть, но чтобы layout работал
+            menu.style.visibility = 'hidden';
 
-            // Подождать рендер (можно через requestAnimationFrame)
             setTimeout(() => {
                 const menuHeight = menu.offsetHeight;
-                const offsetY = 5; // дополнительное смещение
+                const offsetY = 5;
                 const top = Math.max(e.pageY - menuHeight - offsetY, 0);
 
                 menu.style.top = `${top}px`;
-                menu.style.left = `${e.pageX - 150}px`;
-                menu.style.visibility = 'visible'; // показать снова
+                menu.style.left = `${e.pageX - 160}px`;
+                menu.style.visibility = 'visible';
+                menu.style.opacity = '1';
             }, 0);
         } else {
-            menu.style.display = 'none';
+            hideMenu();
         }
     });
 
-    // Скрыть при клике вне меню
+    // === СКРЫТИЕ МЕНЮ ===
+    function hideMenu() {
+        menu.style.opacity = '0';
+        setTimeout(() => {
+            menu.style.display = 'none';
+        }, 150);
+    }
+
     document.addEventListener('click', (e) => {
         if (!menu.contains(e.target)) {
-            menu.style.display = 'none';
+            hideMenu();
         }
     });
 
-    // Скрыть при прокрутке
     document.addEventListener('scroll', () => {
-        menu.style.display = 'none';
+        hideMenu();
     }, true);
 }
+
+
+
 
 function showWRModal(nickname) {
     // Если уже есть модалка — не создаём повторно
