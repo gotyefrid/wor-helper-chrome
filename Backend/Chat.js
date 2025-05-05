@@ -161,7 +161,8 @@ export class Chat {
                 msg.text.includes('получена и будет доступна') ||
                 msg.text.includes('штраф') ||
                 msg.text.includes('травм') ||
-                msg.text.includes(playerName)
+                msg.text.includes(playerName) ||
+                msg.text.includes('новое письмо')
             )
         ) {
             await CommonHelperBackground.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
