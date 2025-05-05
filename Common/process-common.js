@@ -100,6 +100,12 @@ async function checkFlashNotifications() {
         CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 300);
     }
 
+    if (html.innerText.includes('Для того, чтобы ловить рыбу, Вам необходима удочка!')) {
+        await CommonHelper.turnFishing(false);
+        await CommonHelper.turnFighting(false);
+        CommonHelper.sendTelegramMessage('Для того, чтобы ловить рыбу, Вам необходима удочка!', 'common', true, 'html', 60);
+    }
+
     let messages = Chat.getParsedMessages(html);
 
     await CommonHelper.setExtStorage('wor_chat_flash_notifications', messages);
