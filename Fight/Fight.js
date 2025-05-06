@@ -87,28 +87,26 @@ class Fight {
 
         if (enemyName) {
             let skip = false;
-            let isNullDamage = await this.isNullDamage();
+            const threshold = 50;
+            let isLowDamage = await this.isLowDamage(threshold);
 
-            if (isNullDamage) {
-                CommonHelper.log('Я бью 0, что-то тут не так, ничего не делаю больше');
-                CommonHelper.sendTelegramMessage('Я бью 0, что-то тут не так, ничего не делаю больше');
+            if (isLowDamage) {
+                let message = 'Я бью меньше ' + threshold + ', что-то тут не так, ничего не делаю больше';
+                CommonHelper.log(message);
+                CommonHelper.sendTelegramMessage(message);
                 await CommonHelper.delay(10000);
                 await CommonHelper.reloadPage();
-                // CommonHelper.sendMessageToChat('?');
-                // CommonHelper.turnAlchemistry(false);
-                // CommonHelper.turnFighting(false);
-                // CommonHelper.setFightExitUrl('');
-                // CommonHelper.log('Нажимаю Сдаться и в город');
-                // let exit = [...document.querySelectorAll('a')].find(a => a.innerText.includes('Сдаться и в город'));
-
-                // if (exit) {
-                //     CommonHelper.clickAndWait(exit);
-                // } else {
-                //     CommonHelper.sendTelegramMessage('Нет кнопки Сдаться и в город, просто больше ничего не делаем');
-                // }
-
                 return;
             }
+
+            await this.trackEnemyDodges(5, async () => {
+                let message = 'Слишком много уворотов, что-то тут не так, ничего не делаю больше';
+                CommonHelper.log(message);
+                CommonHelper.sendTelegramMessage(message);
+                await CommonHelper.delay(10000);
+                await CommonHelper.reloadPage();
+                return;
+            });
 
             let checkTrauma = await CommonHelper.getExtStorage('wor_fight_check_trauma');
             let maxTrauma = await CommonHelper.getExtStorage('wor_fight_max_trauma');
@@ -270,33 +268,100 @@ class Fight {
 
         CommonHelper.log('Не нашлась кнопка Сдаться, ничего не делаем.');
         await CommonHelper.sendTelegramMessage('Не нашлась кнопка Сдаться, ничего не делаем.');
-        
+
         await CommonHelper.delay(30000);
         await CommonHelper.reloadPage();
     }
 
-    async isNullDamage() {
-        let info = [...document.querySelectorAll('.table_menu')]?.find(ta => ta.innerText.includes('Игрок'))?.innerText;
+    /**
+     * Проверяет, наносит ли игрок урон меньше заданного порога.
+     *
+     * @param {number} threshold - Пороговое значение урона.
+     * @returns {Promise<boolean>}
+     */
+    async isLowDamage(threshold = 0) {
+        let logText = [...document.querySelectorAll('.table_menu')]
+            ?.find(ta => ta.innerText.includes('Игрок'))
+            ?.innerText;
 
-        if (!info) {
+        if (!logText) {
             CommonHelper.log('Не нашли историю ударов');
             return false;
         }
 
+        const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+        const cleanText = logText.replace(/\[\d+\]/g, '[]');
+        const lastLines = cleanText.split('\n').filter(line => line.includes(`Игрок ${playerName}[]`));
 
-        info = info.replace(/\[\d+\]/g, '[]');
-        let playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+        if (lastLines.length === 0) return;
 
-        if (
-            info.includes(`Игрок ${playerName}[] нанес критический магический удар 0`) ||
-            info.includes(`Игрок ${playerName}[] нанес магический удар 0`) ||
-            info.includes(`Игрок ${playerName}[] нанес критический удар 0`) ||
-            info.includes(`Игрок ${playerName}[] нанес удар 0`)
-        ) {
-            return true;
+        const lastLine = lastLines[0];
+
+        const regex = new RegExp(
+            `Игрок ${playerName}\\[\\] нанес(?: критический)?(?: магический)? удар (-?\\d+)`, 'g'
+        );
+
+        let match;
+
+        while ((match = regex.exec(lastLine)) !== null) {
+            const damage = Math.abs(parseInt(match[1], 10));
+            if (damage < threshold) {
+                return true;
+            }
         }
 
         return false;
+    }
+
+    /**
+     * Обновляет количество подряд уворотов противника.
+     * Сброс при попадании, +1 при увороте.
+     */
+    async trackEnemyDodges(maxDodges = 5, callback = null) {
+        const DODGE_STORAGE_KEY = 'wor_fight_dodge_streak';
+
+        const logText = [...document.querySelectorAll('.table_menu')]
+            ?.find(ta => ta.innerText.includes('Игрок'))
+            ?.innerText;
+
+        if (!logText) {
+            CommonHelper.log('Не нашли боевой лог для чека уворотов');
+            await CommonHelper.setExtStorage(DODGE_STORAGE_KEY, 0);
+            return;
+        }
+
+        const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+        const cleanText = logText.replace(/\[\d+\]/g, '[]');
+        const lastLines = cleanText.split('\n').filter(line => line.includes(`Игрок ${playerName}[]`));
+
+        if (lastLines.length === 0) return;
+
+        const lastLine = lastLines[0];
+
+        // Проверка на уворот
+        const isDodge = lastLine.includes(`Игрок`) && lastLine.includes(`пытался нанести удар`) && lastLine.includes('увернулся');
+
+        if (isDodge) {
+            // Получаем текущий счётчик
+            let count = parseInt(await CommonHelper.getExtStorage(DODGE_STORAGE_KEY)) || 0;
+            count += 1;
+
+            await CommonHelper.setExtStorage(DODGE_STORAGE_KEY, count);
+            CommonHelper.log(`Противник увернулся. Стрик: ${count}`);
+
+            if (count > maxDodges) {
+                if (typeof callback === "function") {
+                    await CommonHelper.log('Делаем указанную логику при частых уворотах');
+                    await callback();
+                } else {
+                    CommonHelper.log('Противник уклоняется слишком часто! Больше 5 раз подряд.');
+                }
+            }
+        } else {
+            // Если удар прошёл — сбросить счётчик
+            await CommonHelper.setExtStorage(DODGE_STORAGE_KEY, 0);
+            CommonHelper.log('Удар прошёл. Стрик уворотов сброшен.');
+        }
     }
 
     // Unified potion consumption for HP and МА
