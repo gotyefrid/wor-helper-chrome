@@ -6,6 +6,7 @@
 
     setTitle();
     checkFlashNotifications();
+    checkTrauma();
 
     const isParsingActive = await CommonHelper.getExtStorage('wor_parsing_active');
     if (isParsingActive) {
@@ -18,6 +19,16 @@
 
     backgroundListener();
 })();
+
+async function checkTrauma() {
+    let currentTime = CommonHelper.getTraumaTime(true);
+    let lastSavedTime = await CommonHelper.getExtStorage('wor_fight_last_trauma_minutes');
+
+    if (currentTime > lastSavedTime) {
+        await CommonHelper.sendTelegramMessage('Травма увеличилась! Теперь травма: ' + CommonHelper.getTraumaTime(), 'common');
+        await CommonHelper.setExtStorage('wor_fight_last_trauma_minutes', currentTime);
+    }
+}
 
 async function parsing() {
     let isChecking = false;

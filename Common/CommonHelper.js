@@ -567,14 +567,20 @@ class CommonHelper {
     /**
      * Получает количество часов травмы из чата (если есть значок aid.gif).
      *
-     * @returns {number} Количество часов травмы (0, если травмы нет).
+     * @param {boolean} inMinutes - Если true, возвращает количество минут, иначе строку вида "2:44".
+     * @returns {number|string} Строка "чч:мм" или число минут, либо 0 если травмы нет.
      */
-    getTraumaHours() {
-        let travmaImg = document.querySelector('.chat')?.querySelector('img[src*="aid.gif"]');
+    static getTraumaTime(inMinutes = false) {
+        const travmaImg = document.querySelector('.chat')?.querySelector('img[src*="aid.gif"]');
 
         if (travmaImg) {
-            let time = travmaImg.nextSibling?.textContent.trim().split(':');
-            return parseInt(time[0]) || 0;
+            const timeText = travmaImg.nextSibling?.textContent?.trim();
+
+            if (timeText && /^\d+:\d+$/.test(timeText)) {
+                const [hours, minutes] = timeText.split(':').map(Number);
+                const totalMinutes = hours * 60 + minutes;
+                return inMinutes ? totalMinutes : timeText;
+            }
         }
 
         return 0;
