@@ -161,8 +161,9 @@
                 "http://185.212.47.8/wap/teritory*"
             ],
             "js": [
-                "Territory/map-history.js",
-                "Territory/move-to-coords.js"
+                "Territory/Territory.js",
+                "Territory/process-territory.js",
+                "Territory/map-history.js"
             ]
         }
     ]
