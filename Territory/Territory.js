@@ -1,5 +1,5 @@
 class Territory {
-    MAP_2_OZERO = [
+    static MAP_2_OZERO = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 135, 136, 0, 0, 0, 140, 0, 0, 0, 0],
@@ -15,10 +15,10 @@ class Territory {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-    MAP_1_GOROD = [
+    static MAP_1_GOROD = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 394, 395, 396, 0, 0, 0, 0, 401, 0, 403, 404, 0, 0, 407, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 394, 395, 396, 0, 0, 0, 0, 401, 0, 403, 404, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 429, 430, 431, 432, 433, 0, 0, 436, 437, 438, 0, 0, 0, 442, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 466, 467, 468, 0, 470, 471, 472, 473, 474, 0, 0, 477, 478, 479, 480, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -27,13 +27,13 @@ class Territory {
         [0, 0, 601, 602, 603, 604, 0, 606, 607, 608, 609, 610, 611, 612, 0, 614, 615, 616, 0, 0, 0, 0, 0, 0, 623, 624, 0, 0, 0, 0],
         [0, 0, 636, 637, 638, 639, 640, 641, 642, 643, 644, 645, 646, 0, 0, 0, 650, 651, 0, 0, 0, 0, 0, 0, 658, 659, 660, 0, 0, 0],
         [0, 0, 0, 0, 0, 674, 675, 0, 0, 678, 679, 0, 0, 0, 0, 0, 0, 686, 687, 0, 0, 0, 0, 0, 693, 694, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 709, 710, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 721, 722, 723, 0, 0, 0, 0, 728, 0, 0, 731, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 721, 722, 723, 0, 0, 0, 0, 728, 0, 0, 731, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 758, 759, 760, 761, 762, 763, 764, 765, 766, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 793, 0, 0, 796, 797, 798, 799, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-    MAP_3_PODZEM = [
+    static MAP_3_PODZEM = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 133, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -53,7 +53,7 @@ class Territory {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-    MAP_6_KAT3 = [
+    static MAP_6_KAT3 = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 204, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 224, 225, 0, 0, 0, 0, 0, 0, 0],
@@ -67,7 +67,7 @@ class Territory {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-    MAP_5_KAT2 = [
+    static MAP_5_KAT2 = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 0, 0, 0],
@@ -80,7 +80,7 @@ class Territory {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-    MAP_4_KAT1 = [
+    static MAP_4_KAT1 = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 83, 84, 85, 0, 87, 88, 89, 0, 0, 0],
@@ -91,7 +91,7 @@ class Territory {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-    MAP_7_SAVANNA = [
+    static MAP_7_SAVANNA = [
         [0, 283, 284, 285, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 308, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [337, 338, 339, 340, 341, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 393, 394, 395, 396, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -116,7 +116,7 @@ class Territory {
         [0, 0, 0, 0, 1441, 1442, 1443, 1444, 1445, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1456, 1457, 1458, 1459, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1469, 1470, 1471, 1472, 1473, 1474, 1475, 1476, 1477],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1510, 1511, 1512, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1524, 1525, 0, 1527, 0, 1529, 0, 0, 0]
     ];
-    MAP_100_TAKT_BIG = [
+    static MAP_100_TAKT_BIG = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 275, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -141,8 +141,7 @@ class Territory {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
-
-    MAP_101_TAKT_SMALL = [
+    static MAP_101_TAKT_SMALL = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 205, 206, 207, 208, 209, 0, 0, 0, 0, 0, 215, 216, 217, 0, 0, 0, 0],
@@ -158,16 +157,16 @@ class Territory {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
-    LOCATION_MAPS = {
-        "1": this.MAP_1_GOROD,
-        "2": this.MAP_2_OZERO,
-        "3": this.MAP_3_PODZEM,
-        "4": this.MAP_4_KAT1,
-        "5": this.MAP_5_KAT2,
-        "6": this.MAP_6_KAT3,
-        "7": this.MAP_7_SAVANNA,
-        "100": this.MAP_100_TAKT_BIG,
-        "101": this.MAP_101_TAKT_SMALL,
+    static LOCATION_MAPS = {
+        "1": Territory.MAP_1_GOROD,
+        "2": Territory.MAP_2_OZERO,
+        "3": Territory.MAP_3_PODZEM,
+        "4": Territory.MAP_4_KAT1,
+        "5": Territory.MAP_5_KAT2,
+        "6": Territory.MAP_6_KAT3,
+        "7": Territory.MAP_7_SAVANNA,
+        "100": Territory.MAP_100_TAKT_BIG,
+        "101": Territory.MAP_101_TAKT_SMALL,
     };
 
     isTerritoryPage = false;
@@ -190,8 +189,8 @@ class Territory {
         if (this.isTerritoryPage) {
             this.currentLocation = Territory.getCurrentLocation();
 
-            if (this.LOCATION_MAPS.hasOwnProperty(this.currentLocation)) {
-                this.currentMap = this.LOCATION_MAPS[this.currentLocation];
+            if (Territory.LOCATION_MAPS.hasOwnProperty(this.currentLocation)) {
+                this.currentMap = Territory.LOCATION_MAPS[this.currentLocation];
             } else {
                 alert(`Нет карты для текущей локации: ${this.currentLocation}`);
                 throw new Error(`Нет карты для текущей локации: ${this.currentLocation}`);
@@ -239,7 +238,7 @@ class Territory {
         const target = this.findCoordinatesById(targetId);
 
         if (!start || !target) {
-            console.error("Начальная или конечная точка не найдена в сетке.");
+            console.error("Начальная или конечная точка не найдена в сетке. Начальная: " + JSON.stringify(start) + " , конечная: " + JSON.stringify(target));
             return [];
         }
 
@@ -311,11 +310,14 @@ class Territory {
 
         const path = this.findPath(this.currentPointId, pointId);
         path.shift();
-        console.log('Путь:', path);
+        CommonHelper.log('Путь:', path);
 
+        await this.moveByPath(path, delay, eachCallback, endCallback);
+    }
+
+    async moveByPath(path, delay = [50, 100], eachCallback = null, endCallback = null) {
         // Для первой итерации будем использовать текущий document
         let currentDocument = document;
-
         // Проходим по всем точкам пути
         for (const id of path) {
             console.log('Переходим на точку ' + id);
@@ -324,13 +326,13 @@ class Territory {
             let cellId = 'r' + id.toString();
             let cellElement = currentDocument.querySelector('a[id=' + cellId + ']');
             if (!cellElement) {
-                console.error('Элемент с селектором ' + cellId + ' не найден в текущем документе');
+                CommonHelper.log('Элемент с селектором ' + cellId + ' не найден в текущем документе');
                 break;
             }
 
             // Получаем URL из атрибута href найденного элемента
             let url = cellElement.getAttribute('href');
-            console.log('Отправляем fetch запрос по URL: ' + url);
+            CommonHelper.log('Отправляем fetch запрос по URL: ' + url);
 
             try {
                 // Отправляем запрос и получаем HTML-страницу
@@ -348,8 +350,10 @@ class Territory {
 
                 if (typeof eachCallback === "function") {
                     await eachCallback(newDocument);
+                } else {
+                    document.querySelector('body').innerHTML = newDocument.querySelector('body').innerHTML;
                 }
-                
+
                 // Обновляем currentDocument для следующей итерации
                 currentDocument = newDocument;
             } catch (error) {
@@ -359,11 +363,10 @@ class Territory {
 
             // Если достигнута финальная точка, перезагружаем страницу
             if (id === path[path.length - 1]) {
-                console.log('Достигнута финальная точка, перезагружаем страницу...');
-                console.log(url);
+                CommonHelper.log('Достигнута финальная точка, перезагружаем страницу...');
 
                 if (typeof endCallback === "function") {
-                    await endCallback(newDocument);
+                    await endCallback(currentDocument);
                     return;
                 }
 
@@ -372,5 +375,105 @@ class Territory {
 
             await CommonHelper.delay(delay[0], delay[1]); // задержка между запросами
         }
+    }
+
+    /**
+     * Обходит все проходимые точки текущей карты, возвращая маршрут по id.
+     *
+     * @param {(number|string)[]} visitedIds — массив уже посещённых id (строки или числа)
+     * @returns {number[]} маршрут из id клеток, затрагивающий каждую проходимую клетку хотя бы раз
+     */
+    traverseAllPoints(visitedIds = []) {
+        // 8 возможных направлений
+        const directions = [
+            { dr: -1, dc: 0 }, { dr: 1, dc: 0 },
+            { dr: 0, dc: -1 }, { dr: 0, dc: 1 },
+            { dr: -1, dc: -1 },{ dr: -1, dc: 1 },
+            { dr: 1, dc: -1 }, { dr: 1, dc: 1 },
+        ];
+
+        // Собираем все проходимые id на текущей карте
+        const allIds = new Set();
+        for (let r = 0; r < this.mapNumRows; r++) {
+            for (let c = 0; c < this.mapNumCols; c++) {
+                const id = this.currentMap[r][c];
+                if (id !== 0) allIds.add(id);
+            }
+        }
+
+        // Приводим входные visitedIds к числам, чтобы совпадали типы
+        const visited = new Set(visitedIds.map(id => Number(id)));
+        // Текущий id — начальная позиция
+        let currentId = this.currentPointId;
+        if (allIds.has(currentId)) visited.add(currentId);
+
+        // Результирующий маршрут
+        const route = [ currentId ];
+
+        // Вспомогательный BFS, возвращает путь из координат ({row, col}) от start до любой из целей
+        const bfsToTargets = (startCoords, targetSet) => {
+            const vis = Array.from({ length: this.mapNumRows }, () => Array(this.mapNumCols).fill(false));
+            const parent = Array.from({ length: this.mapNumRows }, () => Array(this.mapNumCols).fill(null));
+            const queue = [ startCoords ];
+            vis[startCoords.row][startCoords.col] = true;
+
+            while (queue.length) {
+                const cur = queue.shift();
+                const curId = this.currentMap[cur.row][cur.col];
+                if (targetSet.has(curId)) {
+                    // Собираем путь назад
+                    const path = [];
+                    let node = cur;
+                    while (node) {
+                        path.push(node);
+                        node = parent[node.row][node.col];
+                    }
+                    return path.reverse();
+                }
+                for (const { dr, dc } of directions) {
+                    const nr = cur.row + dr, nc = cur.col + dc;
+                    if (
+                        nr >= 0 && nr < this.mapNumRows &&
+                        nc >= 0 && nc < this.mapNumCols &&
+                        !vis[nr][nc] &&
+                        this.currentMap[nr][nc] !== 0
+                    ) {
+                        vis[nr][nc] = true;
+                        parent[nr][nc] = cur;
+                        queue.push({ row: nr, col: nc });
+                    }
+                }
+            }
+            return null;
+        };
+
+        // Пока не отметили все точки
+        while (visited.size < allIds.size) {
+            // Определяем ещё не посещённые id
+            const unvisited = new Set(
+                [...allIds].filter(id => !visited.has(id))
+            );
+            const startCoords = this.findCoordinatesById(currentId);
+            if (!startCoords) {
+                console.warn(`ID=${currentId} не найден на карте.`);
+                break;
+            }
+            const pathCoords = bfsToTargets(startCoords, unvisited);
+            if (!pathCoords) {
+                console.warn("Новые точки более недостижимы.");
+                break;
+            }
+            // Конвертируем координаты в id и пропускаем первую (это старт)
+            const pathIds = pathCoords
+                .map(cell => this.currentMap[cell.row][cell.col])
+                .slice(1);
+            for (const id of pathIds) {
+                route.push(id);
+                visited.add(id);
+            }
+            currentId = route[route.length - 1];
+        }
+
+        return route;
     }
 }

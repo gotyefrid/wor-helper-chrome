@@ -19,19 +19,102 @@
 
 
 async function processGorod() {
+    let t = new Territory();
+
+    let delay = [50, 300];
+
     await moveOnDefaultMaps(
         [
-            { id: 730, label: 'Идти в подземку' },
-            { id: 510, label: 'Охотник' },
-            { id: 480, label: 'Дровосек' },
-            { id: 709, label: 'Кристальный остров' },
-            { id: 407, label: 'Озеро' },
-        ],
-        [50, 100],
-        doc => {
-            document.body.innerHTML = doc.body.innerHTML;
-        }
-    )
+            {
+                id: 765,
+                label: 'Подземелье',
+                action: async (e) => {
+                    await t.toPoint(765, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=730"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 510, label: 'Охотник', action: async (e) => {
+                    await t.toPoint(510, delay);
+                }
+            },
+            {
+                id: 480, label: 'Дровосек', action: async (e) => {
+                    await t.toPoint(480, delay);
+                }
+            },
+            {
+                id: 674,
+                label: 'Кристальный остров',
+                action: async (e) => {
+                    await t.toPoint(674, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=710"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 442,
+                label: 'Озеро',
+                action: async (e) => {
+                    await t.toPoint(442, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=407"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 'all',
+                label: 'Обойти все точки',
+                action: async (e) => {
+                    let visited = await CommonHelper.getExtStorage('visitedLocations');
+
+                    let path = t.traverseAllPoints(visited[t.currentLocation]);
+                    path.shift();
+
+                    if (path.length === 0) {
+                        alert('Все точки уже посещены!');
+                        return;
+                    }
+
+
+                    await t.moveByPath(path, delay, async (doc) => {
+                        document.querySelector('body').innerHTML = doc.querySelector('body').innerHTML;
+
+                        // «зелёная» клетка, на которой стоит герой
+                        const currentCell = doc.querySelector(
+                            "td[style*='background-color: #00CC00'] div"
+                        );
+
+                        if (currentCell) {
+                            const id = currentCell.id.replace("r", "");
+                            visited[t.currentLocation] ??= [];
+
+                            if (!visited[t.currentLocation].includes(id)) {
+                                console.log('Добавляем точку');
+                                visited[t.currentLocation].push(id);
+                                await CommonHelper.setExtStorage('visitedLocations', visited);
+                            }
+                        }
+                    });
+                }
+            },
+        ]
+    );
 }
 
 async function processBigTakt() {
@@ -72,6 +155,7 @@ async function processBigTakt() {
         });
     });
 }
+
 async function processSmallTakt() {
     const t = new Territory();
 
@@ -112,32 +196,26 @@ function showLoadingIcon(linkElement) {
     linkElement.innerHTML = `<img src="https://i.imgur.com/llF5iyg.gif" width="20" height="20" style="vertical-align:middle"> Выполнение...`;
 }
 
-async function moveOnDefaultMaps(points, delay = [50, 100], eachCallback = null) {
-    const t = new Territory();
+async function moveOnDefaultMaps(points) {
     const menuList = document.querySelector('.menu_div ul');
 
-    points.forEach(({ id, label }) => {
-        // создаём <li> с <a>
+    points.forEach(({id, label, action}) => {
+        // создаём пункт меню
         const li = document.createElement('li');
         li.innerHTML = `
-        <a href="#" id="to${id}">
-          <img src="icons/mini_karta.gif"
-               width="30" height="30"
-               style="vertical-align:middle">
-          ${label}
-        </a>
-      `;
+          <a href="#" id="to${id}">
+            <img src="icons/mini_karta.gif" width="30" height="30" style="vertical-align:middle">
+            ${label}
+          </a>
+        `;
         menuList.append(li);
 
-        // вешаем один и тот же обработчик клика
+        // при клике идём в точку и по окончании вызываем action()
         li.querySelector('a').addEventListener('click', async e => {
             e.preventDefault();
-            await t.toPoint(
-                id,
-                delay,
-                eachCallback
-            );
+            await action(e);
         });
     });
 }
+
 
