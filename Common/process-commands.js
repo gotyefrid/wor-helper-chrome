@@ -17,7 +17,7 @@
             if (command) {
                 handleTelegramCommands(command);
             } else {
-                CommonHelper.log('Нет новых комманд для выполнения.');
+                CommonHelper.log('Нет новых комманд из Телеграма для выполнения.');
             }
 
         } catch (err) {
@@ -43,7 +43,7 @@ async function handleTelegramCommands(command) {
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
             await CommonHelper.reloadPage();
             break;
-        case '/start_chemistry':
+        case '/chemistry':
             await CommonHelper.log('Пришла команда переключить алхимию');
             let chemistry = await CommonHelper.getExtStorage('wor_chemistry_active');
 
@@ -58,7 +58,7 @@ async function handleTelegramCommands(command) {
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
             await CommonHelper.reloadPage();
             break;
-        case '/start_captcha':
+        case '/captcha':
             await CommonHelper.log('Пришла команда переключить капчу');
             let captcha = await CommonHelper.getExtStorage('wor_captcha_active');
 
@@ -71,7 +71,7 @@ async function handleTelegramCommands(command) {
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
             await CommonHelper.reloadPage();
             break;
-        case '/start_fishing':
+        case '/fishing':
             await CommonHelper.log('Пришла команда переключить рыбалку');
             let fishing = await CommonHelper.getExtStorage('wor_fishing_active');
 
@@ -85,7 +85,7 @@ async function handleTelegramCommands(command) {
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
             await CommonHelper.reloadPage();
             break;
-        case '/start_fighting':
+        case '/fighting':
             await CommonHelper.log('Пришла команда переключить сражение');
             let fignhting = await CommonHelper.getExtStorage('wor_fight_active');
 
@@ -98,7 +98,7 @@ async function handleTelegramCommands(command) {
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
             await CommonHelper.reloadPage();
             break;
-        case '/start_bandits':
+        case '/bandits':
             await CommonHelper.log('Пришла команда переключить разбойников');
             let bandits = await CommonHelper.getExtStorage('wor_bandits_active');
 
