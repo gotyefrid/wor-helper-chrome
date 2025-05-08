@@ -83,7 +83,7 @@ class Chemistry {
 
         if (!shouldContinue) return; // Если выбрали "Нет" — прерываем выполнение
 
-        let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url');
+        let exitUrl = await CommonHelper.getFightExitUrl();
 
         if (exitUrl) {
             document.location = exitUrl;

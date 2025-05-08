@@ -106,30 +106,4 @@ export class CommonHelperBackground {
             .then(() => CommonHelperBackground.log("Отправили сообщение в Телеграм", false))
             .catch(error => CommonHelperBackground.log("Ошибка отправки в Telegram:" + JSON.stringify(error), false));
     }
-
-    static async turnAlchemistry(active = true) {
-        await CommonHelperBackground.setExtStorage('wor_chemistry_active', active);
-    }
-
-    static async turnFighting(active = true) {
-        await CommonHelperBackground.setExtStorage('wor_fight_active', active);
-    }
-
-    static async turnBandits(active = true) {
-        await CommonHelperBackground.setExtStorage('wor_bandits_active', active);
-    }
-
-    static async turnFishing(active = true) {
-        await CommonHelperBackground.setExtStorage('wor_fishing_active', active);
-    }
-
-    static async setFightExitUrl(url) {
-        if (!url) {
-            CommonHelperBackground.log('Очищаем ссылку выхода из боя', false);
-        } else {
-            CommonHelperBackground.log('Запоминаем ссылку выхода из боя', false);
-        }
-        
-        CommonHelperBackground.setExtStorage('wor_fight_exit_url', url);
-    }
 }

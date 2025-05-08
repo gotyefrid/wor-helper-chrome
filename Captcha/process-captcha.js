@@ -4,7 +4,7 @@ window.addEventListener("load", async function () {
 
     if (!access) {
         CommonHelper.log('Обход капчи не активен.');
-        let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
+        let exitUrl = await CommonHelper.getFightExitUrl() || null;
 
         if (exitUrl) {
             CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + exitUrl);
@@ -124,7 +124,7 @@ window.addEventListener("load", async function () {
 
                 CommonHelper.clickAndWait(document.querySelector('input[type=submit]'));
                 return;
-                // let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
+                let exitUrl = await CommonHelper.getFightExitUrl() || null;
 
                 // if (exitUrl) {
                 //     CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + exitUrl);

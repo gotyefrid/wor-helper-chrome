@@ -129,7 +129,7 @@ async function handleTelegramCommands(command) {
             break;
         case '/to_exit_url':
             await CommonHelper.log('Пришла команда перейти на URL сохранённый');
-            let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
+            let exitUrl = await CommonHelper.getFightExitUrl() || null;
 
             if (exitUrl) {
                 document.location = exitUrl;

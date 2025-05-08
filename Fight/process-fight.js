@@ -22,7 +22,7 @@
         fight.needPotMP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
 
         // Ссылка выхода из файта
-        let exitUrl = await CommonHelper.getExtStorage('wor_fight_exit_url') || null;
+        let exitUrl = await CommonHelper.getFightExitUrl() || null;
 
         // Сдаваться?
         let giveUp = (await CommonHelper.getExtStorage("wor_fight_give_up_active")) ?? false;

@@ -387,11 +387,41 @@ class CommonHelper {
     static async setFightExitUrl(url) {
         if (!url) {
             CommonHelper.log('Очищаем ссылку выхода из боя', false);
+            // Можно сразу очистить
+            await CommonHelper.setExtStorage('wor_fight_exit_url', null);
+            return;
         } else {
             CommonHelper.log('Запоминаем ссылку выхода из боя', false);
         }
 
-        CommonHelper.setExtStorage('wor_fight_exit_url', url);
+        // Вычисляем timestamp истечения через 2 минуты
+        const expireAt = Date.now() + 2 * 60 * 1000; // мс
+
+        // Сохраняем объект с ссылкой и временем жизни
+        await CommonHelper.setExtStorage('wor_fight_exit_url', {
+            link: url,
+            expire: expireAt
+        });
+    }
+
+    static async getFightExitUrl() {
+        const data = await CommonHelper.getExtStorage('wor_fight_exit_url');
+        if (!data) {
+            // ничего нет
+            return null;
+        }
+
+        const { link, expire } = data;
+
+        // Если истёк
+        if (typeof expire === 'number' && Date.now() > expire) {
+            // Можно сразу очистить
+            await CommonHelper.setExtStorage('wor_fight_exit_url', null);
+            return null;
+        }
+
+        // Ещё живо — отдаем ссылку
+        return link;
     }
 
     /**
@@ -729,7 +759,7 @@ class CommonHelper {
             console.log('Ошибка при получении сообщений чата: + ', JSON.stringify(err));
         }
     }
-    
+
     /**
      * Возвращает значение GET-параметра из текущего URL.
      * @param {string} name – имя параметра (без «?»).
