@@ -14,7 +14,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.action === "sendRequestResoleCaptcha") {
+    if (message.action === "sendRequestResolveCaptcha") {
         (async () => {
             try {
                 const base64 = message.data.imageBase64;

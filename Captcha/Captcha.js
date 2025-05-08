@@ -39,7 +39,7 @@ class Captcha {
                 const base64Image = reader.result;
 
                 chrome.runtime.sendMessage({
-                    action: "sendRequestResoleCaptcha",
+                    action: "sendRequestResolveCaptcha",
                     data: {imageBase64: base64Image}
                 }, function (response) {
                     if (chrome.runtime.lastError) {
