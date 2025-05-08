@@ -12,10 +12,18 @@ window.addEventListener("load", async function () {
             document.location = exitUrl;
             return;
         }
-        CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + document.locatio.href);
+        CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + document.location.href);
 
         await CommonHelper.delay(15000);
         CommonHelper.reloadPage();
+        return;
+    }
+
+    let urlType = document.location.href.includes('cap') ? 'cap' : 'primanka';
+    let canResolve = await checkTimeout(urlType);
+
+    if (!canResolve) {
+        CommonHelper.sendTelegramMessage(`Капча "${urlType}" вылезла раньше чем 8 минут`);
         return;
     }
 
@@ -119,6 +127,14 @@ window.addEventListener("load", async function () {
             } else {
                 // ✅ Всё ок
                 CommonHelper.log("✅ Пазл на месте");
+
+                // Попытаемся достать предыдущие времена или получить пустой объект
+                const lastTime = (await CommonHelper.getExtStorage('wor_captcha_last_solve_time')) || {};
+                // Записываем «сейчас» под нужным ключом
+                lastTime[urlType] = Date.now();
+                // Сохраняем обратно
+                await CommonHelper.setExtStorage('wor_captcha_last_solve_time', lastTime);
+
                 await CommonHelper.setExtStorage('wor_captcha_error_count', 0);
                 await CommonHelper.delay(1000, 10000);
 
@@ -140,3 +156,29 @@ window.addEventListener("load", async function () {
         }
     }
 });
+
+
+async function checkTimeout(type) {
+    // Получаем { cap: timestamp, primanka: timestamp } или пустой объект
+    const lastSolveTime = await CommonHelper.getExtStorage('wor_captcha_last_solve_time') || {};
+    const now = Date.now();
+    const eightMinutes = 8 * 60 * 1000;
+
+    // Проверяем, есть ли в объекте свойство с именем type
+    if (lastSolveTime[type]) {
+        const delta = now - lastSolveTime[type];
+        if (delta < eightMinutes) {
+            CommonHelper.log(
+                `С момента последней капчи "${type}" прошло ${Math.floor(delta / 1000)} секунд (< 8 мин)`
+            );
+            return false;
+        }
+    } else {
+        CommonHelper.log(`Капча "${type}" ещё не решалась — первый заход`);
+    }
+
+    // Если сюда дошли — либо прошло ≥8 минут, либо свойства нет
+    CommonHelper.log(`Можно решать капчу "${type}" снова`);
+
+    return true;
+}
