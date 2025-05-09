@@ -18,60 +18,262 @@
     if (currentLocation == 7) {
         await processSavanna();
     }
+    if (currentLocation == 6) {
+        await processKat3();
+    }
+    if (currentLocation == 5) {
+        await processKat2();
+    }
+    if (currentLocation == 4) {
+        await processKat1();
+    }
+    if (currentLocation == 3) {
+        await processPodzemka();
+    }
 
 })();
 
 async function processSavanna() {
     let t = new Territory();
-
-    let delay = [50, 300];
-
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+    let delay = [50, 100];
+    
     await moveOnDefaultMaps(
         [
             {
-                id: 'all',
-                label: 'Обойти все точки',
+                id: 284,
+                label: 'Катакомбы 3',
                 action: async (e) => {
-                    let visited = await CommonHelper.getExtStorage('visitedLocations');
-
-                    let path = t.traverseAllPoints(visited[t.currentLocation]);
-                    path.shift();
-
-                    if (path.length === 0) {
-                        alert('Все точки уже посещены!');
-                        return;
-                    }
-
-
-                    await t.moveByPath(path, delay, async (doc) => {
-                        document.querySelector('body').innerHTML = doc.querySelector('body').innerHTML;
-
-                        // «зелёная» клетка, на которой стоит герой
-                        const currentCell = doc.querySelector(
-                            "td[style*='background-color: #00CC00'] div"
-                        );
-
-                        if (currentCell) {
-                            const id = currentCell.id.replace("r", "");
-                            visited[t.currentLocation] ??= [];
-
-                            if (!visited[t.currentLocation].includes(id)) {
-                                console.log('Добавляем точку');
-                                visited[t.currentLocation].push(id);
-                                await CommonHelper.setExtStorage('visitedLocations', visited);
-                            }
+                    await t.toPoint(284, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=228"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
                         }
                     });
                 }
             },
+            {
+                id: 486,
+                label: 'Катакомбы 4',
+                action: async (e) => {
+                    await t.toPoint(486, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=431"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 1477,
+                label: 'Логово',
+                action: async (e) => {
+                    await t.toPoint(1477, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=1478"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
         ]
     );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
 }
 
+async function processKat3() {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+    let delay = [50, 100];
+    
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 308,
+                label: 'Саванна',
+                action: async (e) => {
+                    await t.toPoint(308, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=309"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 204,
+                label: 'Катакомбы 2',
+                action: async (e) => {
+                    await t.toPoint(204, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=203"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
+async function processKat2() {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+    let delay = [50, 100];
+    
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 135, label: 'Чернокнижник', action: async (e) => {
+                    await t.toPoint(135, delay);
+                }
+            },
+            {
+                id: 161,
+                label: 'Катакомбы 3',
+                action: async (e) => {
+                    await t.toPoint(161, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=185"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 171,
+                label: 'Катакомбы 1',
+                action: async (e) => {
+                    await t.toPoint(171, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=146"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
+async function processKat1() {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+    let delay = [50, 100];
+    
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 101,
+                label: 'Подземелье',
+                action: async (e) => {
+                    await t.toPoint(101, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=81"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 108,
+                label: 'Катакомбы 2',
+                action: async (e) => {
+                    await t.toPoint(108, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=90"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
+
+async function processPodzemka() {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+    let delay = [50, 100];
+    
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 164,
+                label: 'Город',
+                action: async (e) => {
+                    await t.toPoint(164, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=132"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 303,
+                label: 'Катакомбы 1',
+                action: async (e) => {
+                    await t.toPoint(303, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=304"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
 async function processGorod() {
     let t = new Territory();
 
     let delay = [50, 300];
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
 
     await moveOnDefaultMaps(
         [
@@ -127,43 +329,76 @@ async function processGorod() {
                     });
                 }
             },
-            {
-                id: 'all',
-                label: 'Обойти все точки',
-                action: async (e) => {
-                    let visited = await CommonHelper.getExtStorage('visitedLocations');
-
-                    let path = t.traverseAllPoints(visited[t.currentLocation]);
-                    path.shift();
-
-                    if (path.length === 0) {
-                        alert('Все точки уже посещены!');
-                        return;
-                    }
-
-
-                    await t.moveByPath(path, delay, async (doc) => {
-                        document.querySelector('body').innerHTML = doc.querySelector('body').innerHTML;
-
-                        // «зелёная» клетка, на которой стоит герой
-                        const currentCell = doc.querySelector(
-                            "td[style*='background-color: #00CC00'] div"
-                        );
-
-                        if (currentCell) {
-                            const id = currentCell.id.replace("r", "");
-                            visited[t.currentLocation] ??= [];
-
-                            if (!visited[t.currentLocation].includes(id)) {
-                                console.log('Добавляем точку');
-                                visited[t.currentLocation].push(id);
-                                await CommonHelper.setExtStorage('visitedLocations', visited);
-                            }
-                        }
-                    });
-                }
-            },
+            renderWalkAllMapButton(walkAllMapStatus)
         ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
+
+function renderWalkAllMapButton(walkAllMapStatus) {
+    return {
+        id: 'all',
+        label: walkAllMapStatus ? 'Остановить обход всех точек' : 'Запустить обход всех точек',
+        action: async (e) => {
+            let status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+
+            if (status === true) {
+                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
+                await CommonHelper.reloadPage();
+                return;
+            }
+
+            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', true);
+            e.target.innerHTML = e.target.innerHTML.replace('Запустить обход всех точек', 'Остановить обход всех точек');
+            e.target.innerHTML = e.target.innerHTML.replace('mini_karta', 'optsii_igroka');
+            await walkAroundMap();
+        }
+    };
+}
+
+async function walkAroundMap(delay = [50, 100]) {
+    let t = new Territory();
+
+    let visited = await CommonHelper.getExtStorage('visitedLocations');
+
+    let path = t.traverseAllPoints(visited[t.currentLocation]);
+    path.shift();
+
+    if (path.length === 0) {
+        alert('Все точки уже посещены!');
+        return;
+    }
+
+
+    await t.moveByPath(
+        path,
+        delay,
+        async (doc) => {
+            document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML;
+
+            // «зелёная» клетка, на которой стоит герой
+            const currentCell = doc.querySelector(
+                "td[style*='background-color: #00CC00'] div"
+            );
+
+            if (currentCell) {
+                const id = currentCell.id.replace("r", "");
+                visited[t.currentLocation] ??= [];
+
+                if (!visited[t.currentLocation].includes(id)) {
+                    console.log('Добавляем точку');
+                    visited[t.currentLocation].push(id);
+                    await CommonHelper.setExtStorage('visitedLocations', visited);
+                }
+            }
+        },
+        async (doc) => {
+            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
+            alert('Все клетки посещены');
+        }
     );
 }
 

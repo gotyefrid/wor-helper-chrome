@@ -82,7 +82,7 @@ class GridNavigator {
             }
         }
 
-        console.warn("Путь не найден");
+        CommonHelper.log("Путь не найден");
         return [];
     }
 }
