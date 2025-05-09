@@ -9,7 +9,6 @@
     setupBattleHoverPreview();
 })();
 
-
 function contextMenu() {
     // === ВСТРАИВАЕМ СТИЛИ ДЛЯ МЕНЮ ===
     const style = document.createElement('style');
@@ -72,6 +71,22 @@ function contextMenu() {
             onClick: (nickname) => {
                 showWRModal(nickname); // предполагается, что эта функция уже определена
             }
+        },
+        {
+            label: '📋 Копировать ник',
+            onClick: async (nickname, event) => {
+                const textarea = document.createElement('textarea');
+                textarea.value = nickname;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                let target = event.target;
+                target.textContent = 'Скопировано!';
+
+                await CommonHelper.delay(400);
+            }
         }
     ];
 
@@ -95,12 +110,12 @@ function contextMenu() {
 
             menu.innerHTML = ''; // очистить старое
 
-            menuItems.forEach(item => {
+            menuItems.forEach(async (item) => {
                 const div = document.createElement('div');
                 div.textContent = item.label;
-                div.addEventListener('click', (e) => {
+                div.addEventListener('click', async (e) => {
                     e.stopPropagation();
-                    item.onClick(nickname);
+                    await item.onClick(nickname, e);
                     hideMenu();
                 });
                 menu.appendChild(div);
@@ -142,9 +157,6 @@ function contextMenu() {
         hideMenu();
     }, true);
 }
-
-
-
 
 function showWRModal(nickname) {
     // Если уже есть модалка — не создаём повторно
@@ -402,3 +414,5 @@ function setupBattleHoverPreview() {
         currentLink = null;
     }, { passive: true });
 }
+
+
