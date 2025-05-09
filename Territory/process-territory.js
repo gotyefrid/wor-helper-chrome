@@ -198,8 +198,16 @@ async function processTaktCommon(baseNames) {
         );
     }
 
-    // Вешаем клики
-    document.querySelectorAll('.clickable-base').forEach(span => {
+    // Собираем все спаны в массив в порядке их появления
+    const clickableSpans = Array.from(container.querySelectorAll('.clickable-base'));
+
+    // Пронумеровываем их в тексте: [1] Левая лесопилка, [2] Правая лесопилка и т.д.
+    clickableSpans.forEach((span, idx) => {
+        span.textContent = `[${idx + 1}] ${span.textContent}`;
+    });
+
+    // Вешаем клики на каждый
+    clickableSpans.forEach(span => {
         span.addEventListener('click', async e => {
             const el = e.currentTarget;
             const pointId = parseInt(el.getAttribute('data-point'), 10);
@@ -207,7 +215,7 @@ async function processTaktCommon(baseNames) {
 
             // 2. Определяем, была ли база наша уже в момент клика
             let initialOurs = false;
-            const nextElem = el.nextElementSibling; // это <span style="color…">№X</span>
+            const nextElem = el.nextElementSibling;
             if (nextElem) {
                 const m0 = nextElem.textContent.match(/№(\d+)/);
                 if (m0 && myTeam !== null) {
@@ -218,15 +226,11 @@ async function processTaktCommon(baseNames) {
             // 3. Бежим к точке
             await t.toPoint(pointId, [20, 50], doc => {
                 if (initialOurs) {
-                    // если изначально наша — просто вставляем новое тело
                     document.body.innerHTML = doc.querySelector('body').innerHTML;
                     return;
                 }
-
-                // иначе — проверяем, не захватила ли база наша команда пока мы бежали
                 const newCont = doc.querySelector('.contur');
                 if (newCont && myTeam !== null) {
-                    // regexp: "Название базы:...№(число)"
                     const re = new RegExp(
                         baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
                         ':[\\s\\S]*?№(\\d+)',
@@ -234,17 +238,22 @@ async function processTaktCommon(baseNames) {
                     );
                     const m = newCont.innerHTML.match(re);
                     const capturedTeam = m ? parseInt(m[1], 10) : null;
-
                     if (capturedTeam === myTeam) {
-                        // если уже наша — просто обновляем страницу
                         return CommonHelper.reloadPage();
                     }
                 }
-
-                // во всех остальных случаях — подменяем body на новый
                 document.body.innerHTML = doc.querySelector('body').innerHTML;
             });
         });
+    });
+
+    // Привязка нажатий клавиш 1–9 к индексам в clickableSpans
+    document.addEventListener('keydown', e => {
+        if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        const idx = Number(e.key) - 1;
+        if (!isNaN(idx) && idx >= 0 && idx < clickableSpans.length) {
+            clickableSpans[idx].click();
+        }
     });
 }
 
