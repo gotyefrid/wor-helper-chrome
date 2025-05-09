@@ -162,14 +162,15 @@ async function checkTimeout(type) {
     // Получаем { cap: timestamp, primanka: timestamp } или пустой объект
     const lastSolveTime = await CommonHelper.getExtStorage('wor_captcha_last_solve_time') || {};
     const now = Date.now();
-    const eightMinutes = 8 * 60 * 1000;
+    const seven = 7;
+    const minutes = seven * 60 * 1000;
 
     // Проверяем, есть ли в объекте свойство с именем type
     if (lastSolveTime[type]) {
         const delta = now - lastSolveTime[type];
-        if (delta < eightMinutes) {
+        if (delta < minutes) {
             CommonHelper.log(
-                `С момента последней капчи "${type}" прошло ${Math.floor(delta / 1000)} секунд (< 8 мин)`
+                `С момента последней капчи "${type}" прошло ${Math.floor(delta / 1000)} секунд (< ${seven} мин)`
             );
             return false;
         }
