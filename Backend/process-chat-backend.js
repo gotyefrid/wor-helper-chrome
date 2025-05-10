@@ -88,6 +88,6 @@ export async function sendMessagesFromChat() {
         });
 
     } catch (err) {
-        console.error('Ошибка при поиске вкладки:', err);
+        CommonHelperBackground.log('Ошибка при поиске вкладки:' + JSON.stringify(err));
     }
 }

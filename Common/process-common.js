@@ -63,7 +63,7 @@ async function parsing() {
             CommonHelper.log('[Parser] Проверка завершена.', false);
 
         } catch (error) {
-            console.error('[Parser] Ошибка при проверке:', error);
+            CommonHelper.log('[Parser] Ошибка при проверке:'+ JSON.stringify(error));
         } finally {
             isChecking = false;
         }
@@ -254,7 +254,7 @@ async function sendRandomFact() {
 
         if (res.status !== 200) {
             // Если статус ответа не 200, прекращаем выполнение
-            console.error("Ошибка: не удалось получить данные");
+            CommonHelper.log("Ошибка: не удалось получить данные");
             return;
         }
 
@@ -307,6 +307,6 @@ async function sendRandomFact() {
         }
 
     } catch (error) {
-        console.error("Ошибка:", error);
+        CommonHelper.log("Ошибка:" + JSON.stringify(error));
     }
 }

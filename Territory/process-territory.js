@@ -31,13 +31,50 @@
     if (currentLocation == 3) {
         await processPodzemka(delay);
     }
+    if (currentLocation == 9) {
+        await processCrystall(delay);
+    }
 
 })();
+async function processCrystall(delay = [50, 100]) {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
 
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 226,
+                label: 'Магазин кристаллов',
+                action: async (e) => {
+                    await t.toPoint(226, delay);
+                }
+            },
+            {
+                id: 116,
+                label: 'Город',
+                action: async (e) => {
+                    await t.toPoint(116, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=93"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
 async function processSavanna(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    
+
     await moveOnDefaultMaps(
         [
             {
@@ -94,7 +131,7 @@ async function processSavanna(delay = [50, 100]) {
 async function processKat3(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    
+
     await moveOnDefaultMaps(
         [
             {
@@ -136,7 +173,7 @@ async function processKat3(delay = [50, 100]) {
 async function processKat2(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    
+
     await moveOnDefaultMaps(
         [
             {
@@ -183,7 +220,7 @@ async function processKat2(delay = [50, 100]) {
 async function processKat1(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    
+
     await moveOnDefaultMaps(
         [
             {
@@ -226,7 +263,7 @@ async function processKat1(delay = [50, 100]) {
 async function processPodzemka(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    
+
     await moveOnDefaultMaps(
         [
             {
@@ -357,9 +394,8 @@ function renderWalkAllMapButton(walkAllMapStatus) {
 async function walkAroundMap(delay = [50, 100]) {
     let t = new Territory();
 
-    let visited = await CommonHelper.getExtStorage('visitedLocations');
-
-    let path = t.traverseAllPoints(visited[t.currentLocation]);
+    let visited = await CommonHelper.getExtStorage('visitedLocations') || {};
+    let path = t.traverseAllPoints(visited[t.currentLocation] || []);
     path.shift();
 
     if (path.length === 0) {

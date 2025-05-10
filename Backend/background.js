@@ -32,7 +32,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 const result = await response.json();
                 sendResponse({ success: true, data: result });
             } catch (e) {
-                console.error("Ошибка в запросе:", e);
+                let message = "Ошибка в запросе:" + e.toString();
+                await CommonHelperBackground.sendTelegramMessage(message);
+                CommonHelperBackground.log(message);
                 sendResponse({ success: false, error: e.toString() });
             }
         })();

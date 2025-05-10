@@ -79,7 +79,7 @@ class Captcha {
                 }, "image/png"); // Можно менять формат (png, jpeg)
             });
         } catch (error) {
-            console.error("Ошибка получения изображения из DOM:", error);
+            CommonHelper.log("Ошибка получения изображения из DOM:" + JSON.stringify(error));
             return null;
         }
     }

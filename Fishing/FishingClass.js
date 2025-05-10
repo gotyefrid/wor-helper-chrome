@@ -93,7 +93,7 @@ class Fishing {
                     await CommonHelper.delay(CommonHelper.MEDIUM_RANDOM);
                     await CommonHelper.clickAndWait(link);
                 })
-                .catch(console.error);
+                .catch(CommonHelper.log);
 
 
             CommonHelper.log('Ждём кнопки "В бой"');
@@ -102,7 +102,7 @@ class Fishing {
                 .then(async () => {
                     await CommonHelper.reloadPage();
                 })
-                .catch(console.error);
+                .catch(CommonHelper.log);
         } else {
             // Кликаем Подсечь
             await CommonHelper.delay(2000, 2500);

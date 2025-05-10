@@ -21,7 +21,7 @@ class GridNavigator {
         const target = this.findCoordinatesById(targetId);
 
         if (!start || !target) {
-            console.error("Начальная или конечная точка не найдена в сетке.");
+            CommonHelper.log("Начальная или конечная точка не найдена в сетке.");
             return [];
         }
 
@@ -165,7 +165,7 @@ async function navigatePath() {
             let cellId = '#r' + id.toString();
             let cellElement = currentDocument.querySelector(cellId);
             if (!cellElement) {
-                console.error('Элемент с селектором ' + cellId + ' не найден в текущем документе');
+                CommonHelper.log('Элемент с селектором ' + cellId + ' не найден в текущем документе');
                 localStorage.setItem('visitedPathIds', '[]');
                 break;
             }
@@ -187,7 +187,7 @@ async function navigatePath() {
                 // Обновляем currentDocument для следующей итерации
                 currentDocument = newDocument;
             } catch (error) {
-                console.error('Ошибка при fetch запросе:', error);
+                CommonHelper.log('Ошибка при fetch запросе:' + JSON.stringify(error));
                 break;
             }
 

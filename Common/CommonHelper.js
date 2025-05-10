@@ -185,7 +185,7 @@ class CommonHelper {
         let { botToken, chatId } = await CommonHelper.getTgData(bot);
 
         if (!botToken || !chatId) {
-            console.error('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в localStroage');
+            CommonHelper.log('Нет возможности отправить сообщение в телеграм-бот. Укажите botToken и chatId в localStroage');
             return;
         }
 
@@ -226,7 +226,7 @@ class CommonHelper {
 
     static async sendMessageToChat(message, recipient = null, privateMessage = false) {
         if (!message || typeof message !== "string") {
-            console.error("❌ Ошибка: сообщение не может быть пустым!");
+            CommonHelper.log("❌ Ошибка: сообщение не может быть пустым!");
             return;
         }
 
@@ -261,7 +261,7 @@ class CommonHelper {
 
             CommonHelper.log("✅ Сообщение успешно отправлено: " + message);
         } catch (error) {
-            console.error("❌ Ошибка при отправке сообщения:", error);
+            CommonHelper.log("❌ Ошибка при отправке сообщения:" + JSON.stringify(error));
         }
     }
 
@@ -652,8 +652,8 @@ class CommonHelper {
             });
 
             if (!response.ok) {
-                CommonHelper.sendTelegramMessage(`Ошибка загрузки страницы (${type}):`, response.status);
-                console.error(`Ошибка загрузки страницы (${type}):`, response.status);
+                CommonHelper.sendTelegramMessage(`Ошибка загрузки страницы (${type}):` + response.status);
+                CommonHelper.log(`Ошибка загрузки страницы (${type}):` + response.status);
                 return;
             }
 
@@ -676,7 +676,7 @@ class CommonHelper {
                 CommonHelper.log(`Неудача. Не найдено ничего в ${type} (проверка на [${textsToFind.join(', ')}])`, false);
             }
         } catch (error) {
-            console.error(`Ошибка при проверке ${type}:`, error);
+            CommonHelper.log(`Ошибка при проверке ${type}:` + JSON.stringify(error));
         }
     }
 
