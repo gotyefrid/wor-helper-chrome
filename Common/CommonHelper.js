@@ -28,6 +28,31 @@ class CommonHelper {
         await CommonHelper.delay(100000);
     }
 
+    static async getAutoMoveDelay(defaultValue = [50, 100]) {
+        // получаем строку из хранилища
+        const delay = await CommonHelper.getExtStorage('wor_map_move_delay');
+
+        // если нет значения — возвращаем defaultValue
+        if (!delay) {
+            return defaultValue;
+        }
+
+        // пробуем распарсить: одна или две группы цифр через запятую
+        const m = delay.match(/^(\d+)(?:,(\d+))?$/);
+        if (!m) {
+            // если формат неправильный — тоже возвращаем defaultValue
+            return defaultValue;
+        }
+
+        const first = parseInt(m[1], 10);
+        // если второй номер не задан, используем тот же самый
+        const second = m[2] !== undefined
+            ? parseInt(m[2], 10)
+            : first;
+
+        return [first, second];
+    }
+
     static async clickAndWait(element, delay = 100000) {
         element.click();
         await CommonHelper.delay(delay);

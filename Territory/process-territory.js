@@ -3,40 +3,40 @@
         await new Promise(r => setTimeout(r, 50));
     }
 
+    let delay = await CommonHelper.getAutoMoveDelay();
+
     let currentLocation = Territory.getCurrentLocation();
 
     if (currentLocation == 1) {
-        await processGorod();
+        await processGorod(delay);
     }
-
     if (currentLocation == 100) {
-        await processBigTakt();
+        await processBigTakt(delay);
     }
     if (currentLocation == 101) {
-        await processSmallTakt();
+        await processSmallTakt(delay);
     }
     if (currentLocation == 7) {
-        await processSavanna();
+        await processSavanna(delay);
     }
     if (currentLocation == 6) {
-        await processKat3();
+        await processKat3(delay);
     }
     if (currentLocation == 5) {
-        await processKat2();
+        await processKat2(delay);
     }
     if (currentLocation == 4) {
-        await processKat1();
+        await processKat1(delay);
     }
     if (currentLocation == 3) {
-        await processPodzemka();
+        await processPodzemka(delay);
     }
 
 })();
 
-async function processSavanna() {
+async function processSavanna(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    let delay = [50, 100];
     
     await moveOnDefaultMaps(
         [
@@ -91,10 +91,9 @@ async function processSavanna() {
     }
 }
 
-async function processKat3() {
+async function processKat3(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    let delay = [50, 100];
     
     await moveOnDefaultMaps(
         [
@@ -134,10 +133,9 @@ async function processKat3() {
         await walkAroundMap();
     }
 }
-async function processKat2() {
+async function processKat2(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    let delay = [50, 100];
     
     await moveOnDefaultMaps(
         [
@@ -182,10 +180,9 @@ async function processKat2() {
         await walkAroundMap();
     }
 }
-async function processKat1() {
+async function processKat1(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    let delay = [50, 100];
     
     await moveOnDefaultMaps(
         [
@@ -226,10 +223,9 @@ async function processKat1() {
     }
 }
 
-async function processPodzemka() {
+async function processPodzemka(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    let delay = [50, 100];
     
     await moveOnDefaultMaps(
         [
@@ -269,10 +265,9 @@ async function processPodzemka() {
         await walkAroundMap();
     }
 }
-async function processGorod() {
-    let t = new Territory();
 
-    let delay = [50, 300];
+async function processGorod(delay = [50, 100]) {
+    let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
 
     await moveOnDefaultMaps(
@@ -402,7 +397,7 @@ async function walkAroundMap(delay = [50, 100]) {
     );
 }
 
-async function processBigTakt() {
+async function processBigTakt(delay = [50, 100]) {
     const baseNames = {
         744: 'Левая лесопилка',
         778: 'Правая лесопилка',
@@ -412,10 +407,10 @@ async function processBigTakt() {
         311: 'Левая ферма',
         328: 'Правая ферма'
     };
-    processTaktCommon(baseNames);
+    processTaktCommon(baseNames, delay);
 }
 
-async function processTaktCommon(baseNames) {
+async function processTaktCommon(baseNames, delay) {
     const t = new Territory();
     const container = document.querySelector('.contur');
     if (!container) return;
@@ -459,7 +454,7 @@ async function processTaktCommon(baseNames) {
             }
 
             // 3. Бежим к точке
-            await t.toPoint(pointId, [20, 50], doc => {
+            await t.toPoint(pointId, delay, doc => {
                 if (initialOurs) {
                     document.body.innerHTML = doc.querySelector('body').innerHTML;
                     return;
@@ -492,7 +487,7 @@ async function processTaktCommon(baseNames) {
     });
 }
 
-async function processSmallTakt() {
+async function processSmallTakt(delay = [50, 100]) {
     const baseNames = {
         205: 'Левая лесопилка',
         217: 'Правая лесопилка',
@@ -500,7 +495,7 @@ async function processSmallTakt() {
         429: 'Левая ферма',
         441: 'Правая ферма'
     };
-    processTaktCommon(baseNames);
+    processTaktCommon(baseNames, delay);
 }
 
 // Функция для установки спиннера

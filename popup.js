@@ -27,7 +27,10 @@ async function processCheckboxes() {
             storageKey: "wor_captcha_active",
             hasSubOptions: true,
         },
-        toggleMapHistory: { storageKey: "wor_maphistory_active" },
+        toggleMapHistory: {
+            storageKey: "wor_maphistory_active",
+            hasSubOptions: true,
+        },
         toggleLog: { storageKey: "wor_log_active" },
 
         toggleFighting: {
@@ -213,6 +216,7 @@ async function processInputs() {
         inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },
         inputTelegramOptChatID: { storageKey: "wor_tg_chat_id" },
         inputCaptchaHost: { storageKey: "wor_captcha_host" },
+        inputMapDelay: { storageKey: "wor_map_move_delay" },
     };
 
     for (const [inputId, { storageKey }] of Object.entries(inputs)) {
@@ -226,9 +230,27 @@ async function processInputs() {
             }
         });
 
+
         // Добавляем слушатель изменений
         inputElement.addEventListener("input", () => {
             const value = inputElement.value;
+
+            if (inputElement.id == 'inputMapDelay') {
+                if (!inputElement.value) {
+                    chrome.storage.local.set({ [storageKey]: "50,100" });
+                }
+
+                const regex = /^\d+(,\d+)?$/;
+                if (regex.test(inputElement.value)) {
+                    inputElement.style.borderColor = 'green';
+                    chrome.storage.local.set({ [storageKey]: value });
+                } else {
+                    inputElement.style.borderColor = 'red';
+                }
+
+                return;
+            }
+
             chrome.storage.local.set({ [storageKey]: value });
         });
     }
