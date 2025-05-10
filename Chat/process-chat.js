@@ -262,64 +262,76 @@ function showWRModal(nickname) {
     document.body.appendChild(modal);
 }
 
-function addQuickPost() {
+async function addQuickPost() {
     let form = document.querySelector('#chatline');
+    let quickMenu = await CommonHelper.getExtStorage('wor_chat_fast_answers_active');
 
-    if (!form) {
+    if (!form || !quickMenu) {
         return;
     }
 
-    form.insertAdjacentHTML("afterend", '<a id="persInfo" class="svet" style="margin: 0 3px 0 3px;">Перс</a>');
-    form.insertAdjacentHTML("afterend", '<a id="bojInfo" class="svet" style="margin: 0 3px 0 3px;">Бой</a>|');
-    form.insertAdjacentHTML("afterend", '<a id="taktInfo" class="svet" style="margin: 0 3px 0 3px;">Такт</a>|');
-    form.insertAdjacentHTML("afterend", '<span class="" style="margin: 0 3px 0 10px;">Теги:</span>');
-    form.insertAdjacentHTML("afterend", '<a id="toKlan" class="svet" style="margin: 0 3px 0 3px;">Клан</a>');
-    form.insertAdjacentHTML("afterend", '<a id="toDak" class="svet" style="margin: 0 3px 0 3px;">Дак</a>|');
-    form.insertAdjacentHTML("afterend", '<a id="toGwatlow" class="svet" style="margin: 0 3px 0 3px;">Gwatlow</a>|');
-    form.insertAdjacentHTML("afterend", '<span class="" style="margin: 0 3px 0 10px;">Кому:</span>');
+    // 1. Получаем из стораджа массивы (или пустые массивы по умолчанию)
+    const answers = await CommonHelper.getExtStorage('wor_chat_fast_answers') || [];
+    const addresses = await CommonHelper.getExtStorage('wor_chat_fast_address') || [];
 
-    document.querySelectorAll('#toGwatlow, #toDak, #toKlan, #taktInfo, #BojInfo, #PersInfo')
-        .forEach(el => el.style.cursor = 'pointer');
+    // 2. Вставляем два ваших статичных спана (метки)
+    form.insertAdjacentHTML(
+        "afterend",
+        '<span class="" style="margin: 0 3px 0 10px;">Теги:</span>'
+    );
+    form.insertAdjacentHTML(
+        "afterend",
+        '<span class="" style="margin: 0 3px 0 10px;">Кому:</span>'
+    );
 
-    // Обработчики
-    document.getElementById('toGwatlow')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        let input = document.getElementById('postuser');
-        if (input) input.value = "Gwatlow";
+    // 3. Находим эти спаны по текстовому содержимому
+    const container = form.parentNode;
+    const labels = Array.from(container.querySelectorAll('span'))
+        .filter(el => ['Теги:', 'Кому:'].includes(el.textContent.trim()));
+
+    const tagsLabel = labels.find(el => el.textContent.trim() === 'Теги:');
+    const addressesLabel = labels.find(el => el.textContent.trim() === 'Кому:');
+
+    // 4. Динамически создаём ссылки «ответы» (Теги)
+    //    Проходим по answers в обратном порядке, чтобы при вставке
+    //    через afterend итоговый порядок совпал с исходным
+    answers.slice().reverse().forEach(item => {
+        const [key, val] = item.split(':').map(s => s.trim());
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'svet';
+        a.style.margin = '0 3px';
+        a.textContent = key;
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const inp = document.getElementById('postmessage');
+            if (inp) inp.value += val;
+        });
+        tagsLabel.insertAdjacentElement('afterend', a);
     });
 
-    document.getElementById('toDak')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        let input = document.getElementById('postuser');
-        if (input) input.value = "Дональд Дак";
-    });
+    // 5. Динамически создаём ссылки «кому» (Адреса)
+    addresses.slice().reverse().forEach(item => {
+        const parts = item.split(':').map(s => s.trim());
+        const key = parts[0];
+        const val = parts[1] || '';
+        const opt = parts[2];  // если есть «:1» — будет '1'
 
-    document.getElementById('toKlan')?.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        let input = document.getElementById('postuser');
-        if (input) input.value = "Дональд Дак, Benz, WheeL, Gwatlow, Ali_ba_ba, -SlenceR-, ЗУБРИК, Пипец";
-
-        let checkbox = document.getElementById('postprivat');
-        if (checkbox) checkbox.checked = true;
-    });
-
-    document.getElementById('taktInfo')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        let input = document.getElementById('postmessage');
-        if (input) input.value += "[battle][/battle]";
-    });
-
-    document.getElementById('bojInfo')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        let input = document.getElementById('postmessage');
-        if (input) input.value += "[log][/log]";
-    });
-
-    document.getElementById('persInfo')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        let input = document.getElementById('postmessage');
-        if (input) input.value += "[inf][/inf]";
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'svet';
+        a.style.margin = '0 3px';
+        a.textContent = key;
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const inp = document.getElementById('postuser');
+            if (inp) inp.value = val;
+            if (opt === '1') {
+                const cb = document.getElementById('postprivat');
+                if (cb) cb.checked = true;
+            }
+        });
+        addressesLabel.insertAdjacentElement('afterend', a);
     });
 }
 
@@ -407,7 +419,7 @@ function setupBattleHoverPreview() {
     preview.addEventListener('mouseenter', () => {
         clearTimeout(hideTimeout);
     });
-    
+
     // Закрыть модалку при любом скролле
     window.addEventListener('scroll', () => {
         preview.style.display = 'none';

@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Обработчики парсинга
     processParsing();
 
+    processChat();
+
     // Обработчик рыбалки
     processFishing();
 
@@ -50,11 +52,17 @@ async function processCheckboxes() {
             hasSubOptions: true,
         },
         toggleParsingOptInvertSearch: { storageKey: "wor_parsing_invert_search_active" },
-
+        
         toggleTelegram: {
             storageKey: "wor_tg_notifications_active",
             hasSubOptions: true,
         },
+        
+        toggleChat: {
+            storageKey: "wor_chat_active",
+            hasSubOptions: true,
+        },
+        toggleChatOptFastAddressActive: { storageKey: "wor_chat_fast_answers_active" },
     };
 
     for (let id in toggles) {
@@ -176,6 +184,68 @@ async function processParsing() {
     });
 }
 
+async function processChat() {
+    let modalId = 'modal_fast_address';
+
+    $('#modal-fast-address-pairs, #modal-fast-answers-pairs').select2({
+        tags: true,
+        width: '100%',
+        tokenSeparators: ['\n'],
+        createTag: function (params) {
+            const term = params.term.trim();
+            const parts = term.split(':');
+
+            // разрешаем только два или три элемента через двоеточие
+            if (parts.length === 2 || parts.length === 3) {
+                return { id: term, text: term };
+            }
+            return null;
+        }
+    });
+
+    // Открытие модалки
+    document.getElementById('toggleChatOptFastAddress').addEventListener('click', () => {
+        // Очистим и заполним модальные select2 значениями из storage
+        chrome.storage.local.get(['wor_chat_fast_address', 'wor_chat_fast_answers'], (data) => {
+            const adresses = data.wor_chat_fast_address || [];
+            const answers = data.wor_chat_fast_answers || [];
+
+            const $adresses = $('#modal-fast-address-pairs').empty();
+            adresses.forEach(item => {
+                const option = new Option(item, item, true, true);
+                $adresses.append(option);
+            });
+            $adresses.trigger('change');
+
+            const $answers = $('#modal-fast-answers-pairs').empty();
+            answers.forEach(item => {
+                const option = new Option(item, item, true, true);
+                $answers.append(option);
+            });
+            $answers.trigger('change');
+
+            openModal(modalId);
+        });
+    });
+
+    // Сохранение
+    document.getElementById('modal-fast-address-save').addEventListener('click', () => {
+        const adresses = $('#modal-fast-address-pairs').val();
+        const answers = $('#modal-fast-answers-pairs').val();
+
+        chrome.storage.local.set({
+            wor_chat_fast_address: adresses,
+            wor_chat_fast_answers: answers,
+        });
+
+        closeModal(modalId);
+    });
+
+    // Закрытие модалки (крестик)
+    document.querySelector('#modal-fast-address-close').addEventListener('click', () => {
+        closeModal(modalId);
+    });
+}
 
 function openModal(id) {
     document.getElementById(id).style.display = 'block';

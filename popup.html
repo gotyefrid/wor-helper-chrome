@@ -85,7 +85,7 @@
         <div class="toggle-wrapper">
             <span class="toggle-title small">Хост</span>
             <label class="text-input">
-                <input type="text" id="inputCaptchaHost" style="width: auto;" >
+                <input type="text" id="inputCaptchaHost" style="width: auto;">
             </label>
         </div>
     </div>
@@ -100,7 +100,7 @@
         <div class="toggle-wrapper">
             <span class="info-icon" title="Задержка при авто перемещениях. Введите одно число или два числа через запятую, например: 5 или 10,20">?</span><span class="toggle-title small">Задержка "от,до", мс</span>
             <label class="text-input">
-                <input type="text" id="inputMapDelay" title="Задержка при авто перемещениях. Введите одно число или два числа через запятую, например: 5 или 10,20" style="width: 70px;"/>
+                <input type="text" id="inputMapDelay" title="Задержка при авто перемещениях. Введите одно число или два числа через запятую, например: 5 или 10,20" style="width: 70px;" />
             </label>
         </div>
     </div>
@@ -225,6 +225,22 @@
     </div>
     <hr class="divider">
 
+    <div class="toggle-wrapper" id="toggleChatWrapper">
+        <span class="toggle-title toggle-expand">Чат ▼</span>
+        <label class="switch">
+            <input type="hidden" id="toggleChat">
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleChatOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Быстрые адресаты</span>
+            <label class="">
+                <a id="toggleChatOptFastAddress">Редактировать</a>
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
     <div class="toggle-wrapper">
         <span class="toggle-title">Лог</span>
         <label class="switch">
@@ -235,6 +251,26 @@
 
     <script src="popup.js"></script>
     <!-- Модальное окно -->
+    <div id="modal_fast_address" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-fast-address-close">&times;</span>
+            <h3>Редактировать быстрые ответы</h3>
+            <div class="toggle-wrapper">
+                <span class="toggle-title small">Включено</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleChatOptFastAddressActive"><span class="slider round"></span>
+                </label>
+            </div>
+            <label class="modal-label">Адресаты (формат name:char:private)<span class="info-icon" title="Первое значение - то что будет в кнопке, второе - какой текст подставлятся в поле 'кому', третье (не обязательное) - единичку поставьте если хотите чтобы активировалась галочка приватного сообщения. Например: Админу:Misha:1">?</span></label>
+            <select id="modal-fast-address-pairs" class="select2" multiple style="width:100%" data-placeholder="Введите пары вида a:1, b:4:1 и нажмите Enter"></select>
+            
+            <label class="modal-label">Сообщения (формат name:message)<span class="info-icon" title="Первое значение - то что будет в кнопке, второе - какой текст подставлятся в поле 'сообщение'. Например: Ссылка на бой:[log][/log]">?</span></label>
+            <select id="modal-fast-answers-pairs" class="select2" multiple style="width:100%" data-placeholder="Введите пары вида a:1, b:4 и нажмите Enter"></select>
+
+            <button id="modal-fast-address-save" class="modal-save">Сохранить</button>
+        </div>
+    </div>
+
     <div id="modal_parsing" class="modal">
         <div class="modal-content">
             <span class="modal-close" id="modal-parsing-close">&times;</span>
