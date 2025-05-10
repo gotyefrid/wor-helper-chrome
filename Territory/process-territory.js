@@ -34,8 +34,149 @@
     if (currentLocation == 9) {
         await processCrystall(delay);
     }
-
+    if (currentLocation == 2) {
+        await processOzero(delay);
+    }
+    if (currentLocation == 8) {
+        await processDesert(delay);
+    }
+    if (currentLocation == 10) {
+        await processKat4(delay);
+    }
 })();
+async function processKat4(delay = [50, 100]) {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 404,
+                label: 'Саванна',
+                action: async (e) => {
+                    await t.toPoint(404, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=363"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 297,
+                label: 'Пустыня',
+                action: async (e) => {
+                    await t.toPoint(297, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=256"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
+async function processDesert(delay = [50, 100]) {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 352,
+                label: 'Катакомбы 4',
+                action: async (e) => {
+                    await t.toPoint(352, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=324"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 509,
+                label: 'Озеро',
+                action: async (e) => {
+                    await t.toPoint(509, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=537"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
+async function processOzero(delay = [50, 100]) {
+    let t = new Territory();
+    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+
+    await moveOnDefaultMaps(
+        [
+            {
+                id: 195,
+                label: 'Хижина рыбака',
+                action: async (e) => {
+                    await t.toPoint(195, delay);
+                }
+            },
+            {
+                id: 301,
+                label: 'Город',
+                action: async (e) => {
+                    await t.toPoint(301, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=322"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            {
+                id: 247,
+                label: 'Пустыня',
+                action: async (e) => {
+                    await t.toPoint(247, delay, null, (doc) => {
+                        let tpLink = doc.querySelector('a[href*="crd=248"]');
+                        if (tpLink) {
+                            document.location = tpLink.href;
+                        } else {
+                            CommonHelper.reloadPage();
+                        }
+                    });
+                }
+            },
+            renderWalkAllMapButton(walkAllMapStatus)
+        ]
+    );
+
+    if (walkAllMapStatus === true) {
+        await walkAroundMap();
+    }
+}
 async function processCrystall(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -400,6 +541,8 @@ async function walkAroundMap(delay = [50, 100]) {
 
     if (path.length === 0) {
         alert('Все точки уже посещены!');
+        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
+        CommonHelper.reloadPage();
         return;
     }
 
@@ -429,6 +572,7 @@ async function walkAroundMap(delay = [50, 100]) {
         async (doc) => {
             await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
             alert('Все клетки посещены');
+            CommonHelper.reloadPage();
         }
     );
 }
