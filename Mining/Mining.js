@@ -39,7 +39,7 @@ class Mining {
         let start = [...document.querySelectorAll('.button')].find(a => a.innerText.includes('Добывать ресурсы'));
 
         if (start) {
-            console.log('нашил кнопу')
+            CommonHelper.log('Нашли кнопу')
             await CommonHelper.clickAndWait(start);
             return;
         }

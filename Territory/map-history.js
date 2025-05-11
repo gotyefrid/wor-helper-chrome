@@ -73,7 +73,7 @@ async function start() {
 
     // дальше слушаем перемещения
     trackPosition(visitedLocations);
-    collectMap();
+    // collectMap();
 }
 
 /* ===== 5. Трекинг шага героя ============================== */

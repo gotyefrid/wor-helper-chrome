@@ -21,7 +21,7 @@
             }
 
         } catch (err) {
-            console.log(err);
+            CommonHelper.log(err);
         }
 
         // Ждём 10 секунд перед следующим запуском

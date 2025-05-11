@@ -109,17 +109,18 @@ class Fight {
             });
 
             let checkTrauma = await CommonHelper.getExtStorage('wor_fight_check_trauma');
-            let maxTrauma = await CommonHelper.getExtStorage('wor_fight_max_trauma');
+            let maxTraumaInHours = await CommonHelper.getExtStorage('wor_fight_max_trauma');
+            maxTraumaInHours = Number(maxTraumaInHours) || 0;
 
-            if (checkTrauma && CommonHelper.isTraumaMoreOrEqual(maxTrauma)) {
+            if (checkTrauma && CommonHelper.getTraumaTime(true) > (maxTraumaInHours * 60)) {
                 CommonHelper.log('Много травмы, ничего не делаю в бою');
                 CommonHelper.sendTelegramMessage('Много травмы, ничего не делаю в бою');
                 skip = true;
             }
 
-            let isEnemyRealPlayer = CommonHelper.isRealPlayer(enemyName);
+            let isMonster = this.isMonster();
 
-            if (isEnemyRealPlayer) {
+            if (!isMonster) {
                 CommonHelper.log('Против меня зашёл в бой игрок ' + enemyName);
                 CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
                 skip = true;
@@ -174,6 +175,7 @@ class Fight {
             }
         } else {
             await CommonHelper.log('Имя противника не найдено, ничего не делаем.');
+            await CommonHelper.sendTelegramMessage('Имя противника не найдено, ничего не делаем.');
             await CommonHelper.delay(15000);
             return;
         }
@@ -193,6 +195,10 @@ class Fight {
         } else {
             await CommonHelper.sendTelegramMessage('Нет кнопки ударить врага.')
         }
+    }
+
+    isMonster() {
+        return document.querySelector('img[src*=monster]') !== null;
     }
 
     async isPlayerInitiatedBattle() {

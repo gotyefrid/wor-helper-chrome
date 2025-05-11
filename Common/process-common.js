@@ -21,11 +21,23 @@
 })();
 
 async function checkTrauma() {
-    let currentTime = CommonHelper.getTraumaTime(true);
-    let lastSavedTime = await CommonHelper.getExtStorage('wor_fight_last_trauma_minutes');
+    const currentTime = CommonHelper.getTraumaTime(true);
 
+    // достаём из хранилища и сразу приводим к числу
+    const raw = await CommonHelper.getExtStorage('wor_fight_last_trauma_minutes');
+    let lastSavedTime = Number(raw);
+
+    // если в хранилище нет валидного числа — инициализируем и выходим
+    if (!raw || isNaN(lastSavedTime)) {
+        lastSavedTime = 0;
+    }
+
+    // дальше — обычная логика
     if (currentTime > lastSavedTime) {
-        await CommonHelper.sendTelegramMessage('Травма увеличилась! Теперь травма: ' + CommonHelper.getTraumaTime(), 'common');
+        await CommonHelper.sendTelegramMessage(
+            'Травма увеличилась! Теперь травма: ' + CommonHelper.getTraumaTime(),
+            'common'
+        );
         await CommonHelper.setExtStorage('wor_fight_last_trauma_minutes', currentTime);
     }
 }
@@ -63,7 +75,7 @@ async function parsing() {
             CommonHelper.log('[Parser] Проверка завершена.', false);
 
         } catch (error) {
-            CommonHelper.log('[Parser] Ошибка при проверке:'+ JSON.stringify(error));
+            CommonHelper.log('[Parser] Ошибка при проверке:' + JSON.stringify(error));
         } finally {
             isChecking = false;
         }

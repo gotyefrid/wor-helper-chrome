@@ -368,13 +368,9 @@ class Territory {
     }
 
     async toPoint(pointId, delay = [50, 100], eachCallback = null, endCallback = null) {
-        if (this.currentPointId == pointId) {
-            return;
-        }
-
         const path = this.findPath(this.currentPointId, pointId);
         path.shift();
-        CommonHelper.log('Путь:', path);
+        CommonHelper.log('Путь:'+ JSON.stringify(path));
 
         await this.moveByPath(path, delay, eachCallback, endCallback);
     }
@@ -382,9 +378,16 @@ class Territory {
     async moveByPath(path, delay = [50, 100], eachCallback = null, endCallback = null) {
         // Для первой итерации будем использовать текущий document
         let currentDocument = document;
+
+        if (path.length === 0) {
+            if (typeof endCallback === "function") {
+                await endCallback(currentDocument);
+            }
+        }
+
         // Проходим по всем точкам пути
         for (const id of path) {
-            console.log('Переходим на точку ' + id);
+            CommonHelper.log('Переходим на точку ' + id);
 
             // Формируем селектор для ячейки и ищем её в текущем документе (полученном на предыдущем шаге или изначальном)
             let cellId = 'r' + id.toString();
