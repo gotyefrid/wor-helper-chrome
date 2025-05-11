@@ -54,7 +54,7 @@ async function processKat4(delay = [50, 100]) {
                 id: 404,
                 label: 'Саванна',
                 action: async (e) => {
-                    await t.toPoint(404, delay, null, (doc) => {
+                    await t.toPoint(404, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=363"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -68,7 +68,7 @@ async function processKat4(delay = [50, 100]) {
                 id: 297,
                 label: 'Пустыня',
                 action: async (e) => {
-                    await t.toPoint(297, delay, null, (doc) => {
+                    await t.toPoint(297, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=256"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -96,7 +96,7 @@ async function processDesert(delay = [50, 100]) {
                 id: 352,
                 label: 'Катакомбы 4',
                 action: async (e) => {
-                    await t.toPoint(352, delay, null, (doc) => {
+                    await t.toPoint(352, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=324"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -110,7 +110,7 @@ async function processDesert(delay = [50, 100]) {
                 id: 509,
                 label: 'Озеро',
                 action: async (e) => {
-                    await t.toPoint(509, delay, null, (doc) => {
+                    await t.toPoint(509, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=537"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -138,14 +138,14 @@ async function processOzero(delay = [50, 100]) {
                 id: 195,
                 label: 'Хижина рыбака',
                 action: async (e) => {
-                    await t.toPoint(195, delay);
+                    await t.toPoint(195, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
             },
             {
                 id: 301,
                 label: 'Город',
                 action: async (e) => {
-                    await t.toPoint(301, delay, null, (doc) => {
+                    await t.toPoint(301, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=322"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -159,7 +159,7 @@ async function processOzero(delay = [50, 100]) {
                 id: 247,
                 label: 'Пустыня',
                 action: async (e) => {
-                    await t.toPoint(247, delay, null, (doc) => {
+                    await t.toPoint(247, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=248"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -187,14 +187,14 @@ async function processCrystall(delay = [50, 100]) {
                 id: 226,
                 label: 'Магазин кристаллов',
                 action: async (e) => {
-                    await t.toPoint(226, delay);
+                    await t.toPoint(226, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
             },
             {
                 id: 116,
                 label: 'Город',
                 action: async (e) => {
-                    await t.toPoint(116, delay, null, (doc) => {
+                    await t.toPoint(116, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=93"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -222,7 +222,7 @@ async function processSavanna(delay = [50, 100]) {
                 id: 284,
                 label: 'Катакомбы 3',
                 action: async (e) => {
-                    await t.toPoint(284, delay, null, (doc) => {
+                    await t.toPoint(284, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=228"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -236,7 +236,7 @@ async function processSavanna(delay = [50, 100]) {
                 id: 486,
                 label: 'Катакомбы 4',
                 action: async (e) => {
-                    await t.toPoint(486, delay, null, (doc) => {
+                    await t.toPoint(486, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=431"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -250,7 +250,7 @@ async function processSavanna(delay = [50, 100]) {
                 id: 1477,
                 label: 'Логово',
                 action: async (e) => {
-                    await t.toPoint(1477, delay, null, (doc) => {
+                    await t.toPoint(1477, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=1478"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -279,7 +279,7 @@ async function processKat3(delay = [50, 100]) {
                 id: 308,
                 label: 'Саванна',
                 action: async (e) => {
-                    await t.toPoint(308, delay, null, (doc) => {
+                    await t.toPoint(308, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=309"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -293,7 +293,7 @@ async function processKat3(delay = [50, 100]) {
                 id: 204,
                 label: 'Катакомбы 2',
                 action: async (e) => {
-                    await t.toPoint(204, delay, null, (doc) => {
+                    await t.toPoint(204, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=203"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -319,14 +319,14 @@ async function processKat2(delay = [50, 100]) {
         [
             {
                 id: 135, label: 'Чернокнижник', action: async (e) => {
-                    await t.toPoint(135, delay);
+                    await t.toPoint(135, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
             },
             {
                 id: 161,
                 label: 'Катакомбы 3',
                 action: async (e) => {
-                    await t.toPoint(161, delay, null, (doc) => {
+                    await t.toPoint(161, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=185"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -340,7 +340,7 @@ async function processKat2(delay = [50, 100]) {
                 id: 171,
                 label: 'Катакомбы 1',
                 action: async (e) => {
-                    await t.toPoint(171, delay, null, (doc) => {
+                    await t.toPoint(171, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=146"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -368,7 +368,7 @@ async function processKat1(delay = [50, 100]) {
                 id: 101,
                 label: 'Подземелье',
                 action: async (e) => {
-                    await t.toPoint(101, delay, null, (doc) => {
+                    await t.toPoint(101, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=81"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -382,7 +382,7 @@ async function processKat1(delay = [50, 100]) {
                 id: 108,
                 label: 'Катакомбы 2',
                 action: async (e) => {
-                    await t.toPoint(108, delay, null, (doc) => {
+                    await t.toPoint(108, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=90"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -411,7 +411,7 @@ async function processPodzemka(delay = [50, 100]) {
                 id: 164,
                 label: 'Город',
                 action: async (e) => {
-                    await t.toPoint(164, delay, null, (doc) => {
+                    await t.toPoint(164, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=132"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -425,7 +425,7 @@ async function processPodzemka(delay = [50, 100]) {
                 id: 303,
                 label: 'Катакомбы 1',
                 action: async (e) => {
-                    await t.toPoint(303, delay, null, (doc) => {
+                    await t.toPoint(303, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=304"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -454,7 +454,7 @@ async function processGorod(delay = [50, 100]) {
                 id: 765,
                 label: 'Подземелье',
                 action: async (e) => {
-                    await t.toPoint(765, delay, null, (doc) => {
+                    await t.toPoint(765, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=730"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -466,19 +466,19 @@ async function processGorod(delay = [50, 100]) {
             },
             {
                 id: 510, label: 'Охотник', action: async (e) => {
-                    await t.toPoint(510, delay);
+                    await t.toPoint(510, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
             },
             {
                 id: 480, label: 'Дровосек', action: async (e) => {
-                    await t.toPoint(480, delay);
+                    await t.toPoint(480, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
             },
             {
                 id: 674,
                 label: 'Кристальный остров',
                 action: async (e) => {
-                    await t.toPoint(674, delay, null, (doc) => {
+                    await t.toPoint(674, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=710"]');
                         if (tpLink) {
                             document.location = tpLink.href;
@@ -492,7 +492,7 @@ async function processGorod(delay = [50, 100]) {
                 id: 442,
                 label: 'Озеро',
                 action: async (e) => {
-                    await t.toPoint(442, delay, null, (doc) => {
+                    await t.toPoint(442, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=407"]');
                         if (tpLink) {
                             document.location = tpLink.href;
