@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     processParsing();
 
     processChat();
+    processMap();
 
     // Обработчик рыбалки
     processFishing();
@@ -53,12 +54,12 @@ async function processCheckboxes() {
             hasSubOptions: true,
         },
         toggleParsingOptInvertSearch: { storageKey: "wor_parsing_invert_search_active" },
-        
+
         toggleTelegram: {
             storageKey: "wor_tg_notifications_active",
             hasSubOptions: true,
         },
-        
+
         toggleChat: {
             storageKey: "wor_chat_active",
             hasSubOptions: true,
@@ -91,9 +92,6 @@ async function processCheckboxes() {
                 });
             }
 
-            if ('toggleMapHistory' === id) {
-                chrome.storage.local.set({ ['visitedLocations']: {} });
-            }
             if ('toggleAlchemistry' === id || id === 'toggleMining') {
                 chrome.storage.local.set({ "wor_fight_active": input.checked }, function () {
                     let fightingCheckbox = document.querySelector("#toggleFighting");
@@ -129,6 +127,35 @@ async function processCheckboxes() {
             }
         }
     }
+}
+
+async function processMap() {
+    // JavaScript
+    const icon = document.getElementById('refreshMapHistory');
+
+    icon.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Целевое действие: очищаем историю
+        chrome.storage.local.set({ visitedLocations: {} }, () => {
+            // После очистки — запускаем спин
+            icon.classList.add('animate');
+        });
+    });
+
+    icon.addEventListener('animationend', () => {
+        // Спин кончился — убираем класс анимации
+        icon.classList.remove('animate');
+        // Меняем символ на галочку
+        icon.textContent = '✓';
+        icon.setAttribute('aria-label', 'Готово');
+        icon.title = 'Готово';
+        // Через секунду возвращаем назад
+        setTimeout(() => {
+            icon.textContent = '↻';
+            icon.setAttribute('aria-label', 'Сбросить');
+            icon.title = 'Сбросить';
+        }, 1000);
+    });
 }
 
 async function processParsing() {

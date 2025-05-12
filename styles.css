@@ -60,11 +60,11 @@ h2 {
     border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #4CAF50;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(14px);
 }
 
@@ -77,14 +77,17 @@ input:checked + .slider:before {
 
 /* Дополнительные настройки (изначально скрыты) */
 .sub-toggle-wrapper {
-    display: none; /* По умолчанию скрыто */
-    padding-left: 0px; /* Отступ для вложенности */
+    display: none;
+    /* По умолчанию скрыто */
+    padding-left: 0px;
+    /* Отступ для вложенности */
 }
 
 /* Уменьшенные переключатели внутри доп. настроек */
 .toggle-title.small {
     font-size: 12px;
 }
+
 .toggle-expand {
     background: none;
     border: none;
@@ -98,6 +101,7 @@ input:checked + .slider:before {
 .toggle-expand:hover {
     color: #0056b3;
 }
+
 .text-input input {
     width: 50px;
     padding: 4px;
@@ -107,6 +111,7 @@ input:checked + .slider:before {
     text-align: center;
     outline: none;
 }
+
 .text-input-nick input {
     /* width: 50px; */
     padding: 4px;
@@ -129,7 +134,7 @@ input:checked + .slider:before {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
@@ -208,12 +213,6 @@ input:checked + .slider:before {
     border-color: #007BFF;
 }
 
-.info-tooltip {
-    cursor: help;
-    margin-left: 5px;
-    color: red;
-    font-weight: bold;
-}
 .info-icon {
     display: inline-block;
     width: 16px;
@@ -228,4 +227,34 @@ input:checked + .slider:before {
     margin-left: 6px;
     cursor: help;
     font-family: Arial, sans-serif;
+}
+
+.refresh-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #2e9633;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 6px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+}
+
+@keyframes spin-once {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.refresh-icon.animate {
+    animation: spin-once 0.5s ease-out;
 }
