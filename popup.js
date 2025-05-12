@@ -33,6 +33,7 @@ async function processCheckboxes() {
             storageKey: "wor_maphistory_active",
             hasSubOptions: true,
         },
+        toggleMapHistoryOptWalkAllPoints: { storageKey: "wor_map_walk_all_map_active" },
         toggleLog: { storageKey: "wor_log_active" },
 
         toggleFighting: {

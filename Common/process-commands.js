@@ -56,7 +56,7 @@ async function handleTelegramCommands(command) {
             }
 
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
-            await CommonHelper.reloadPage();
+            document.location = '/wap/teritory.php';
             break;
         case '/captcha':
             await CommonHelper.log('Пришла команда переключить капчу');
@@ -83,7 +83,7 @@ async function handleTelegramCommands(command) {
                 await CommonHelper.turnFighting(true);
             }
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
-            await CommonHelper.reloadPage();
+            document.location = '/wap/teritory.php';
             break;
         case '/fighting':
             await CommonHelper.log('Пришла команда переключить сражение');
