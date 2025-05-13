@@ -168,6 +168,68 @@ function backgroundListener() {
 
             return true;
         }
+
+        if (message.type === 'disableChaosBattle') {
+            (async () => {
+                try {
+                    // Получаем сохранённую дату
+                    let lastCheck = await CommonHelper.getExtStorage('wor_options_last_chaos_check'); // формат: YYYY-MM-DD
+
+                    // Текущая дата в том же формате
+                    const today = new Date();
+                    const currentDateStr = new Date().toISOString().split('T')[0];
+
+                    // Сравнение
+                    if (lastCheck === currentDateStr) {
+                        // Уже была проверка сегодня
+                        sendResponse({ success: true });
+                    } else {
+                        // Не было - устанавливаем сегодняшнюю дату
+                        await CommonHelper.setExtStorage('wor_options_last_chaos_check', currentDateStr);
+                    }
+
+                    // Создаём скрытый iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = '/wap/options.php';
+                    document.body.appendChild(iframe);
+
+                    // Ждём загрузки iframe
+                    iframe.onload = () => {
+                        try {
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+                            // Ищем select и устанавливаем значение
+                            const select = iframeDoc.querySelector('select[name="likexaos"]');
+                            if (select && select.value === '0') {
+                                select.value = "1";
+
+                                // Найти форму и отправить её
+                                const form = select.closest('form');
+                                if (form) {
+                                    form.submit();
+                                } else {
+                                    throw new Error("Форма не найдена");
+                                }
+                            }
+
+                            // Удаляем iframe после отправки (опционально, можно оставить)
+                            setTimeout(() => iframe.remove(), 3000);
+
+                            sendResponse({ success: true });
+                        } catch (innerErr) {
+                            sendResponse({ error: innerErr.toString() });
+                        }
+                    };
+
+                } catch (err) {
+                    sendResponse({ error: err.toString() });
+                }
+            })();
+
+            return true; // важно для асинхронного sendResponse
+        }
+
     });
 }
 

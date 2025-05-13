@@ -165,6 +165,15 @@
                 "Territory/process-territory.js",
                 "Territory/map-history.js"
             ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/famerating*",
+                "http://185.212.47.8/wap/famerating*"
+            ],
+            "js": [
+                "Rating/process-rating.js"
+            ]
         }
     ]
 }

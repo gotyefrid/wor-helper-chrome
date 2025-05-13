@@ -1,15 +1,22 @@
 import { sendMessagesFromChat } from './process-chat-backend.js';
+import { disableChaosBattle } from './process-common-backend.js';
 import { CommonHelperBackground } from './CommonHelperBackground.js';
 
 chrome.runtime.onInstalled.addListener(() => {
     chrome.alarms.create('sendMessagesAlarm', {
         periodInMinutes: 0.25 // 15 секунд (0.25 мин)
     });
+    chrome.alarms.create('disableChaosBattle', {
+        periodInMinutes: 30
+    });
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'sendMessagesAlarm') {
         sendMessagesFromChat();
+    }
+    if (alarm.name === 'disableChaosBattle') {
+        disableChaosBattle();
     }
 });
 
