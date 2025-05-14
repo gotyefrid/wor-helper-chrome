@@ -78,12 +78,12 @@ async function processKat4(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 async function processDesert(delay = [50, 100]) {
@@ -120,12 +120,12 @@ async function processDesert(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 async function processOzero(delay = [50, 100]) {
@@ -169,12 +169,12 @@ async function processOzero(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 async function processCrystall(delay = [50, 100]) {
@@ -204,12 +204,12 @@ async function processCrystall(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 async function processSavanna(delay = [50, 100]) {
@@ -260,12 +260,12 @@ async function processSavanna(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 
@@ -303,12 +303,12 @@ async function processKat3(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 async function processKat2(delay = [50, 100]) {
@@ -350,12 +350,12 @@ async function processKat2(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 async function processKat1(delay = [50, 100]) {
@@ -392,12 +392,12 @@ async function processKat1(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 
@@ -435,12 +435,12 @@ async function processPodzemka(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 
@@ -502,37 +502,38 @@ async function processGorod(delay = [50, 100]) {
                     });
                 }
             },
-            renderWalkAllMapButton(walkAllMapStatus)
+            renderWalkAllMapButton(walkAllMapStatus, delay)
         ]
     );
 
-    if (walkAllMapStatus === true) {
-        await walkAroundMap();
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
     }
 }
 
-function renderWalkAllMapButton(walkAllMapStatus) {
+function renderWalkAllMapButton(walkAllMapStatus, delay) {
     return {
         id: 'all',
-        label: walkAllMapStatus ? 'Остановить обход всех точек' : 'Запустить обход всех точек',
+        label: walkAllMapStatus?.active ? 'Остановить обход всех точек' : 'Запустить обход всех точек',
         action: async (e) => {
             let status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
 
-            if (status === true) {
-                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
+            if (status?.active === true) {
+                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
                 await CommonHelper.reloadPage();
                 return;
             }
 
-            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', true);
+            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: true, location: Territory.getCurrentLocation()});
             e.target.innerHTML = e.target.innerHTML.replace('Запустить обход всех точек', 'Остановить обход всех точек');
             e.target.innerHTML = e.target.innerHTML.replace('mini_karta', 'optsii_igroka');
-            await walkAroundMap();
+            await walkAroundMap(delay);
         }
     };
 }
 
 async function walkAroundMap(delay = [50, 100]) {
+    console.log(delay)
     let t = new Territory();
 
     let visited = await CommonHelper.getExtStorage('visitedLocations') || {};
@@ -541,11 +542,10 @@ async function walkAroundMap(delay = [50, 100]) {
 
     if (path.length === 0) {
         alert('Все точки уже посещены!');
-        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
+        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
         CommonHelper.reloadPage();
         return;
     }
-
 
     await t.moveByPath(
         path,

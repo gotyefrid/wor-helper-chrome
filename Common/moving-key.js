@@ -100,6 +100,17 @@ async function start() {
 
                     document.location = '/wap/teritory.php';
                     break;
+                case 'KeyM': // Остановить проход карты
+                    try {
+                        CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
+
+                        CommonHelper.reloadPage();
+                        return;
+                    } catch {
+                    }
+
+                    document.location = '/wap/teritory.php';
+                    break;
             }
         } catch (error) {
             // Получаем сообщение об ошибке
