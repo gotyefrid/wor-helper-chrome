@@ -126,11 +126,26 @@ function contextMenu() {
 
             setTimeout(() => {
                 const menuHeight = menu.offsetHeight;
-                const offsetY = 5;
-                const top = Math.max(e.pageY - menuHeight - offsetY, 0);
+                const menuWidth = menu.offsetWidth;
+                const offset = 5;  // отступ от курсора
 
+                // 1) вычисляем вертикаль так же, как у вас (с небольшим клэмпом к 0)
+                const top = Math.max(e.pageY - menuHeight - offset, 0);
                 menu.style.top = `${top}px`;
-                menu.style.left = `${e.pageX - 160}px`;
+
+                // 2) проверяем, хватит ли места слева; иначе — показываем справа
+                let left;
+                if (e.pageX >= menuWidth + offset) {
+                    // есть место слева
+                    left = e.pageX - menuWidth - offset;
+                } else {
+                    // места слева мало — показываем справа
+                    left = e.pageX + offset;
+                }
+                // на всякий случай не даём вылезти за правый край
+                left = Math.min(left, window.innerWidth - menuWidth - offset);
+                menu.style.left = `${left}px`;
+
                 menu.style.visibility = 'visible';
                 menu.style.opacity = '1';
             }, 0);
