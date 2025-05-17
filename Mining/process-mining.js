@@ -4,13 +4,16 @@
     }
 
     let chemistryStatus = await CommonHelper.getExtStorage('wor_mining_active') ?? false;
+    let buttonAction = await CommonHelper.getExtStorage('wor_mining_opt_active_button');
 
     if (chemistryStatus) {
-        // CommonHelper.createDisableButton('Отключить рудокопа', async () => {
-        //     CommonHelper.turnMining(false);
-        //     CommonHelper.turnFighting(false);
-        //     await CommonHelper.reloadPage();
-        // });
+        if (buttonAction) {
+            CommonHelper.createDisableButton('Отключить рудокопа', async () => {
+                CommonHelper.turnMining(false);
+                CommonHelper.turnFighting(false);
+                await CommonHelper.reloadPage();
+            });
+        }
 
         CommonHelper.log('Мы на одной из страниц рудокопа!');
         // Настройка алхимика
@@ -62,10 +65,12 @@
             CommonHelper.log('Процессинг рудокопа запущен не на странице доступной для рудокопства. Ничего не делаем');
         }
     } else {
-        // CommonHelper.createDisableButton('Включить рудокопа', () => {
-        //     CommonHelper.turnMining(true);
-        //     CommonHelper.turnFighting(true);
-        //     CommonHelper.reloadPage();
-        // });
+        if (buttonAction) {
+            CommonHelper.createDisableButton('Включить рудокопа', () => {
+                CommonHelper.turnMining(true);
+                CommonHelper.turnFighting(true);
+                CommonHelper.reloadPage();
+            });
+        }
     }
 })();

@@ -4,13 +4,16 @@
     }
 
     let fishingStatus = await CommonHelper.getExtStorage('wor_fishing_active') ?? false;
+    let buttonAction = await CommonHelper.getExtStorage('wor_fishing_opt_active_button');
 
     if (fishingStatus) {
-        CommonHelper.createDisableButton('Отключить рыбалку', async () => {
-            await CommonHelper.turnFishing(false);
-            await CommonHelper.turnFighting(false);
-            await CommonHelper.reloadPage();
-        });
+        if (buttonAction) {
+            CommonHelper.createDisableButton('Отключить рыбалку', async () => {
+                await CommonHelper.turnFishing(false);
+                await CommonHelper.turnFighting(false);
+                await CommonHelper.reloadPage();
+            });
+        }
 
         // Настройка рыбалки
         let fishing = new Fishing();
@@ -56,11 +59,13 @@
             }
         }
     } else {
-        CommonHelper.createDisableButton('Включить рыбалку', async () => {
-            await CommonHelper.turnFishing(true);
-            await CommonHelper.turnFighting(true);
-            await CommonHelper.reloadPage();
-        });
+        if (buttonAction) {
+            CommonHelper.createDisableButton('Включить рыбалку', async () => {
+                await CommonHelper.turnFishing(true);
+                await CommonHelper.turnFighting(true);
+                await CommonHelper.reloadPage();
+            });
+        }
     }
 })();
 

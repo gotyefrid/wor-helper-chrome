@@ -342,11 +342,12 @@ class CommonHelper {
             let button = document.createElement("button");
             button.textContent = name;
             button.id = `disableButton${existingButtons + 1}`;
-
+    
             // Добавляем стили для кнопки
             button.style.position = "fixed";
-            button.style.top = `${10 + (existingButtons * 50)}px`; // Смещаем вниз на 50px за каждую кнопку
-            button.style.left = "10px";
+            // вместо top/left используем bottom/right
+            button.style.bottom = `${10 + existingButtons * 50}px`;  // смещаем вверх от нижнего края
+            button.style.right = "10px";
             button.style.zIndex = "9999";
             button.style.backgroundColor = "#ff4d4d";
             button.style.color = "#fff";
@@ -357,29 +358,27 @@ class CommonHelper {
             button.style.cursor = "pointer";
             button.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
             button.style.transition = "background 0.3s, transform 0.1s";
-
-            // Добавляем эффект нажатия
+    
+            // Эффект нажатия
             button.addEventListener("mousedown", () => {
                 button.style.transform = "scale(0.95)";
             });
-
             button.addEventListener("mouseup", () => {
                 button.style.transform = "scale(1)";
             });
-
-            // Добавляем ховер-эффект
+    
+            // Ховер-эффект
             button.addEventListener("mouseover", () => {
                 button.style.backgroundColor = "#d43f3f";
             });
-
             button.addEventListener("mouseout", () => {
                 button.style.backgroundColor = "#ff4d4d";
             });
-
+    
             // Добавляем кнопку в документ
             document.body.appendChild(button);
-
-            // Добавляем обработчик клика
+    
+            // Обработчик клика
             button.addEventListener("click", async () => {
                 if (typeof toDo === "function") {
                     toDo();
@@ -387,6 +386,7 @@ class CommonHelper {
             });
         })();
     }
+    
 
     static async setFightExitUrl(url) {
         if (!url) {

@@ -23,8 +23,18 @@ async function processCheckboxes() {
             storageKey: "wor_fishing_active",
             hasSubOptions: true,
         },
-        toggleAlchemistry: { storageKey: "wor_chemistry_active" },
-        toggleMining: { storageKey: "wor_mining_active" },
+        toggleFishingOptActiveButton: { storageKey: "wor_fishing_opt_active_button" },
+        toggleAlchemistry: {
+            storageKey: "wor_chemistry_active",
+            hasSubOptions: true,
+        },
+        toggleAlchemistryOptActiveButton: { storageKey: "wor_chemistry_opt_active_button" },
+
+        toggleMining: {
+            storageKey: "wor_mining_active",
+            hasSubOptions: true,
+        },
+        toggleMiningOptActiveButton: { storageKey: "wor_mining_opt_active_button" },
         toggleMoving: { storageKey: "wor_moving_active" },
         toggleCaptcha: {
             storageKey: "wor_captcha_active",
@@ -46,6 +56,7 @@ async function processCheckboxes() {
         toggleFightingPotMP: { storageKey: "wor_fight_pot_mp_active", },
         toggleFightingCheckTrauma: { storageKey: "wor_fight_check_trauma", },
         toggleFightingActivatePrimanka: { storageKey: "wor_fight_activate_primanka", },
+        toggleFightingOptActiveButton: { storageKey: "wor_fight_opt_active_button" },
 
         toggleBandits: { storageKey: "wor_bandits_active" },
 
