@@ -161,24 +161,28 @@ async function dynamicSearch() {
     searchDiv.style.marginBottom = '5px';
     searchDiv.innerHTML = `<input id="fastserach" type="text" placeholder="Быстрый поиск" class="checkbox">`;
 
-    searchDiv.addEventListener('input', async (event) => {
-        event.preventDefault();
-        if (event.target.value) {
-            [...document.querySelectorAll('.navigation')].map(div => div.style.display = 'none');
-        } else {
-            [...document.querySelectorAll('.navigation')].map(div => div.style.display = 'block');
-        }
+    searchDiv.addEventListener('keydown', async (event) => {
+        if (event.key === 'Enter') {
+            // Отменяем стандартное поведение (отправка формы) и глушим другие слушатели:
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            if (event.target.value) {
+                [...document.querySelectorAll('.navigation')].map(div => div.style.display = 'none');
+            } else {
+                [...document.querySelectorAll('.navigation')].map(div => div.style.display = 'block');
+            }
 
-        let sel = CommonHelper.getQueryParam('sel');
-        let result = await (await fetch('/wap/inventar.php?sel=' + sel + '&search=' + event.target.value)).text();
-        const doc = new DOMParser().parseFromString(result, 'text/html');
-        const cells = doc.querySelector('div[style*="display: flex; flex-wrap: wrap;"');
+            let sel = CommonHelper.getQueryParam('sel');
+            let result = await (await fetch('/wap/inventar.php?sel=' + sel + '&search=' + event.target.value)).text();
+            const doc = new DOMParser().parseFromString(result, 'text/html');
+            const cells = doc.querySelector('div[style*="display: flex; flex-wrap: wrap;"');
 
-        if (cells) {
-            document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = cells.outerHTML;
-        } else {
-            document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = `<div style="display: flex; flex-wrap: wrap;">
-			<div style="margin: 10px 0">Нет вещей в секции</div>        </div>`
+            if (cells) {
+                document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = cells.outerHTML;
+            } else {
+                document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = `<div style="display: flex; flex-wrap: wrap;">
+                    <div style="margin: 10px 0">Нет вещей в секции</div>        </div>`
+            }
         }
     });
 

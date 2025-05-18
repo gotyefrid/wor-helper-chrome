@@ -16,6 +16,9 @@
     if (currentLocation == 101) {
         await processSmallTakt(delay);
     }
+    if (currentLocation == 102) {
+        await processAnimeTakt(delay);
+    }
     if (currentLocation == 7) {
         await processSavanna(delay);
     }
@@ -586,6 +589,17 @@ async function processBigTakt(delay = [50, 100]) {
         710: 'Каменоломня',
         311: 'Левая ферма',
         328: 'Правая ферма'
+    };
+    processTaktCommon(baseNames, delay);
+}
+
+async function processAnimeTakt(delay = [50, 100]) {
+    const baseNames = {
+        381: 'Левая лесопилка',
+        430: 'Правая лесопилка',
+        392: 'Шахта кристаллов',
+        586: 'Левая ферма',
+        603: 'Правая ферма'
     };
     processTaktCommon(baseNames, delay);
 }
