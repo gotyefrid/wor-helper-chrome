@@ -57,7 +57,7 @@ async function process(fightClass) {
         // Ссылка выхода из файта
         let exitUrl = 'http://185.212.47.8/wap/gorod.php?uni=1742499244&hash=a25fdb6';
         CommonHelper.log('Мы на странице выхода из боя!');
-        await fightClass.exitFromFight(exitUrl, null, CommonHelper.getRandomNumber(1000, 2000));
+        await fightClass.exitFromFight(exitUrl, null, CommonHelper.getRandomNumber(500, 1000));
         return;
     }
 
