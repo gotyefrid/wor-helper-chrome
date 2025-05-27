@@ -31,6 +31,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 formData.append("file", blob, "captcha.png");
 
                 const CAPTCHA_HOST = await CommonHelperBackground.getExtStorage('wor_captcha_host');
+
+                if (!CAPTCHA_HOST.startsWith('http')) {
+                    CommonHelperBackground.log('Не верно указан домен резовлинга капчи. Нужно начинать с http')
+                    sendResponse({ success: false, error: 'Не верно указан домен резовлинга капчи. Нужно начинать с http' });
+                }
+
                 let response = await fetch(CAPTCHA_HOST + '/detect_puzzle', {
                     method: "POST",
                     body: formData
