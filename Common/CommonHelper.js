@@ -310,10 +310,12 @@ class CommonHelper {
     }
 
     static async turnAlchemistry(active = true) {
+        await CommonHelper.setFightExitUrl(null);
         await CommonHelper.setExtStorage('wor_chemistry_active', active);
     }
 
     static async turnMining(active = true) {
+        await CommonHelper.setFightExitUrl(null);
         await CommonHelper.setExtStorage('wor_mining_active', active);
     }
 
@@ -326,6 +328,7 @@ class CommonHelper {
     }
 
     static async turnFishing(active = true) {
+        await CommonHelper.setFightExitUrl(null);
         await CommonHelper.setExtStorage('wor_fishing_active', active);
     }
 
