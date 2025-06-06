@@ -6,6 +6,11 @@
     let delay = await CommonHelper.getAutoMoveDelay();
 
     let currentLocation = Territory.getCurrentLocation();
+    let reloadDelay = await CommonHelper.getExtStorage('wor_map_reload_delay');
+
+    if (reloadDelay) {
+        processReloadPage(reloadDelay);
+    }
 
     if (currentLocation == 1) {
         await processGorod(delay);
@@ -47,6 +52,35 @@
         await processKat4(delay);
     }
 })();
+
+function processReloadPage(reloadDelay) {
+    if (reloadDelay) {
+        let delayStr = reloadDelay.trim();
+
+        if (delayStr !== "0" && delayStr !== "") {
+            let delayParts = delayStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+
+            let delaySec;
+            if (delayParts.length === 1) {
+                delaySec = delayParts[0];
+            } else if (delayParts.length === 2) {
+                let min = Math.min(delayParts[0], delayParts[1]);
+                let max = Math.max(delayParts[0], delayParts[1]);
+                delaySec = Math.random() * (max - min) + min;
+            }
+
+
+            CommonHelper.log('Перезагружаем страницу через: ' + delaySec);
+
+            if (delaySec > 0) {
+                setTimeout(() => {
+                    CommonHelper.reloadPage();
+                }, delaySec * 1000);
+            }
+        }
+    }
+}
+
 async function processKat4(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -522,12 +556,12 @@ function renderWalkAllMapButton(walkAllMapStatus, delay) {
             let status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
 
             if (status?.active === true) {
-                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
+                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
                 await CommonHelper.reloadPage();
                 return;
             }
 
-            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: true, location: Territory.getCurrentLocation()});
+            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: true, location: Territory.getCurrentLocation() });
             e.target.innerHTML = e.target.innerHTML.replace('Запустить обход всех точек', 'Остановить обход всех точек');
             e.target.innerHTML = e.target.innerHTML.replace('mini_karta', 'optsii_igroka');
             await walkAroundMap(delay);
@@ -545,7 +579,7 @@ async function walkAroundMap(delay = [50, 100]) {
 
     if (path.length === 0) {
         alert('Все точки уже посещены!');
-        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
+        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
         CommonHelper.reloadPage();
         return;
     }

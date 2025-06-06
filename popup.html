@@ -73,7 +73,7 @@
     </div>
     <hr class="divider">
 
-    <div class="toggle-wrapper"  id="toggleMiningWrapper">
+    <div class="toggle-wrapper" id="toggleMiningWrapper">
         <span class="toggle-title toggle-expand">Рудокоп ▼</span>
         <label class="switch">
             <input type="checkbox" id="toggleMining"><span class="slider round"></span>
@@ -129,6 +129,12 @@
             <span class="toggle-title small">Обход всех точек</span>
             <label class="switch">
                 <input type="checkbox" id="toggleMapHistoryOptWalkAllPoints"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Перезагружать "от,до", сек</span>
+            <label class="text-input">
+                <input type="text" id="inputReloadDelay" title="Перезагружать страницу каждые N секунд. 0 = выключено" style="width: 40px;" />
             </label>
         </div>
     </div>
@@ -297,7 +303,7 @@
             </div>
             <label class="modal-label">Адресаты (формат name:char:private)<span class="info-icon" title="Первое значение - то что будет в кнопке, второе - какой текст подставлятся в поле 'кому', третье (не обязательное) - единичку поставьте если хотите чтобы активировалась галочка приватного сообщения. Например: Админу:Misha:1">?</span></label>
             <select id="modal-fast-address-pairs" class="select2" multiple style="width:100%" data-placeholder="Введите пары вида a:1, b:4:1 и нажмите Enter"></select>
-            
+
             <label class="modal-label">Сообщения (формат name:message)<span class="info-icon" title="Первое значение - то что будет в кнопке, второе - какой текст подставлятся в поле 'сообщение'. Например: Ссылка на бой:[log][/log]">?</span></label>
             <select id="modal-fast-answers-pairs" class="select2" multiple style="width:100%" data-placeholder="Введите пары вида a:1, b:4 и нажмите Enter"></select>
 

@@ -326,6 +326,7 @@ async function processInputs() {
         inputTelegramOptChatID: { storageKey: "wor_tg_chat_id" },
         inputCaptchaHost: { storageKey: "wor_captcha_host" },
         inputMapDelay: { storageKey: "wor_map_move_delay" },
+        inputReloadDelay: { storageKey: "wor_map_reload_delay" },
     };
 
     for (const [inputId, { storageKey }] of Object.entries(inputs)) {
@@ -347,6 +348,22 @@ async function processInputs() {
             if (inputElement.id == 'inputMapDelay') {
                 if (!inputElement.value) {
                     chrome.storage.local.set({ [storageKey]: "50,100" });
+                }
+
+                const regex = /^\d+(,\d+)?$/;
+                if (regex.test(inputElement.value)) {
+                    inputElement.style.borderColor = 'green';
+                    chrome.storage.local.set({ [storageKey]: value });
+                } else {
+                    inputElement.style.borderColor = 'red';
+                }
+
+                return;
+            }
+
+            if (inputElement.id == 'inputReloadDelay') {
+                if (!inputElement.value) {
+                    chrome.storage.local.set({ [storageKey]: "0" });
                 }
 
                 const regex = /^\d+(,\d+)?$/;
