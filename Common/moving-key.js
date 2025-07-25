@@ -41,7 +41,8 @@ async function start() {
                     break;
                 case 'KeyW': // Вверх
                     try {
-                        var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + 2;
+                        var offset = Math.floor(upperRow.childElementCount / 2);
+                        var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
                         upperRow.querySelector(`#r${cellId}`).click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("вверх")).click();
@@ -49,27 +50,32 @@ async function start() {
 
                     break;
                 case 'KeyQ': // Вверх-влево
-                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + 1;
+                    var offset = Math.floor(upperRow.childElementCount / 2) - 1;
+                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
                     upperRow.querySelector(`#r${cellId}`).click();
                     break;
                 case 'KeyE': // Вверх-вправо
-                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + 3;
+                    var offset = Math.floor(upperRow.childElementCount / 2) + 1;
+                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
                     upperRow.querySelector(`#r${cellId}`).click();
                     break;
                 case 'KeyS': // Вниз
                     try {
-                        var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + 2;
+                        var offset = Math.floor(downRow.childElementCount / 2);
+                        var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
                         downRow.querySelector(`#r${cellId}`).click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("вниз")).click();
                     }
                     break;
                 case 'KeyZ': // Вниз-влево
-                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + 1;
+                    var offset = Math.floor(downRow.childElementCount / 2) - 1;
+                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
                     downRow.querySelector(`#r${cellId}`).click();
                     break;
                 case 'KeyC': // Вниз-вправо
-                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + 3;
+                    var offset = Math.floor(downRow.childElementCount / 2) + 1;
+                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
                     downRow.querySelector(`#r${cellId}`).click();
                     break;
                 case 'KeyR': // Сдаться
