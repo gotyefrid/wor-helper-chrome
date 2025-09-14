@@ -280,13 +280,15 @@ class Fight {
     }
 
     /**
-     * Проверяет, наносит ли игрок урон меньше заданного порога.
+     * Проверяет, наносит ли игрок урон меньше заданного порога,
+     * игнорируя добивающие удары (когда у цели после удара [0/...]).
      *
      * @param {number} threshold - Пороговое значение урона.
      * @returns {Promise<boolean>}
      */
     async isLowDamage(threshold = 0) {
-        let logText = [...document.querySelectorAll('.table_menu')]
+        // найдём блок логов
+        const logText = [...document.querySelectorAll('.table_menu')]
             ?.find(ta => ta.innerText.includes('Игрок'))
             ?.innerText;
 
@@ -296,23 +298,39 @@ class Fight {
         }
 
         const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+
+        // убираем [число] после имени (ваш хак) и берём последние строки с нашим игроком
         const cleanText = logText.replace(/\[\d+\]/g, '[]');
-        const lastLines = cleanText.split('\n').filter(line => line.includes(`Игрок ${playerName}[]`));
+        const lastLines = cleanText
+            .split('\n')
+            .filter(line => line.includes(`Игрок ${playerName}[]`));
 
-        if (lastLines.length === 0) return;
+        if (lastLines.length === 0) return false;
 
+        // чаще всего нужная — самая последняя запись:
         const lastLine = lastLines[0];
 
+        // Регэксп:
+        //  - Игрок <name>[] нанёс/нанес
+        //  - опционально "критический", "магический"
+        //  - "удар <число>"
+        //  - потом что угодно (например "в голову", "игроку ...", "и пробил блок!")
+        //  - квадратные скобки с HP вида [текущий/макс]
         const regex = new RegExp(
-            `Игрок ${playerName}\\[\\] нанес(?: критический)?(?: магический)? удар (-?\\d+)`, 'g'
+            `Игрок ${playerName}\\[\\] нан(?:е|ё)с(?: критический)?(?: магический)? удар (-?\\d+)[\\s\\S]*?\\[(\\d+)\\/(\\d+)\\]`,
+            'g'
         );
 
         let match;
-
         while ((match = regex.exec(lastLine)) !== null) {
             const damage = Math.abs(parseInt(match[1], 10));
+            const currentHp = parseInt(match[2], 10); // текущее HP цели после удара
+
+            // Если цель добита (0 HP) — игнорируем такой удар
+            if (currentHp === 0) continue;
+
             if (damage < threshold) {
-                return true;
+                return true; // это действительно "малый" урон
             }
         }
 
