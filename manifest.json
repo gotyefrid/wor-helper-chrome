@@ -26,6 +26,16 @@
             "128": "icon.png"
         }
     },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "Icons/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
     "content_scripts": [
         {
             "matches": [

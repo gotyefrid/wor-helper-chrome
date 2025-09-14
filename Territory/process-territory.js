@@ -90,6 +90,7 @@ async function processKat4(delay = [50, 100]) {
             {
                 id: 404,
                 label: 'Саванна',
+                icon: 'Icons/savanna.png',
                 action: async (e) => {
                     await t.toPoint(404, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=363"]');
@@ -104,6 +105,7 @@ async function processKat4(delay = [50, 100]) {
             {
                 id: 297,
                 label: 'Пустыня',
+                icon: 'Icons/pustinya.png',
                 action: async (e) => {
                     await t.toPoint(297, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=256"]');
@@ -132,6 +134,7 @@ async function processDesert(delay = [50, 100]) {
             {
                 id: 352,
                 label: 'Катакомбы 4',
+                icon: 'Icons/kat4.png',
                 action: async (e) => {
                     await t.toPoint(352, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=324"]');
@@ -146,6 +149,7 @@ async function processDesert(delay = [50, 100]) {
             {
                 id: 509,
                 label: 'Озеро',
+                icon: 'Icons/ozero.png',
                 action: async (e) => {
                     await t.toPoint(509, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=537"]');
@@ -174,6 +178,7 @@ async function processOzero(delay = [50, 100]) {
             {
                 id: 195,
                 label: 'Хижина рыбака',
+                icon: 'Icons/fishman.png',
                 action: async (e) => {
                     await t.toPoint(195, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
@@ -181,6 +186,7 @@ async function processOzero(delay = [50, 100]) {
             {
                 id: 301,
                 label: 'Город',
+                icon: 'Icons/gorod.png',
                 action: async (e) => {
                     await t.toPoint(301, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=322"]');
@@ -195,6 +201,7 @@ async function processOzero(delay = [50, 100]) {
             {
                 id: 247,
                 label: 'Пустыня',
+                icon: 'Icons/pustinya.png',
                 action: async (e) => {
                     await t.toPoint(247, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=248"]');
@@ -223,6 +230,7 @@ async function processCrystall(delay = [50, 100]) {
             {
                 id: 226,
                 label: 'Магазин кристаллов',
+                icon: 'Icons/crystall.png',
                 action: async (e) => {
                     await t.toPoint(226, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
@@ -230,6 +238,7 @@ async function processCrystall(delay = [50, 100]) {
             {
                 id: 116,
                 label: 'Город',
+                icon: 'Icons/gorod.png',
                 action: async (e) => {
                     await t.toPoint(116, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=93"]');
@@ -258,6 +267,7 @@ async function processSavanna(delay = [50, 100]) {
             {
                 id: 284,
                 label: 'Катакомбы 3',
+                icon: 'Icons/kat3.png',
                 action: async (e) => {
                     await t.toPoint(284, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=228"]');
@@ -272,6 +282,7 @@ async function processSavanna(delay = [50, 100]) {
             {
                 id: 486,
                 label: 'Катакомбы 4',
+                icon: 'Icons/kat4.png',
                 action: async (e) => {
                     await t.toPoint(486, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=431"]');
@@ -286,6 +297,7 @@ async function processSavanna(delay = [50, 100]) {
             {
                 id: 1477,
                 label: 'Логово',
+                icon: 'Icons/podzenelie.png',
                 action: async (e) => {
                     await t.toPoint(1477, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=1478"]');
@@ -315,6 +327,7 @@ async function processKat3(delay = [50, 100]) {
             {
                 id: 308,
                 label: 'Саванна',
+                icon: 'Icons/savanna.png',
                 action: async (e) => {
                     await t.toPoint(308, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=309"]');
@@ -329,6 +342,7 @@ async function processKat3(delay = [50, 100]) {
             {
                 id: 204,
                 label: 'Катакомбы 2',
+                icon: 'Icons/kat2.png',
                 action: async (e) => {
                     await t.toPoint(204, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=203"]');
@@ -357,11 +371,13 @@ async function processKat2(delay = [50, 100]) {
             {
                 id: 135, label: 'Чернокнижник', action: async (e) => {
                     await t.toPoint(135, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
-                }
+                },
+                icon: 'Icons/chernoknizhnik.png',
             },
             {
                 id: 161,
                 label: 'Катакомбы 3',
+                icon: 'Icons/kat3.png',
                 action: async (e) => {
                     await t.toPoint(161, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=185"]');
@@ -376,6 +392,7 @@ async function processKat2(delay = [50, 100]) {
             {
                 id: 171,
                 label: 'Катакомбы 1',
+                icon: 'Icons/kat1.png',
                 action: async (e) => {
                     await t.toPoint(171, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=146"]');
@@ -404,6 +421,7 @@ async function processKat1(delay = [50, 100]) {
             {
                 id: 101,
                 label: 'Подземелье',
+                icon: 'Icons/podzenelie.png',
                 action: async (e) => {
                     await t.toPoint(101, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=81"]');
@@ -418,6 +436,7 @@ async function processKat1(delay = [50, 100]) {
             {
                 id: 108,
                 label: 'Катакомбы 2',
+                icon: 'Icons/kat2.png',
                 action: async (e) => {
                     await t.toPoint(108, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=90"]');
@@ -447,6 +466,7 @@ async function processPodzemka(delay = [50, 100]) {
             {
                 id: 164,
                 label: 'Город',
+                icon: 'Icons/gorod.png',
                 action: async (e) => {
                     await t.toPoint(164, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=132"]');
@@ -461,6 +481,7 @@ async function processPodzemka(delay = [50, 100]) {
             {
                 id: 303,
                 label: 'Катакомбы 1',
+                icon: 'Icons/kat1.png',
                 action: async (e) => {
                     await t.toPoint(303, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=304"]');
@@ -490,6 +511,7 @@ async function processGorod(delay = [50, 100]) {
             {
                 id: 765,
                 label: 'Подземелье',
+                icon: 'Icons/podzenelie.png',
                 action: async (e) => {
                     await t.toPoint(765, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=730"]');
@@ -502,18 +524,25 @@ async function processGorod(delay = [50, 100]) {
                 }
             },
             {
-                id: 510, label: 'Охотник', action: async (e) => {
+                id: 510, 
+                label: 'Охотник',
+                icon: 'Icons/ohotnik.png',
+                action: async (e) => {
                     await t.toPoint(510, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
             },
             {
-                id: 480, label: 'Дровосек', action: async (e) => {
+                id: 480,
+                icon: 'Icons/drovosek.png',
+                label: 'Дровосек',
+                action: async (e) => {
                     await t.toPoint(480, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
                 }
             },
             {
                 id: 674,
                 label: 'Кристальный остров',
+                icon: 'Icons/crystall.png',
                 action: async (e) => {
                     await t.toPoint(674, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=710"]');
@@ -528,6 +557,7 @@ async function processGorod(delay = [50, 100]) {
             {
                 id: 442,
                 label: 'Озеро',
+                icon: 'Icons/ozero.png',
                 action: async (e) => {
                     await t.toPoint(442, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
                         let tpLink = doc.querySelector('a[href*="crd=407"]');
@@ -551,6 +581,7 @@ async function processGorod(delay = [50, 100]) {
 function renderWalkAllMapButton(walkAllMapStatus, delay) {
     return {
         id: 'all',
+        icon: 'Icons/obhod.png',
         label: walkAllMapStatus?.active ? 'Остановить обход всех точек' : 'Запустить обход всех точек',
         action: async (e) => {
             let status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -734,12 +765,18 @@ function showLoadingIcon(linkElement) {
 async function moveOnDefaultMaps(points) {
     const menuList = document.querySelector('.menu_div ul');
 
-    points.forEach(({ id, label, action }) => {
+    points.forEach(({ id, label, action, icon }) => {
+        let imgUrl = '';
+
+        if (icon) {
+            imgUrl = chrome.runtime.getURL(icon);
+        }
+
         // создаём пункт меню
         const li = document.createElement('li');
         li.innerHTML = `
           <a href="#" id="to${id}">
-            <img src="icons/mini_karta.gif" width="30" height="30" style="vertical-align:middle">
+            <img src="${imgUrl}" width="30" height="30" style="vertical-align:middle">
             ${label}
           </a>
         `;
