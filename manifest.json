@@ -56,9 +56,11 @@
                 "*://wor.com.ua/wap/lovit*",
                 "*://wor.com.ua/wap/chat*",
                 "*://wor.com.ua/wap/poisktrav*",
+                "*://wor.com.ua/wap/kopat*",
                 "http://185.212.47.8/wap/lovit*",
                 "http://185.212.47.8/wap/chat*",
-                "http://185.212.47.8/wap/poisktrav*"
+                "http://185.212.47.8/wap/poisktrav*",
+                "http://185.212.47.8/wap/kopat*"
             ],
             "js": [
                 "Chat/process-chat.js"

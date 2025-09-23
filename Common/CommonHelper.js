@@ -291,6 +291,7 @@ class CommonHelper {
                     { command: 'status', description: 'Статусы бота' },
                     { command: 'chemistry', description: 'Aлхимия' },
                     { command: 'fishing', description: 'Рыбалка' },
+                    { command: 'mining', description: 'Рудокоп' },
                     { command: 'bandits', description: 'Разбойники' },
                     { command: 'captcha', description: 'Капча' },
                     { command: 'fighting', description: 'Сражение' },

@@ -38,6 +38,7 @@ async function handleTelegramCommands(command) {
             await CommonHelper.turnAlchemistry(false);
             await CommonHelper.turnFighting(false);
             await CommonHelper.turnFishing(false);
+            await CommonHelper.turnMining(false);
             await CommonHelper.turnCaptcha(false);
             await CommonHelper.turnBandits(false);
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
@@ -52,6 +53,21 @@ async function handleTelegramCommands(command) {
                 await CommonHelper.turnFighting(false);
             } else {
                 await CommonHelper.turnAlchemistry(true);
+                await CommonHelper.turnFighting(true);
+            }
+
+            await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
+            document.location = '/wap/teritory.php';
+            break;
+        case '/mining':
+            await CommonHelper.log('Пришла команда переключить рудокопа');
+            let mining = await CommonHelper.getExtStorage('wor_mining_active');
+
+            if (mining) {
+                await CommonHelper.turnMining(false);
+                await CommonHelper.turnFighting(false);
+            } else {
+                await CommonHelper.turnMining(true);
                 await CommonHelper.turnFighting(true);
             }
 
@@ -150,12 +166,14 @@ async function handleTelegramCommands(command) {
     async function getStatuses() {
         let chemistry = await CommonHelper.getExtStorage('wor_chemistry_active');
         let fishing = await CommonHelper.getExtStorage('wor_fishing_active');
+        let mining = await CommonHelper.getExtStorage('wor_mining_active');
         let fignhting = await CommonHelper.getExtStorage('wor_fight_active');
         let bandits = await CommonHelper.getExtStorage('wor_bandits_active');
         let captcha = await CommonHelper.getExtStorage('wor_captcha_active');
 
         return 'Алхимия: ' + (chemistry ? '✔️' : '❌') + '\n' +
             'Рыбалка: ' + (fishing ? '✔️' : '❌') + '\n' +
+            'Рудокоп: ' + (mining ? '✔️' : '❌') + '\n' +
             'Сражение: ' + (fignhting ? '✔️' : '❌') + '\n' +
             'Разбойники: ' + (bandits ? '✔️' : '❌') + '\n' +
             'Капча: ' + (captcha ? '✔️' : '❌');
