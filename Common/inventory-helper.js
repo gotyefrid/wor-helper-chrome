@@ -172,17 +172,28 @@ async function dynamicSearch() {
                 [...document.querySelectorAll('.navigation')].map(div => div.style.display = 'block');
             }
 
-            let sel = CommonHelper.getQueryParam('sel');
-            let result = await (await fetch('/wap/inventar.php?sel=' + sel + '&search=' + event.target.value)).text();
-            const doc = new DOMParser().parseFromString(result, 'text/html');
-            const cells = doc.querySelector('div[style*="display: flex; flex-wrap: wrap;"');
+            let searchLink = document.querySelector('a[href*="textsearch=1"]');
+            let searchPage = await fetch(searchLink.href);
+            searchPage = await searchPage.text();
+            // ищем строку внутри одинарных кавычек после document.location.href =
+            const match = searchPage.match(/document\.location\.href\s*=\s*'([^']+)'/);
 
-            if (cells) {
-                document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = cells.outerHTML;
-            } else {
-                document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = `<div style="display: flex; flex-wrap: wrap;">
+            if (match) {
+                const url = match[1] + event.target.value;
+                const response = await fetch(url);
+                const result = await response.text();
+                const doc = new DOMParser().parseFromString(result, 'text/html');
+                const cells = doc.querySelector('div[style*="display: flex; flex-wrap: wrap;"');
+
+                if (cells) {
+                    document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = cells.outerHTML;
+                } else {
+                    document.querySelector('div[style*="display: flex; flex-wrap: wrap;"').outerHTML = `<div style="display: flex; flex-wrap: wrap;">
                     <div style="margin: 10px 0">Нет вещей в секции</div>        </div>`
+                }
             }
+
+
         }
     });
 
