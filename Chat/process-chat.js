@@ -75,7 +75,7 @@ function contextMenu() {
         {
             label: '✉️ Отправить на почту',
             onClick: (nickname) => {
-               showMailModal(nickname);
+                showMailModal(nickname);
             }
         },
         {
