@@ -1,0 +1,135 @@
+start();
+
+async function start() {
+    let access = await chrome.storage.local.get(["wor_moving_active"]);
+
+    if (access.wor_moving_active !== true || document.querySelector('[type=text], textarea')) {
+        return;
+    }
+
+    document.addEventListener("keydown", function (event) {
+
+        if (event.ctrlKey || event.altKey || event.metaKey) {
+            return;
+        }
+        try {
+            try {
+                var playerCell = document.querySelector("td[align=center]").querySelector('div');
+                var upperRow = playerCell.parentElement.parentElement.previousElementSibling;
+                var downRow = playerCell.parentElement.parentElement.nextElementSibling;
+            } catch (error) {
+
+            }
+
+            switch (event.code) {
+                case 'KeyA': // Влево
+                    try {
+                        var cellId = parseInt(playerCell.id.substring(1), 10) - 1;
+                        playerCell.parentElement.parentElement.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("влево")).click();
+                    }
+
+                    break;
+                case 'KeyD': // Вправо
+                    try {
+                        var cellId = parseInt(playerCell.id.substring(1), 10) + 1;
+                        playerCell.parentElement.parentElement.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вправо")).click();
+                    }
+                    break;
+                case 'KeyW': // Вверх
+                    try {
+                        var offset = Math.floor(upperRow.childElementCount / 2);
+                        var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
+                        upperRow.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вверх")).click();
+                    }
+
+                    break;
+                case 'KeyQ': // Вверх-влево
+                    var offset = Math.floor(upperRow.childElementCount / 2) - 1;
+                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
+                    upperRow.querySelector(`#r${cellId}`).click();
+                    break;
+                case 'KeyE': // Вверх-вправо
+                    var offset = Math.floor(upperRow.childElementCount / 2) + 1;
+                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
+                    upperRow.querySelector(`#r${cellId}`).click();
+                    break;
+                case 'KeyS': // Вниз
+                    try {
+                        var offset = Math.floor(downRow.childElementCount / 2);
+                        var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
+                        downRow.querySelector(`#r${cellId}`).click();
+                    } catch (error) {
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вниз")).click();
+                    }
+                    break;
+                case 'KeyZ': // Вниз-влево
+                    var offset = Math.floor(downRow.childElementCount / 2) - 1;
+                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
+                    downRow.querySelector(`#r${cellId}`).click();
+                    break;
+                case 'KeyC': // Вниз-вправо
+                    var offset = Math.floor(downRow.childElementCount / 2) + 1;
+                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
+                    downRow.querySelector(`#r${cellId}`).click();
+                    break;
+                case 'KeyR': // Сдаться
+                    try {
+                        document.querySelector("a[href*=killme]").click()
+                        return;
+                    } catch { }
+
+                    document.location = '/wap/teritory.php';
+                    break;
+                case 'Space': // Ударить
+                    try {
+                        document.querySelector("form").submit();
+                        return;
+                    } catch { }
+
+                    document.location = '/wap/teritory.php';
+                    break;
+                case 'KeyF': // Ударить физой
+                    try {
+                        let form = document.querySelector("form");
+                        let type = form.querySelector('[name=udartype]')
+                        type.value = "1";
+                        document.querySelector("form").submit();
+                        return;
+                    } catch {
+                    }
+
+                    document.location = '/wap/teritory.php';
+                    break;
+                case 'KeyM': // Остановить проход карты
+                    try {
+                        CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
+
+                        CommonHelper.reloadPage();
+                        return;
+                    } catch {
+                    }
+
+                    document.location = '/wap/teritory.php';
+                    break;
+            }
+        } catch (error) {
+            // Получаем сообщение об ошибке
+            let errorMessage = error.message;
+
+            // Получаем стек вызовов (где произошла ошибка)
+            let stackLines = error.stack.split("\n");
+
+            // Вытаскиваем строку с файлом и номером строки
+            let locationInfo = stackLines[1]?.trim() || "Неизвестное место";
+
+            // Логируем всё сразу
+            console.log(`Ошибка: ${errorMessage} | Местоположение: ${locationInfo}`, false);
+        }
+    });
+}

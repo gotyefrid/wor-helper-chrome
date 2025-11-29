@@ -1,13 +1,350 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOR Helper</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="jquery-3.7.1.js"></script>
+    <link href="select2.min.css" rel="stylesheet" />
+    <script src="select2.min.js"></script>
 </head>
+
 <body>
     <h2>WOR Helper</h2>
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Ник</span>
+        <label class="text-input-nick">
+            <input type="text" id="inputPlayerName">
+        </label>
+    </div>
+    <div class="toggle-wrapper" id="toggleFishingWrapper">
+        <span class="toggle-title toggle-expand">Рыбалка ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleFishing"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleFishingOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Кнопка запуска</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFishingOptActiveButton"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Приоритет</span>
+            <label class="">
+                <select id="toggleFishingNeedFish" class="dropdown">
+                    <option value="карас">Карась</option>
+                    <option value="окун">Окунь</option>
+                    <option value="карп">Карп</option>
+                    <option value="леща">Лещ</option>
+                    <option value="судак">Судак</option>
+                    <option value="сом">Сом</option>
+                    <option value="щук">Щука</option>
+                    <option value="угор">Угорь</option>
+                    <option value="форел">Форель</option>
+                    <option value="осетр">Осётр</option>
+                    <option value="пиран">Пиранья</option>
+                    <option value="таймен">Таймень</option>
+                    <option value="белуг">Белуга</option>
+                    <option value="гол">Голец</option>
+                </select>
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleAlchemistryWrapper">
+        <span class="toggle-title toggle-expand">Алхимия ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleAlchemistry"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleAlchemistryOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Кнопка запуска</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleAlchemistryOptActiveButton"><span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleMiningWrapper">
+        <span class="toggle-title toggle-expand">Рудокоп ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleMining"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleMiningOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Кнопка запуска</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleMiningOptActiveButton"><span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Движение клавишами</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleMoving"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleCaptchaWrapper">
+        <span class="toggle-title toggle-expand">Проходить капчу ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleCaptcha"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleCaptchaOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Хост</span>
+            <label class="text-input">
+                <input type="text" id="inputCaptchaHost" style="width: auto;">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+    <div class="toggle-wrapper" id="toggleMapHistoryWrapper">
+        <span class="toggle-title toggle-expand">История карты ▼</span><span class="refresh-icon" id="refreshMapHistory" title="Сбросить" aria-label="Сбросить">↻</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleMapHistory"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleMapHistoryOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="info-icon" title="Задержка при авто перемещениях. Введите одно число или два числа через запятую, например: 5 или 10,20">?</span><span class="toggle-title small">Задержка "от,до", мс</span>
+            <label class="text-input">
+                <input type="text" id="inputMapDelay" title="Задержка при авто перемещениях. Введите одно число или два числа через запятую, например: 5 или 10,20" style="width: 70px;" />
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Обход всех точек</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleMapHistoryOptWalkAllPoints"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Перезагружать "от,до", сек</span>
+            <label class="text-input">
+                <input type="text" id="inputReloadDelay" title="Перезагружать страницу каждые N секунд. 0 = выключено" style="width: 40px;" />
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleFightingWrapper">
+        <span class="toggle-title toggle-expand">Сражение ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleFighting"><span class="slider round"></span>
+        </label>
+    </div>
+
+    <div class="sub-toggle-wrapper" id="toggleFightingOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Кнопка запуска</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingOptActiveButton"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Кого НЕ бить</span>
+            <label class="">
+                <a id="toggleFightingOptNotToFight">Редактировать</a>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Сдаваться</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingGiveUp"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Пить HP</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingPotHP"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Пить MA</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingPotMP"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Не бить лвл >=</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingLevelToSkip" min="0" max="99" maxlength="2">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Проверять травму</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingCheckTrauma"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Травма >= часов</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingMaxTrauma" min="0" max="9999" maxlength="4">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Активировать приманку</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleFightingActivatePrimanka"><span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+    <div class="toggle-wrapper">
+        <span class="toggle-title">
+            Разбойники
+            <span class="info-icon" title="ХП, МП - берётся из Сражения">?</span>
+        </span>
+        <label class="switch">
+            <input type="checkbox" id="toggleBandits"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleParsingWrapper">
+        <span class="toggle-title toggle-expand">Парсинг ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleParsing"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleParsingOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Ссылки и цели</span>
+            <label class="">
+                <a id="toggleParsingOptLinksTargets">Редактировать</a>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Таймаут, сек</span>
+            <label class="text-input">
+                <input type="number" id="inputParsingOptTimeout" min="0" max="99" maxlength="2">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleTelegramWrapper">
+        <span class="toggle-title toggle-expand">Уведомления ▼</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleTelegram"><span class="slider round"></span>
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleTelegramOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Бот уведомлений API</span>
+            <label class="text-input">
+                <input type="text" id="inputTelegramOptApiKeyCommon">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Бот чата API</span>
+            <label class="text-input">
+                <input type="text" id="inputTelegramOptApiKeyChat">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Chat ID</span>
+            <label class="text-input">
+                <input type="text" id="inputTelegramOptChatID">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper" id="toggleChatWrapper">
+        <span class="toggle-title toggle-expand">Чат ▼</span>
+        <label class="switch">
+            <input type="hidden" id="toggleChat">
+        </label>
+    </div>
+    <div class="sub-toggle-wrapper" id="toggleChatOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Быстрые адресаты</span>
+            <label class="">
+                <a id="toggleChatOptFastAddress">Редактировать</a>
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
+    <div class="toggle-wrapper">
+        <span class="toggle-title">Лог</span>
+        <label class="switch">
+            <input type="checkbox" id="toggleLog"><span class="slider round"></span>
+        </label>
+    </div>
+    <hr class="divider">
+
     <script src="popup.js"></script>
+    <!-- Модальное окно -->
+    <div id="modal_fast_address" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-fast-address-close">&times;</span>
+            <h3>Редактировать быстрые ответы</h3>
+            <div class="toggle-wrapper">
+                <span class="toggle-title small">Включено</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleChatOptFastAddressActive"><span class="slider round"></span>
+                </label>
+            </div>
+            <label class="modal-label">Адресаты (формат name:char:private)<span class="info-icon" title="Первое значение - то что будет в кнопке, второе - какой текст подставлятся в поле 'кому', третье (не обязательное) - единичку поставьте если хотите чтобы активировалась галочка приватного сообщения. Например: Админу:Misha:1">?</span></label>
+            <select id="modal-fast-address-pairs" class="select2" multiple style="width:100%" data-placeholder="Введите пары вида a:1, b:4:1 и нажмите Enter"></select>
+
+            <label class="modal-label">Сообщения (формат name:message)<span class="info-icon" title="Первое значение - то что будет в кнопке, второе - какой текст подставлятся в поле 'сообщение'. Например: Ссылка на бой:[log][/log]">?</span></label>
+            <select id="modal-fast-answers-pairs" class="select2" multiple style="width:100%" data-placeholder="Введите пары вида a:1, b:4 и нажмите Enter"></select>
+
+            <button id="modal-fast-address-save" class="modal-save">Сохранить</button>
+        </div>
+    </div>
+
+    <div id="modal_parsing" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-parsing-close">&times;</span>
+            <h3>Редактировать ссылки и цели</h3>
+
+            <label class="modal-label">Ссылки</label>
+            <select id="modal-parsing-links" class="select2" multiple></select>
+
+            <label class="modal-label">Цели</label>
+            <select id="modal-parsing-targets" class="select2" multiple></select>
+
+            <div class="toggle-wrapper">
+                <span class="toggle-title small">Цели должны отсутствовать</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleParsingOptInvertSearch"><span class="slider round"></span>
+                </label>
+            </div>
+
+            <button id="modal-parsing-save" class="modal-save">Сохранить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal-fighting-bosses" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-fighting-not-to-fight-close">&times;</span>
+            <h3>Редактировать список</h3>
+
+            <label class="modal-label">Кого НЕ бить
+                <span class="info-icon" title="Можно указать часть имени, например не бить всех мобов, в имени которых есть буква 'a', можно указать конкретного монстра вместе с уровнем, например: 'Серебряный дракон [25]'">?</span></label>
+            <select id="modal-fighting-not-to-fight" class="select2" multiple></select>
+            <button id="modal-fighting-not-to-fight-save" class="modal-save">Сохранить</button>
+        </div>
+    </div>
 </body>
+
 </html>

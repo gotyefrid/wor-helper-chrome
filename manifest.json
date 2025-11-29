@@ -4,8 +4,20 @@
     "version": "1.1",
     "description": "Полезные скрипты для игры World of Rest",
     "permissions": [
-        "storage"
+        "storage",
+        "scripting",
+        "activeTab",
+        "tabs",
+        "alarms"
     ],
+    "host_permissions": [
+        "http://185.212.47.8/wap/*",
+        "https://wor.com.ua/wap/*"
+    ],
+    "background": {
+        "service_worker": "Backend/background.js",
+        "type": "module"
+    },
     "action": {
         "default_popup": "popup.html",
         "default_icon": {
@@ -14,36 +26,145 @@
             "128": "icon.png"
         }
     },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "Icons/*"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
     "content_scripts": [
-        {
-            "matches": [
-                "*://wor.com.ua/wap/lovit*",
-                "http://185.212.47.8/wap/lovit*"
-            ],
-            "js": [
-                "common.js",
-                "chat-utils.js",
-                "fishing.js"
-            ]
-        },
-        {
-            "matches": [
-                "*://wor.com.ua/wap/cap*",
-                "http://185.212.47.8/wap/cap*"
-            ],
-            "js": [
-                "common.js",
-                "cap.js"
-            ]
-        },
         {
             "matches": [
                 "*://wor.com.ua/wap/*",
                 "http://185.212.47.8/wap/*"
             ],
             "js": [
-                "common.js",
-                "moving-key.js"
+                "Common/moving-key.js",
+                "Common/CommonHelper.js",
+                "Chat/luxon.js",
+                "Chat/Chat.js",
+                "Common/process-common.js",
+                "Common/process-commands.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/lovit*",
+                "*://wor.com.ua/wap/chat*",
+                "*://wor.com.ua/wap/poisktrav*",
+                "*://wor.com.ua/wap/kopat*",
+                "http://185.212.47.8/wap/lovit*",
+                "http://185.212.47.8/wap/chat*",
+                "http://185.212.47.8/wap/poisktrav*",
+                "http://185.212.47.8/wap/kopat*"
+            ],
+            "js": [
+                "Chat/process-chat.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/game.php?show=5*",
+                "http://185.212.47.8/wap/game.php?show=5*"
+            ],
+            "js": [
+                "Common/statistic-helper.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/inventar.php*",
+                "http://185.212.47.8/wap/inventar.php*"
+            ],
+            "js": [
+                "Common/inventory-helper.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/poisktrav*",
+                "*://wor.com.ua/wap/teritory*",
+                "*://wor.com.ua/wap/main*",
+                "*://wor.com.ua/wap/game*",
+                "http://185.212.47.8/wap/poisktrav*",
+                "http://185.212.47.8/wap/teritory*",
+                "http://185.212.47.8/wap/main*",
+                "http://185.212.47.8/wap/game*"
+            ],
+            "js": [
+                "Chemistry/ChemistryClass.js",
+                "Chemistry/process-chemistry.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/kopat*",
+                "*://wor.com.ua/wap/shaxtap*",
+                "*://wor.com.ua/wap/shaxtal*",
+                "*://wor.com.ua/wap/shaxtar*",
+                "*://wor.com.ua/wap/teritory*",
+                "*://wor.com.ua/wap/main*",
+                "*://wor.com.ua/wap/game*",
+                "http://185.212.47.8/wap/kopat*",
+                "http://185.212.47.8/wap/shaxtap*",
+                "http://185.212.47.8/wap/shaxtal*",
+                "http://185.212.47.8/wap/shaxtar*",
+                "http://185.212.47.8/wap/teritory*",
+                "http://185.212.47.8/wap/main*",
+                "http://185.212.47.8/wap/game*"
+            ],
+            "js": [
+                "Mining/Mining.js",
+                "Mining/process-mining.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/attackhouse*",
+                "*://wor.com.ua/wap/boj*",
+                "*://wor.com.ua/wap/wait*",
+                "*://wor.com.ua/wap/logfull*",
+                "http://185.212.47.8/wap/attackhouse*",
+                "http://185.212.47.8/wap/boj*",
+                "http://185.212.47.8/wap/wait*",
+                "http://185.212.47.8/wap/logfull*"
+            ],
+            "js": [
+                "Fight/Fight.js",
+                "Fight/process-fight.js",
+                "Fight/process-bandits.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/lovit*",
+                "*://wor.com.ua/wap/teritory*",
+                "*://wor.com.ua/wap/main*",
+                "*://wor.com.ua/wap/game*",
+                "http://185.212.47.8/wap/lovit*",
+                "http://185.212.47.8/wap/teritory*",
+                "http://185.212.47.8/wap/main*",
+                "http://185.212.47.8/wap/game*"
+            ],
+            "js": [
+                "Fishing/FishingClass.js",
+                "Fishing/fishing.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/cap*",
+                "http://185.212.47.8/wap/cap*",
+                "*://wor.com.ua/wap/primanka*",
+                "http://185.212.47.8/wap/primanka*"
+            ],
+            "js": [
+                "Captcha/Captcha.js",
+                "Captcha/process-captcha.js"
             ]
         },
         {
@@ -52,17 +173,18 @@
                 "http://185.212.47.8/wap/teritory*"
             ],
             "js": [
-                "map-history.js"
+                "Territory/Territory.js",
+                "Territory/process-territory.js",
+                "Territory/map-history.js"
             ]
         },
         {
             "matches": [
-                "*://wor.com.ua/wap/*",
-                "http://185.212.47.8/wap/*"
+                "*://wor.com.ua/wap/famerating*",
+                "http://185.212.47.8/wap/famerating*"
             ],
             "js": [
-                "common.js",
-                "chat-utils.js"
+                "Rating/process-rating.js"
             ]
         }
     ]
