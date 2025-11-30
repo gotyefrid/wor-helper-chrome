@@ -73,6 +73,12 @@ function contextMenu() {
             }
         },
         {
+            label: '✉️ Отправить на почту',
+            onClick: (nickname) => {
+                showMailModal(nickname);
+            }
+        },
+        {
             label: '📋 Копировать ник',
             onClick: async (nickname, event) => {
                 const textarea = document.createElement('textarea');
@@ -276,6 +282,150 @@ function showWRModal(nickname) {
     document.body.appendChild(overlay);
     document.body.appendChild(modal);
 }
+
+async function showMailModal(nickname) {
+
+    // === Если уже открыта модалка — не создавать заново ===
+    if (document.getElementById('mailModal')) return;
+
+    // === 1) Загружаем /wap/mail.php ===
+    const mailPage = await fetch('/wap/mail.php').then(r => r.text());
+
+    // Находим ссылку с act=newmail
+    const parser = new DOMParser();
+    const doc1 = parser.parseFromString(mailPage, 'text/html');
+
+    const newMailLink = doc1.querySelector('a[href*="act=newmail"]');
+    if (!newMailLink) {
+        alert("Не удалось найти ссылку на создание письма.");
+        return;
+    }
+
+    const newMailHref = newMailLink.getAttribute('href');
+
+    // === 2) Загружаем страницу новой почты ===
+    const newMailPage = await fetch(newMailHref).then(r => r.text());
+    const doc2 = parser.parseFromString(newMailPage, 'text/html');
+
+    // Находим форму
+    const form = doc2.querySelector('form[action*="mailadd"]');
+    if (!form) {
+        alert("Не удалось получить HTML формы письма.");
+        return;
+    }
+
+    // Достаём action формы
+    const mailAction = form.getAttribute('action');
+
+    // === 3) Строим модалку ===
+
+    // затемнение
+    const overlay = document.createElement('div');
+    overlay.id = 'mailOverlay';
+    overlay.style = `
+        position: fixed; top:0; left:0; width:100vw; height:100vh;
+        background: rgba(0,0,0,0.5);
+        z-index: 10001;
+    `;
+
+    const modal = document.createElement('div');
+    modal.id = 'mailModal';
+    modal.style = `
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        border: 1px solid #ccc;
+        z-index: 10002;
+        min-width: 320px;
+        text-align: center;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        color: #fff;
+        font-family: sans-serif;
+    `;
+
+    // Заголовок
+    const title = document.createElement('h3');
+    title.textContent = `Отправить письмо: ${nickname}`;
+    modal.appendChild(title);
+
+    // === Поле Кому ===
+    const inputTo = document.createElement('input');
+    inputTo.type = 'text';
+    inputTo.name = 'mail_name';
+    inputTo.value = nickname;
+    inputTo.className = 'do_button';
+    inputTo.style.marginTop = '10px';
+    inputTo.style.width = '95%';
+    modal.appendChild(inputTo);
+
+    modal.appendChild(document.createElement('br'));
+
+    // === Поле Тема ===
+    const inputTema = document.createElement('input');
+    inputTema.type = 'text';
+    inputTema.name = 'mail_tema';
+    inputTema.placeholder = 'Тема';
+    inputTema.className = 'do_button';
+    inputTema.style.marginTop = '10px';
+    inputTema.style.width = '95%';
+    modal.appendChild(inputTema);
+
+    modal.appendChild(document.createElement('br'));
+
+    // === Сообщение ===
+    const textarea = document.createElement('textarea');
+    textarea.name = 'mail_message';
+    textarea.className = 'do_button';
+    textarea.style = 'width:95%; height:100px; margin-top:10px;';
+    textarea.maxLength = 10000;
+    textarea.placeholder = 'Сообщение...';
+    modal.appendChild(textarea);
+
+    // === Кнопка отправки ===
+    const sendBtn = document.createElement('button');
+    sendBtn.textContent = 'Отправить';
+    sendBtn.className = 'button';
+    sendBtn.style = `
+        display:block;
+        margin: 15px auto 0;
+    `;
+
+    sendBtn.addEventListener('click', async () => {
+        const data = new FormData();
+        data.append('mail_name', inputTo.value.trim());
+        data.append('mail_tema', inputTema.value.trim());
+        data.append('mail_message', textarea.value.trim());
+        data.append('button', 'Отправить');
+
+        const response = await fetch(mailAction, {
+            method: 'POST',
+            body: data
+        });
+
+        const text = await response.text();
+
+        // Сервер обычно возвращает страницу с текстом письма — можно обработать при желании
+        alert("Письмо отправлено!");
+
+        document.body.removeChild(overlay);
+        document.body.removeChild(modal);
+    });
+
+    modal.appendChild(sendBtn);
+
+    // === Закрытие кликом по фону ===
+    overlay.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        document.body.removeChild(modal);
+    });
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(modal);
+}
+
 
 async function addQuickPost() {
     let form = document.querySelector('#chatline');
