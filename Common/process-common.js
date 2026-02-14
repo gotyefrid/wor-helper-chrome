@@ -120,7 +120,7 @@ async function checkFlashNotifications() {
     }
 
     if (html.innerText.includes('Скрыть сообщение')) {
-        CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 300);
+        CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 1200);
     }
 
     if (html.innerText.includes('Для того, чтобы ловить рыбу, Вам необходима удочка!')) {
