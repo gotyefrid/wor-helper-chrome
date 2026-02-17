@@ -1,4 +1,4 @@
-/* global chrome */
+/* global chrome, CommonHelper */
 
 start().catch(console.error);
 
@@ -30,55 +30,51 @@ async function start() {
             switch (event.code) {
                 case 'KeyA': // Влево
                     try {
-                        playerCell.previousElementSibling.querySelector('a').click();
+                        document.location.href = playerCell.previousElementSibling.querySelector('a').href;
                     } catch (error) {
-                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("влево")).click();
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("влево"))?.click();
                     }
                     break;
                 case 'KeyD': // Вправо
                     try {
-                        playerCell.nextElementSibling.querySelector('a').click();
+                        document.location.href = playerCell.nextElementSibling.querySelector('a').href;
                     } catch (error) {
-                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вправо")).click();
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вправо"))?.click();
                     }
                     break;
                 case 'KeyW': // Вверх
                     try {
-                        findCellByOffset(playerCell, 0, -1).querySelector('a').click();
+                        document.location.href = findCellByOffset(playerCell, 0, -1).querySelector('a').href;
                     } catch (error) {
-                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вверх")).click();
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вверх"))?.click();
                     }
                     break;
                 case 'KeyS': // Вниз
                     try {
-                        findCellByOffset(playerCell, 0, 1).querySelector('a').click();
+                        document.location.href = findCellByOffset(playerCell, 0, 1).querySelector('a').href;
                     } catch (error) {
-                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вниз")).click();
+                        [...document.querySelectorAll('a')].find(s => s.textContent.includes("вниз"))?.click();
                     }
                     break;
                 case 'KeyQ': // Вверх-влево
                     try {
-                        findCellByOffset(playerCell, -1, -1).querySelector('a').click();
-                    } catch (error) {
-                    }
+                        document.location.href = findCellByOffset(playerCell, -1, -1).querySelector('a').href;
+                    } catch (error) {}
                     break;
                 case 'KeyE': // Вверх-вправо
                     try {
-                        findCellByOffset(playerCell, 1, -1).querySelector('a').click();
-                    } catch (error) {
-                    }
+                        document.location.href = findCellByOffset(playerCell, 1, -1).querySelector('a').href;
+                    } catch (error) {}
                     break;
                 case 'KeyZ': // Вниз-влево
                     try {
-                        findCellByOffset(playerCell, -1, 1).querySelector('a').click();
-                    } catch (error) {
-                    }
+                        document.location.href = findCellByOffset(playerCell, -1, 1).querySelector('a').href;
+                    } catch (error) {}
                     break;
                 case 'KeyC': // Вниз-вправо
                     try {
-                        findCellByOffset(playerCell, 1, 1).querySelector('a').click();
-                    } catch (error) {
-                    }
+                        document.location.href = findCellByOffset(playerCell, 1, 1).querySelector('a').href;
+                    } catch (error) {}
                     break;
                 case 'KeyR': // Сдаться
                     try {

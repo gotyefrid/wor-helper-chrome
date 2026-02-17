@@ -697,4 +697,40 @@ class CommonHelper {
         // Используем встроенный интерфейс URLSearchParams
         return url.searchParams.get(name);
     }
+
+    static renderGridInto(container, grid, players) {
+        container.innerHTML = '';
+
+        for (let i = 0; i < grid.length; i++) {
+            const c = grid[i];
+
+            const cell = document.createElement('div');
+            cell.className = 'map-cell';
+            cell.dataset.room = c.room;
+            cell.dataset.step = c.stepRoom;
+            cell.style.backgroundImage = "url('" + String(c.img).replace(/'/g, "\\'") + "')";
+
+            if (!c.isCenter && c.href) {
+                const a = document.createElement('a');
+                a.href = String(c.href || '').replace(/&amp;/g, '&');
+                a.dataset.stepUrl = String(c.stepUrl).replace(/&amp;/g, '&');
+                a.dataset.room = c.room;
+                a.dataset.step = c.stepRoom;
+                a.style.display = 'block';
+                a.style.width = '100%';
+                a.style.height = '100%';
+                cell.appendChild(a);
+            }
+
+            if (!c.isCenter && c.overlay && c.overlay.src) {
+                const o = document.createElement('img');
+                o.className = 'cell-overlay';
+                o.src = c.overlay.src;
+                o.alt = c.overlay.alt || '';
+                cell.appendChild(o);
+            }
+
+            container.appendChild(cell);
+        }
+    }
 }
