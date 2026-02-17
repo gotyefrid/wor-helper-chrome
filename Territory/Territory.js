@@ -299,7 +299,7 @@ class Territory {
     }
 
     static getCurrentLocation() {
-        const link = document.querySelector('tbody a[href*="l="]');
+        const link = document.querySelector('.map-cell a[href*="l="]');
         if (!link) return null;
 
         const params = new URLSearchParams(link.href.split("?")[1]);
@@ -307,11 +307,16 @@ class Territory {
     }
 
     getCurrentPointId() {
-        let playerCell = document.querySelector("td[align=center]").querySelector('div');
-        let currentId = parseInt(playerCell.id.substring(1), 10);
+        // Ищем элемент .map-cell, у которого нет дочерних узлов (даже текстовых)
+        const emptyCell = document.querySelector('.map-cell:empty');
 
-        return currentId;
+        if (emptyCell) {
+            return parseInt(emptyCell.getAttribute('data-room'), 10);
+        }
+
+        return null;
     }
+
     // Метод для поиска координат по заданному id
     findCoordinatesById(id) {
         for (let row = 0; row < this.mapNumRows; row++) {
@@ -416,39 +421,29 @@ class Territory {
             CommonHelper.log('Переходим на точку ' + id);
 
             // Формируем селектор для ячейки и ищем её в текущем документе (полученном на предыдущем шаге или изначальном)
-            let cellId = 'r' + id.toString();
-            let cellElement = currentDocument.querySelector('a[id=' + cellId + ']');
+            let cellId = id.toString();
+            let cellElement = currentDocument.querySelector('a[data-room="' + cellId + '"]');
+
             if (!cellElement) {
                 CommonHelper.log('Элемент с селектором ' + cellId + ' не найден в текущем документе');
                 break;
             }
 
             // Получаем URL из атрибута href найденного элемента
-            let url = cellElement.getAttribute('href');
+            let url = cellElement.getAttribute('data-step-url');
             CommonHelper.log('Отправляем fetch запрос по URL: ' + url);
 
+            let json;
             try {
                 // Отправляем запрос и получаем HTML-страницу
                 let response = await fetch(url);
-                let html = await response.text();
-
-                if (!response.url.includes('teritory')) {
-                    CommonHelper.reloadPage();
-                    return;
-                }
-
-                // Парсим полученный HTML и создаём новый DOM
-                let parser = new DOMParser();
-                let newDocument = parser.parseFromString(html, 'text/html');
+                json = await response.json();
 
                 if (typeof eachCallback === "function") {
-                    await eachCallback(newDocument);
+                    await eachCallback(json);
                 } else {
-                    document.querySelector('body').innerHTML = newDocument.querySelector('body').innerHTML;
+                    // ничего не делаем пока
                 }
-
-                // Обновляем currentDocument для следующей итерации
-                currentDocument = newDocument;
             } catch (error) {
                 CommonHelper.log('Ошибка при fetch запросе:' + JSON.stringify(error));
                 break;
@@ -459,11 +454,12 @@ class Territory {
                 CommonHelper.log('Достигнута финальная точка, перезагружаем страницу...');
 
                 if (typeof endCallback === "function") {
-                    await endCallback(currentDocument);
+                    await endCallback(json);
                     return;
                 }
+                const normalizedLink = json.realUrl.replace(/&amp;/g, '&');
 
-                document.location = url;
+                document.location = normalizedLink;
             }
 
             await CommonHelper.delay(delay[0], delay[1]); // задержка между запросами

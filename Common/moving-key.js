@@ -14,18 +14,14 @@ async function start() {
         }
         try {
             try {
-                var playerCell = document.querySelector("td[align=center]").querySelector('div');
-                var upperRow = playerCell.parentElement.parentElement.previousElementSibling;
-                var downRow = playerCell.parentElement.parentElement.nextElementSibling;
+                var playerCell = document.querySelector('.map-cell:empty');
             } catch (error) {
-
             }
 
             switch (event.code) {
                 case 'KeyA': // Влево
                     try {
-                        var cellId = parseInt(playerCell.id.substring(1), 10) - 1;
-                        playerCell.parentElement.parentElement.querySelector(`#r${cellId}`).click();
+                        playerCell.previousElementSibling.querySelector('a').click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("влево")).click();
                     }
@@ -33,50 +29,75 @@ async function start() {
                     break;
                 case 'KeyD': // Вправо
                     try {
-                        var cellId = parseInt(playerCell.id.substring(1), 10) + 1;
-                        playerCell.parentElement.parentElement.querySelector(`#r${cellId}`).click();
+                        playerCell.nextElementSibling.querySelector('a').click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("вправо")).click();
                     }
                     break;
                 case 'KeyW': // Вверх
                     try {
-                        var offset = Math.floor(upperRow.childElementCount / 2);
-                        var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
-                        upperRow.querySelector(`#r${cellId}`).click();
+                        const prW = playerCell.getBoundingClientRect();
+                        [...document.querySelectorAll('.map-cell')].find(cell => {
+                            const r = cell.getBoundingClientRect();
+                            return Math.abs(r.left + r.width / 2 - (prW.left + prW.width / 2)) < prW.width * 0.5 &&
+                                   Math.abs(r.top + r.height / 2 - (prW.top - prW.height / 2)) < prW.height * 0.5;
+                        }).querySelector('a').click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("вверх")).click();
                     }
 
                     break;
                 case 'KeyQ': // Вверх-влево
-                    var offset = Math.floor(upperRow.childElementCount / 2) - 1;
-                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
-                    upperRow.querySelector(`#r${cellId}`).click();
+                    try {
+                        const prQ = playerCell.getBoundingClientRect();
+                        [...document.querySelectorAll('.map-cell')].find(cell => {
+                            const r = cell.getBoundingClientRect();
+                            return Math.abs(r.left + r.width / 2 - (prQ.left - prQ.width / 2)) < prQ.width * 0.5 &&
+                                   Math.abs(r.top + r.height / 2 - (prQ.top - prQ.height / 2)) < prQ.height * 0.5;
+                        }).querySelector('a').click();
+                    } catch (error) {}
                     break;
                 case 'KeyE': // Вверх-вправо
-                    var offset = Math.floor(upperRow.childElementCount / 2) + 1;
-                    var cellId = parseInt(upperRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
-                    upperRow.querySelector(`#r${cellId}`).click();
+                    try {
+                        const prE = playerCell.getBoundingClientRect();
+                        [...document.querySelectorAll('.map-cell')].find(cell => {
+                            const r = cell.getBoundingClientRect();
+                            return Math.abs(r.left + r.width / 2 - (prE.left + prE.width * 1.5)) < prE.width * 0.5 &&
+                                   Math.abs(r.top + r.height / 2 - (prE.top - prE.height / 2)) < prE.height * 0.5;
+                        }).querySelector('a').click();
+                    } catch (error) {}
                     break;
                 case 'KeyS': // Вниз
                     try {
-                        var offset = Math.floor(downRow.childElementCount / 2);
-                        var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
-                        downRow.querySelector(`#r${cellId}`).click();
+                        const prS = playerCell.getBoundingClientRect();
+                        [...document.querySelectorAll('.map-cell')].find(cell => {
+                            const r = cell.getBoundingClientRect();
+                            return Math.abs(r.left + r.width / 2 - (prS.left + prS.width / 2)) < prS.width * 0.5 &&
+                                   Math.abs(r.top + r.height / 2 - (prS.top + prS.height * 1.5)) < prS.height * 0.5;
+                        }).querySelector('a').click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("вниз")).click();
                     }
                     break;
                 case 'KeyZ': // Вниз-влево
-                    var offset = Math.floor(downRow.childElementCount / 2) - 1;
-                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
-                    downRow.querySelector(`#r${cellId}`).click();
+                    try {
+                        const prZ = playerCell.getBoundingClientRect();
+                        [...document.querySelectorAll('.map-cell')].find(cell => {
+                            const r = cell.getBoundingClientRect();
+                            return Math.abs(r.left + r.width / 2 - (prZ.left - prZ.width / 2)) < prZ.width * 0.5 &&
+                                   Math.abs(r.top + r.height / 2 - (prZ.top + prZ.height * 1.5)) < prZ.height * 0.5;
+                        }).querySelector('a').click();
+                    } catch (error) {}
                     break;
                 case 'KeyC': // Вниз-вправо
-                    var offset = Math.floor(downRow.childElementCount / 2) + 1;
-                    var cellId = parseInt(downRow.firstElementChild.firstElementChild.id.substring(1), 10) + offset;
-                    downRow.querySelector(`#r${cellId}`).click();
+                    try {
+                        const prC = playerCell.getBoundingClientRect();
+                        [...document.querySelectorAll('.map-cell')].find(cell => {
+                            const r = cell.getBoundingClientRect();
+                            return Math.abs(r.left + r.width / 2 - (prC.left + prC.width * 1.5)) < prC.width * 0.5 &&
+                                   Math.abs(r.top + r.height / 2 - (prC.top + prC.height * 1.5)) < prC.height * 0.5;
+                        }).querySelector('a').click();
+                    } catch (error) {}
                     break;
                 case 'KeyR': // Сдаться
                     try {

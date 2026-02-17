@@ -125,6 +125,7 @@ async function processKat4(delay = [50, 100]) {
         await walkAroundMap(delay);
     }
 }
+
 async function processDesert(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -169,6 +170,7 @@ async function processDesert(delay = [50, 100]) {
         await walkAroundMap(delay);
     }
 }
+
 async function processOzero(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -221,6 +223,7 @@ async function processOzero(delay = [50, 100]) {
         await walkAroundMap(delay);
     }
 }
+
 async function processCrystall(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -258,6 +261,7 @@ async function processCrystall(delay = [50, 100]) {
         await walkAroundMap(delay);
     }
 }
+
 async function processSavanna(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -362,6 +366,7 @@ async function processKat3(delay = [50, 100]) {
         await walkAroundMap(delay);
     }
 }
+
 async function processKat2(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -412,6 +417,7 @@ async function processKat2(delay = [50, 100]) {
         await walkAroundMap(delay);
     }
 }
+
 async function processKat1(delay = [50, 100]) {
     let t = new Territory();
     let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
@@ -513,18 +519,18 @@ async function processGorod(delay = [50, 100]) {
                 label: 'Подземелье',
                 icon: 'Icons/podzenelie.png',
                 action: async (e) => {
-                    await t.toPoint(765, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=730"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
+                    await t.toPoint(
+                        765,
+                        delay,
+                        (json) => {
+                            let grid = document.getElementById('gridA');
+                            renderGridInto(grid, json.grid || [], json.players || {});
                         }
-                    });
+                    );
                 }
             },
             {
-                id: 510, 
+                id: 510,
                 label: 'Охотник',
                 icon: 'Icons/ohotnik.png',
                 action: async (e) => {
@@ -587,12 +593,15 @@ function renderWalkAllMapButton(walkAllMapStatus, delay) {
             let status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
 
             if (status?.active === true) {
-                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
+                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
                 await CommonHelper.reloadPage();
                 return;
             }
 
-            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: true, location: Territory.getCurrentLocation() });
+            await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {
+                active: true,
+                location: Territory.getCurrentLocation()
+            });
             e.target.innerHTML = e.target.innerHTML.replace('Запустить обход всех точек', 'Остановить обход всех точек');
             e.target.innerHTML = e.target.innerHTML.replace('mini_karta', 'optsii_igroka');
             await walkAroundMap(delay);
@@ -610,7 +619,7 @@ async function walkAroundMap(delay = [50, 100]) {
 
     if (path.length === 0) {
         alert('Все точки уже посещены!');
-        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
+        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
         CommonHelper.reloadPage();
         return;
     }
@@ -765,7 +774,7 @@ function showLoadingIcon(linkElement) {
 async function moveOnDefaultMaps(points) {
     const menuList = document.querySelector('.menu_div ul');
 
-    points.forEach(({ id, label, action, icon }) => {
+    points.forEach(({id, label, action, icon}) => {
         let imgUrl = '';
 
         if (icon) {
@@ -791,3 +800,38 @@ async function moveOnDefaultMaps(points) {
 }
 
 
+function renderGridInto(container, grid, players) {
+    container.innerHTML = '';
+
+    for (let i = 0; i < grid.length; i++) {
+        const c = grid[i];
+
+        const cell = document.createElement('div');
+        cell.className = 'map-cell';
+        cell.dataset.room = c.room;
+        cell.dataset.step = c.stepRoom;
+        cell.style.backgroundImage = "url('" + String(c.img).replace(/'/g, "\\'") + "')";
+
+        if (!c.isCenter && c.href) {
+            const a = document.createElement('a');
+            a.href = String(c.href || '').replace(/&amp;/g, '&');
+            a.dataset.stepUrl = String(c.stepUrl).replace(/&amp;/g, '&');
+            a.dataset.room = c.room;
+            a.dataset.step = c.stepRoom;
+            a.style.display = 'block';
+            a.style.width = '100%';
+            a.style.height = '100%';
+            cell.appendChild(a);
+        }
+
+        if (!c.isCenter && c.overlay && c.overlay.src) {
+            const o = document.createElement('img');
+            o.className = 'cell-overlay';
+            o.src = c.overlay.src;
+            o.alt = c.overlay.alt || '';
+            cell.appendChild(o);
+        }
+
+        container.appendChild(cell);
+    }
+}
