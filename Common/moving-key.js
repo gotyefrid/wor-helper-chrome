@@ -1,8 +1,20 @@
-start();
+/* global chrome */
+
+start().catch(console.error);
+
+function findCellByOffset(playerCell, dx, dy) {
+    const pr = playerCell.getBoundingClientRect();
+    return [...document.querySelectorAll('.map-cell')].find(cell => {
+        const r = cell.getBoundingClientRect();
+        return Math.abs(r.left + r.width / 2 - (pr.left + pr.width * (0.5 + dx))) < pr.width * 0.5
+            && Math.abs(r.top + r.height / 2 - (pr.top + pr.height * (0.5 + dy))) < pr.height * 0.5;
+    });
+}
 
 async function start() {
     let access = await chrome.storage.local.get(["wor_moving_active"]);
 
+    // noinspection JSUnresolvedVariable
     if (access.wor_moving_active !== true || document.querySelector('[type=text], textarea')) {
         return;
     }
@@ -13,10 +25,7 @@ async function start() {
             return;
         }
         try {
-            try {
-                var playerCell = document.querySelector('.map-cell:empty');
-            } catch (error) {
-            }
+            const playerCell = document.querySelector('.map-cell:empty');
 
             switch (event.code) {
                 case 'KeyA': // Влево
@@ -25,7 +34,6 @@ async function start() {
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("влево")).click();
                     }
-
                     break;
                 case 'KeyD': // Вправо
                     try {
@@ -36,74 +44,48 @@ async function start() {
                     break;
                 case 'KeyW': // Вверх
                     try {
-                        const prW = playerCell.getBoundingClientRect();
-                        [...document.querySelectorAll('.map-cell')].find(cell => {
-                            const r = cell.getBoundingClientRect();
-                            return Math.abs(r.left + r.width / 2 - (prW.left + prW.width / 2)) < prW.width * 0.5 &&
-                                   Math.abs(r.top + r.height / 2 - (prW.top - prW.height / 2)) < prW.height * 0.5;
-                        }).querySelector('a').click();
+                        findCellByOffset(playerCell, 0, -1).querySelector('a').click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("вверх")).click();
                     }
-
-                    break;
-                case 'KeyQ': // Вверх-влево
-                    try {
-                        const prQ = playerCell.getBoundingClientRect();
-                        [...document.querySelectorAll('.map-cell')].find(cell => {
-                            const r = cell.getBoundingClientRect();
-                            return Math.abs(r.left + r.width / 2 - (prQ.left - prQ.width / 2)) < prQ.width * 0.5 &&
-                                   Math.abs(r.top + r.height / 2 - (prQ.top - prQ.height / 2)) < prQ.height * 0.5;
-                        }).querySelector('a').click();
-                    } catch (error) {}
-                    break;
-                case 'KeyE': // Вверх-вправо
-                    try {
-                        const prE = playerCell.getBoundingClientRect();
-                        [...document.querySelectorAll('.map-cell')].find(cell => {
-                            const r = cell.getBoundingClientRect();
-                            return Math.abs(r.left + r.width / 2 - (prE.left + prE.width * 1.5)) < prE.width * 0.5 &&
-                                   Math.abs(r.top + r.height / 2 - (prE.top - prE.height / 2)) < prE.height * 0.5;
-                        }).querySelector('a').click();
-                    } catch (error) {}
                     break;
                 case 'KeyS': // Вниз
                     try {
-                        const prS = playerCell.getBoundingClientRect();
-                        [...document.querySelectorAll('.map-cell')].find(cell => {
-                            const r = cell.getBoundingClientRect();
-                            return Math.abs(r.left + r.width / 2 - (prS.left + prS.width / 2)) < prS.width * 0.5 &&
-                                   Math.abs(r.top + r.height / 2 - (prS.top + prS.height * 1.5)) < prS.height * 0.5;
-                        }).querySelector('a').click();
+                        findCellByOffset(playerCell, 0, 1).querySelector('a').click();
                     } catch (error) {
                         [...document.querySelectorAll('a')].find(s => s.textContent.includes("вниз")).click();
                     }
                     break;
+                case 'KeyQ': // Вверх-влево
+                    try {
+                        findCellByOffset(playerCell, -1, -1).querySelector('a').click();
+                    } catch (error) {
+                    }
+                    break;
+                case 'KeyE': // Вверх-вправо
+                    try {
+                        findCellByOffset(playerCell, 1, -1).querySelector('a').click();
+                    } catch (error) {
+                    }
+                    break;
                 case 'KeyZ': // Вниз-влево
                     try {
-                        const prZ = playerCell.getBoundingClientRect();
-                        [...document.querySelectorAll('.map-cell')].find(cell => {
-                            const r = cell.getBoundingClientRect();
-                            return Math.abs(r.left + r.width / 2 - (prZ.left - prZ.width / 2)) < prZ.width * 0.5 &&
-                                   Math.abs(r.top + r.height / 2 - (prZ.top + prZ.height * 1.5)) < prZ.height * 0.5;
-                        }).querySelector('a').click();
-                    } catch (error) {}
+                        findCellByOffset(playerCell, -1, 1).querySelector('a').click();
+                    } catch (error) {
+                    }
                     break;
                 case 'KeyC': // Вниз-вправо
                     try {
-                        const prC = playerCell.getBoundingClientRect();
-                        [...document.querySelectorAll('.map-cell')].find(cell => {
-                            const r = cell.getBoundingClientRect();
-                            return Math.abs(r.left + r.width / 2 - (prC.left + prC.width * 1.5)) < prC.width * 0.5 &&
-                                   Math.abs(r.top + r.height / 2 - (prC.top + prC.height * 1.5)) < prC.height * 0.5;
-                        }).querySelector('a').click();
-                    } catch (error) {}
+                        findCellByOffset(playerCell, 1, 1).querySelector('a').click();
+                    } catch (error) {
+                    }
                     break;
                 case 'KeyR': // Сдаться
                     try {
                         document.querySelector("a[href*=killme]").click()
                         return;
-                    } catch { }
+                    } catch {
+                    }
 
                     document.location = '/wap/teritory.php';
                     break;
@@ -111,16 +93,16 @@ async function start() {
                     try {
                         document.querySelector("form").submit();
                         return;
-                    } catch { }
+                    } catch {
+                    }
 
                     document.location = '/wap/teritory.php';
                     break;
                 case 'KeyF': // Ударить физой
                     try {
                         let form = document.querySelector("form");
-                        let type = form.querySelector('[name=udartype]')
-                        type.value = "1";
-                        document.querySelector("form").submit();
+                        form.querySelector('[name=udartype]').value = "1";
+                        form.submit();
                         return;
                     } catch {
                     }
@@ -140,16 +122,9 @@ async function start() {
                     break;
             }
         } catch (error) {
-            // Получаем сообщение об ошибке
             let errorMessage = error.message;
-
-            // Получаем стек вызовов (где произошла ошибка)
             let stackLines = error.stack.split("\n");
-
-            // Вытаскиваем строку с файлом и номером строки
             let locationInfo = stackLines[1]?.trim() || "Неизвестное место";
-
-            // Логируем всё сразу
             console.log(`Ошибка: ${errorMessage} | Местоположение: ${locationInfo}`, false);
         }
     });
