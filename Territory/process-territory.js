@@ -92,13 +92,11 @@ async function processKat4(delay = [50, 100]) {
                 label: 'Саванна',
                 icon: 'Icons/savanna.png',
                 action: async (e) => {
-                    await t.toPoint(404, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=363"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(404, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=363"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -107,13 +105,11 @@ async function processKat4(delay = [50, 100]) {
                 label: 'Пустыня',
                 icon: 'Icons/pustinya.png',
                 action: async (e) => {
-                    await t.toPoint(297, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=256"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(297, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=256"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -137,13 +133,11 @@ async function processDesert(delay = [50, 100]) {
                 label: 'Катакомбы 4',
                 icon: 'Icons/kat4.png',
                 action: async (e) => {
-                    await t.toPoint(352, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=324"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(352, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=324"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -152,13 +146,11 @@ async function processDesert(delay = [50, 100]) {
                 label: 'Озеро',
                 icon: 'Icons/ozero.png',
                 action: async (e) => {
-                    await t.toPoint(509, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=537"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(509, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=537"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -182,7 +174,9 @@ async function processOzero(delay = [50, 100]) {
                 label: 'Хижина рыбака',
                 icon: 'Icons/fishman.png',
                 action: async (e) => {
-                    await t.toPoint(195, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
+                    await t.toPoint(195, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    });
                 }
             },
             {
@@ -190,13 +184,11 @@ async function processOzero(delay = [50, 100]) {
                 label: 'Город',
                 icon: 'Icons/gorod.png',
                 action: async (e) => {
-                    await t.toPoint(301, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=322"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(301, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=322"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -205,13 +197,11 @@ async function processOzero(delay = [50, 100]) {
                 label: 'Пустыня',
                 icon: 'Icons/pustinya.png',
                 action: async (e) => {
-                    await t.toPoint(247, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=248"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(247, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=248"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -235,7 +225,9 @@ async function processCrystall(delay = [50, 100]) {
                 label: 'Магазин кристаллов',
                 icon: 'Icons/crystall.png',
                 action: async (e) => {
-                    await t.toPoint(226, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
+                    await t.toPoint(226, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    });
                 }
             },
             {
@@ -243,13 +235,11 @@ async function processCrystall(delay = [50, 100]) {
                 label: 'Город',
                 icon: 'Icons/gorod.png',
                 action: async (e) => {
-                    await t.toPoint(116, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=93"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(116, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=93"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -273,13 +263,11 @@ async function processSavanna(delay = [50, 100]) {
                 label: 'Катакомбы 3',
                 icon: 'Icons/kat3.png',
                 action: async (e) => {
-                    await t.toPoint(284, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=228"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(284, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=228"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -288,13 +276,11 @@ async function processSavanna(delay = [50, 100]) {
                 label: 'Катакомбы 4',
                 icon: 'Icons/kat4.png',
                 action: async (e) => {
-                    await t.toPoint(486, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=431"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(486, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=431"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -303,13 +289,11 @@ async function processSavanna(delay = [50, 100]) {
                 label: 'Логово',
                 icon: 'Icons/podzenelie.png',
                 action: async (e) => {
-                    await t.toPoint(1477, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=1478"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(1477, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=1478"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -333,13 +317,11 @@ async function processKat3(delay = [50, 100]) {
                 label: 'Саванна',
                 icon: 'Icons/savanna.png',
                 action: async (e) => {
-                    await t.toPoint(308, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=309"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(308, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=309"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -348,13 +330,11 @@ async function processKat3(delay = [50, 100]) {
                 label: 'Катакомбы 2',
                 icon: 'Icons/kat2.png',
                 action: async (e) => {
-                    await t.toPoint(204, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=203"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(204, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=203"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -374,23 +354,25 @@ async function processKat2(delay = [50, 100]) {
     await moveOnDefaultMaps(
         [
             {
-                id: 135, label: 'Чернокнижник', action: async (e) => {
-                    await t.toPoint(135, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
-                },
+                id: 135,
+                label: 'Чернокнижник',
                 icon: 'Icons/chernoknizhnik.png',
+                action: async (e) => {
+                    await t.toPoint(135, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    });
+                }
             },
             {
                 id: 161,
                 label: 'Катакомбы 3',
                 icon: 'Icons/kat3.png',
                 action: async (e) => {
-                    await t.toPoint(161, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=185"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(161, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=185"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -399,13 +381,11 @@ async function processKat2(delay = [50, 100]) {
                 label: 'Катакомбы 1',
                 icon: 'Icons/kat1.png',
                 action: async (e) => {
-                    await t.toPoint(171, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=146"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(171, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=146"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -429,13 +409,11 @@ async function processKat1(delay = [50, 100]) {
                 label: 'Подземелье',
                 icon: 'Icons/podzenelie.png',
                 action: async (e) => {
-                    await t.toPoint(101, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=81"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(101, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=81"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -444,13 +422,11 @@ async function processKat1(delay = [50, 100]) {
                 label: 'Катакомбы 2',
                 icon: 'Icons/kat2.png',
                 action: async (e) => {
-                    await t.toPoint(108, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=90"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(108, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=90"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -474,13 +450,11 @@ async function processPodzemka(delay = [50, 100]) {
                 label: 'Город',
                 icon: 'Icons/gorod.png',
                 action: async (e) => {
-                    await t.toPoint(164, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=132"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(164, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=132"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -489,13 +463,11 @@ async function processPodzemka(delay = [50, 100]) {
                 label: 'Катакомбы 1',
                 icon: 'Icons/kat1.png',
                 action: async (e) => {
-                    await t.toPoint(303, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=304"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
-                        }
+                    await t.toPoint(303, delay, (json) => {
+                        CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
+                    }, () => {
+                        const tpLink = document.querySelector('a[href*="crd=304"]');
+                        if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
                     });
                 }
             },
@@ -519,12 +491,11 @@ async function processGorod(delay = [50, 100]) {
                 label: 'Подземелье',
                 icon: 'Icons/podzenelie.png',
                 action: async (e) => {
-                    await t.toPoint(
-                        765,
-                        delay,
-                        (json) => {
+                    await t.toPoint(765, delay,(json) => {
                             let grid = document.getElementById('gridA');
-                            renderGridInto(grid, json.grid || [], json.players || {});
+                            CommonHelper.renderGridInto(grid, json.grid || [], json.players || {});
+                        }, () => {
+                            document.location = document.querySelector('a[data-room="730"]').href;
                         }
                     );
                 }
@@ -534,7 +505,11 @@ async function processGorod(delay = [50, 100]) {
                 label: 'Охотник',
                 icon: 'Icons/ohotnik.png',
                 action: async (e) => {
-                    await t.toPoint(510, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
+                    await t.toPoint(510, delay,(json) => {
+                            let grid = document.getElementById('gridA');
+                            CommonHelper.renderGridInto(grid, json.grid || [], json.players || {});
+                        }
+                    );
                 }
             },
             {
@@ -542,7 +517,11 @@ async function processGorod(delay = [50, 100]) {
                 icon: 'Icons/drovosek.png',
                 label: 'Дровосек',
                 action: async (e) => {
-                    await t.toPoint(480, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML);
+                    await t.toPoint(480, delay,(json) => {
+                            let grid = document.getElementById('gridA');
+                            CommonHelper.renderGridInto(grid, json.grid || [], json.players || {});
+                        }
+                    );
                 }
             },
             {
@@ -550,14 +529,13 @@ async function processGorod(delay = [50, 100]) {
                 label: 'Кристальный остров',
                 icon: 'Icons/crystall.png',
                 action: async (e) => {
-                    await t.toPoint(674, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=710"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
+                    await t.toPoint(674, delay,(json) => {
+                            let grid = document.getElementById('gridA');
+                            CommonHelper.renderGridInto(grid, json.grid || [], json.players || {});
+                        }, () => {
+                            document.location = document.querySelector('a[data-room="710"]').href;
                         }
-                    });
+                    );
                 }
             },
             {
@@ -565,14 +543,13 @@ async function processGorod(delay = [50, 100]) {
                 label: 'Озеро',
                 icon: 'Icons/ozero.png',
                 action: async (e) => {
-                    await t.toPoint(442, delay, doc => document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML, (doc) => {
-                        let tpLink = doc.querySelector('a[href*="crd=407"]');
-                        if (tpLink) {
-                            document.location = tpLink.href;
-                        } else {
-                            CommonHelper.reloadPage();
+                    await t.toPoint(442, delay,(json) => {
+                            let grid = document.getElementById('gridA');
+                            CommonHelper.renderGridInto(grid, json.grid || [], json.players || {});
+                        }, () => {
+                            document.location = document.querySelector('a[data-room="407"]').href;
                         }
-                    });
+                    );
                 }
             },
             renderWalkAllMapButton(walkAllMapStatus, delay)
@@ -610,7 +587,6 @@ function renderWalkAllMapButton(walkAllMapStatus, delay) {
 }
 
 async function walkAroundMap(delay = [50, 100]) {
-    console.log(delay)
     let t = new Territory();
 
     let visited = await CommonHelper.getExtStorage('visitedLocations') || {};
@@ -800,38 +776,3 @@ async function moveOnDefaultMaps(points) {
 }
 
 
-function renderGridInto(container, grid, players) {
-    container.innerHTML = '';
-
-    for (let i = 0; i < grid.length; i++) {
-        const c = grid[i];
-
-        const cell = document.createElement('div');
-        cell.className = 'map-cell';
-        cell.dataset.room = c.room;
-        cell.dataset.step = c.stepRoom;
-        cell.style.backgroundImage = "url('" + String(c.img).replace(/'/g, "\\'") + "')";
-
-        if (!c.isCenter && c.href) {
-            const a = document.createElement('a');
-            a.href = String(c.href || '').replace(/&amp;/g, '&');
-            a.dataset.stepUrl = String(c.stepUrl).replace(/&amp;/g, '&');
-            a.dataset.room = c.room;
-            a.dataset.step = c.stepRoom;
-            a.style.display = 'block';
-            a.style.width = '100%';
-            a.style.height = '100%';
-            cell.appendChild(a);
-        }
-
-        if (!c.isCenter && c.overlay && c.overlay.src) {
-            const o = document.createElement('img');
-            o.className = 'cell-overlay';
-            o.src = c.overlay.src;
-            o.alt = c.overlay.alt || '';
-            cell.appendChild(o);
-        }
-
-        container.appendChild(cell);
-    }
-}

@@ -426,6 +426,7 @@ class Territory {
 
             if (!cellElement) {
                 CommonHelper.log('Элемент с селектором ' + cellId + ' не найден в текущем документе');
+                CommonHelper.reloadPage();
                 break;
             }
 
