@@ -46,7 +46,7 @@ function highlightPoints(visitedLocations) {
 
     map.flat().forEach(id => {
         if (id === 0) return;                               // непроходимая клетка
-        const el = document.getElementById("r" + id);
+        const el = document.querySelector('div[data-room="' + id + '"]');
         if (!el) return;
 
         if (visited.has(String(id))) {
@@ -73,7 +73,7 @@ async function start() {
 
     // дальше слушаем перемещения
     trackPosition(visitedLocations);
-    collectMap();
+    // collectMap();
 }
 
 /* ===== 5. Трекинг шага героя ============================== */
@@ -82,11 +82,10 @@ function trackPosition(visitedLocations) {
     if (!loc) return;
 
     // «зелёная» клетка, на которой стоит герой
-    const currentCell = document.querySelector(
-        "td[style*='background-color: #00CC00'] div"
-    );
+    const currentCell = document.querySelector('.map-cell:empty');
+
     if (currentCell) {
-        const id = currentCell.id.replace("r", "");
+        const id = currentCell.dataset.room;
 
         visitedLocations[loc] ??= [];
 
@@ -108,18 +107,15 @@ function highlightVisited(visitedLocations) {
     if (!loc || !visitedLocations[loc]) return;
 
     visitedLocations[loc].forEach(id => {
-        const el = document.getElementById("r" + id);
+        const el = document.querySelector('div[data-room="' + id + '"]');
         if (el) el.classList.add("visited-highlight");
     });
 }
 
 /* ===== 7. Вспомогалка для URL ============================= */
 function getCurrentLocation() {
-    const link = document.querySelector('tbody a[href*="l="]');
-    if (!link) return null;
-
-    const params = new URLSearchParams(link.href.split("?")[1]);
-    return params.get("l");
+    const t = new Territory();
+    return t.currentLocation;
 }
 
 // ==UserScript==
