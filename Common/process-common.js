@@ -169,6 +169,43 @@ function backgroundListener() {
             return true;
         }
 
+        if (message.type === 'fetchModeratorsList') {
+            (async () => {
+                try {
+                    const response = await fetch(message.url);
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const links = doc.querySelectorAll('.table_modern tr td a');
+                    const names = Array.from(links).map(a => a.textContent.trim());
+                    sendResponse({ names });
+                } catch (err) {
+                    sendResponse({ error: err.toString() });
+                }
+            })();
+            return true;
+        }
+
+        if (message.type === 'sendDirectMessage') {
+            (async () => {
+                try {
+                    const response = await fetch('/wap/otpravit.php?js=1', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                            privat: true,
+                            komy: message.to,
+                            message: message.answer
+                        })
+                    });
+                    sendResponse({ status: response.status });
+                } catch (err) {
+                    sendResponse({ error: err.toString() });
+                }
+            })();
+            return true;
+        }
+
         if (message.type === 'disableChaosBattle') {
             (async () => {
                 try {
