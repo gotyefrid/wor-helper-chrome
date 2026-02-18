@@ -447,6 +447,7 @@ class Territory {
                 }
             } catch (error) {
                 CommonHelper.log('Ошибка при fetch запросе:' + JSON.stringify(error));
+                CommonHelper.reloadPage();
                 break;
             }
 

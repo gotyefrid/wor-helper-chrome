@@ -101,7 +101,7 @@ const LOCATION_CONFIGS = {
 // ─── Универсальные функции локаций ────────────────────────────────────────────
 
 async function setupButtons(t, delay, walkAllMapStatus, configs) {
-    const renderGrid = (json) => CommonHelper.renderGridInto(
+    const renderGrid = (json) => CommonHelper.renderMiniGridInto(
         document.getElementById('gridA'), json.grid || []
     );
 
@@ -193,7 +193,7 @@ async function walkAroundMap(delay = [50, 100]) {
         path,
         delay,
         async (json) => {
-            CommonHelper.renderGridInto(document.getElementById('gridA'),json.grid || []);
+            CommonHelper.renderMiniGridInto(document.getElementById('gridA'),json.grid || []);
 
             const currentCell = json.grid.find(c => c.isCenter);
 

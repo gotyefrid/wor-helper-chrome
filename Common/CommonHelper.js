@@ -733,4 +733,63 @@ class CommonHelper {
             container.appendChild(cell);
         }
     }
+
+    static renderMiniGridInto(container, grid, cols = 9) {
+        const centerIdx = grid.findIndex(c => c.isCenter);
+        if (centerIdx === -1) {
+            return CommonHelper.renderGridInto(container, grid);
+        }
+
+        const centerRow = Math.floor(centerIdx / cols);
+        const centerCol = centerIdx % cols;
+        const rows = Math.ceil(grid.length / cols);
+
+        const miniCells = [];
+        for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+                const r = centerRow + dr;
+                const c = centerCol + dc;
+                if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                    miniCells.push(grid[r * cols + c]);
+                }
+            }
+        }
+
+        container.innerHTML = '';
+        container.style.gridTemplateColumns = 'repeat(3, var(--cell))';
+        container.style.gridTemplateRows = 'repeat(3, var(--cell))';
+
+        const stage = container.parentElement;
+        if (stage) stage.style.transform = 'translate3d(calc(2 * var(--cell)), calc(1 * var(--cell)), 0px)';
+
+        for (const c of miniCells) {
+            const cell = document.createElement('div');
+            cell.className = 'map-cell';
+            cell.dataset.room = c.room;
+            cell.dataset.step = c.stepRoom;
+            cell.style.backgroundImage = "url('" + String(c.img).replace(/'/g, "\\'") + "')";
+
+            if (!c.isCenter && c.href) {
+                const a = document.createElement('a');
+                a.href = String(c.href || '').replace(/&amp;/g, '&');
+                a.dataset.stepUrl = String(c.stepUrl).replace(/&amp;/g, '&');
+                a.dataset.room = c.room;
+                a.dataset.step = c.stepRoom;
+                a.style.display = 'block';
+                a.style.width = '100%';
+                a.style.height = '100%';
+                cell.appendChild(a);
+            }
+
+            if (!c.isCenter && c.overlay && c.overlay.src) {
+                const o = document.createElement('img');
+                o.className = 'cell-overlay';
+                o.src = c.overlay.src;
+                o.alt = c.overlay.alt || '';
+                cell.appendChild(o);
+            }
+
+            container.appendChild(cell);
+        }
+    }
 }
