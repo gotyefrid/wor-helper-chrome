@@ -114,8 +114,7 @@ function highlightVisited(visitedLocations) {
 
 /* ===== 7. Вспомогалка для URL ============================= */
 function getCurrentLocation() {
-    const t = new Territory();
-    return t.currentLocation;
+    return Territory.getCurrentLocation();
 }
 
 // ==UserScript==
