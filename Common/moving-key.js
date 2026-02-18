@@ -2,16 +2,6 @@
 
 start().catch(console.error);
 
-// Перехватываем клики по ячейкам карты до обработчика сайта (capture-фаза)
-// Сайт вешает listener на stage в bubble-фазе — наш срабатывает раньше
-document.addEventListener('click', (e) => {
-    const link = e.target.closest('a[data-room]');
-    if (!link) return;
-
-    e.stopPropagation(); // блокируем обработчик сайта (stepToUrl через fetch)
-    // default-поведение браузера (переход по href) остаётся
-}, true);
-
 function findCellByOffset(playerCell, dx, dy) {
     const pr = playerCell.getBoundingClientRect();
     return [...document.querySelectorAll('.map-cell')].find(cell => {
