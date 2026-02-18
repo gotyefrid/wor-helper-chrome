@@ -35,64 +35,66 @@
             } finally {
                 isRestoring = false;
             }
-        }).observe(belowWrap, { childList: true });
+        }).observe(belowWrap, {childList: true});
     }
 })();
 
 // ─── Хелпер для teleport-колбэка ─────────────────────────────────────────────
 
 function tpByRoom(room) {
-    return () => { document.location = document.querySelector(`a[data-room="${room}"]`).href; };
+    return () => {
+        document.location = document.querySelector(`a[data-room="${room}"]`).href;
+    };
 }
 
 // ─── Конфиги кнопок для каждой локации ───────────────────────────────────────
 
 const LOCATION_CONFIGS = {
     '1': [
-        { id: 765,  label: 'Подземелье',        icon: 'Icons/podzenelie.png',    tp: tpByRoom(730) },
-        { id: 510,  label: 'Охотник',            icon: 'Icons/ohotnik.png' },
-        { id: 480,  label: 'Дровосек',           icon: 'Icons/drovosek.png' },
-        { id: 674,  label: 'Кристальный остров', icon: 'Icons/crystall.png',      tp: tpByRoom(710) },
-        { id: 442,  label: 'Озеро',              icon: 'Icons/ozero.png',         tp: tpByRoom(407) },
+        {id: 765, label: 'Подземелье', icon: 'Icons/podzenelie.png', tp: tpByRoom(730)},
+        {id: 510, label: 'Охотник', icon: 'Icons/ohotnik.png'},
+        {id: 480, label: 'Дровосек', icon: 'Icons/drovosek.png'},
+        {id: 674, label: 'Кристальный остров', icon: 'Icons/crystall.png', tp: tpByRoom(710)},
+        {id: 442, label: 'Озеро', icon: 'Icons/ozero.png', tp: tpByRoom(407)},
     ],
     '2': [
-        { id: 195,  label: 'Хижина рыбака', icon: 'Icons/fishman.png' },
-        { id: 301,  label: 'Город',         icon: 'Icons/gorod.png',    tp: tpByRoom(322) },
-        { id: 247,  label: 'Пустыня',       icon: 'Icons/pustinya.png', tp: tpByRoom(248) },
+        {id: 195, label: 'Хижина рыбака', icon: 'Icons/fishman.png'},
+        {id: 301, label: 'Город', icon: 'Icons/gorod.png', tp: tpByRoom(322)},
+        {id: 247, label: 'Пустыня', icon: 'Icons/pustinya.png', tp: tpByRoom(248)},
     ],
     '3': [
-        { id: 164,  label: 'Город',       icon: 'Icons/gorod.png', tp: tpByRoom(132) },
-        { id: 303,  label: 'Катакомбы 1', icon: 'Icons/kat1.png',  tp: tpByRoom(304) },
+        {id: 164, label: 'Город', icon: 'Icons/gorod.png', tp: tpByRoom(132)},
+        {id: 303, label: 'Катакомбы 1', icon: 'Icons/kat1.png', tp: tpByRoom(304)},
     ],
     '4': [
-        { id: 101,  label: 'Подземелье',  icon: 'Icons/podzenelie.png', tp: tpByRoom(81) },
-        { id: 108,  label: 'Катакомбы 2', icon: 'Icons/kat2.png',       tp: tpByRoom(90) },
+        {id: 101, label: 'Подземелье', icon: 'Icons/podzenelie.png', tp: tpByRoom(81)},
+        {id: 108, label: 'Катакомбы 2', icon: 'Icons/kat2.png', tp: tpByRoom(90)},
     ],
     '5': [
-        { id: 135,  label: 'Чернокнижник', icon: 'Icons/chernoknizhnik.png' },
-        { id: 161,  label: 'Катакомбы 3',  icon: 'Icons/kat3.png', tp: tpByRoom(185) },
-        { id: 171,  label: 'Катакомбы 1',  icon: 'Icons/kat1.png', tp: tpByRoom(146) },
+        {id: 135, label: 'Чернокнижник', icon: 'Icons/chernoknizhnik.png'},
+        {id: 161, label: 'Катакомбы 3', icon: 'Icons/kat3.png', tp: tpByRoom(185)},
+        {id: 171, label: 'Катакомбы 1', icon: 'Icons/kat1.png', tp: tpByRoom(146)},
     ],
     '6': [
-        { id: 308,  label: 'Саванна',     icon: 'Icons/savanna.png', tp: tpByRoom(309) },
-        { id: 204,  label: 'Катакомбы 2', icon: 'Icons/kat2.png',    tp: tpByRoom(203) },
+        {id: 308, label: 'Саванна', icon: 'Icons/savanna.png', tp: tpByRoom(309)},
+        {id: 204, label: 'Катакомбы 2', icon: 'Icons/kat2.png', tp: tpByRoom(203)},
     ],
     '7': [
-        { id: 284,  label: 'Катакомбы 3', icon: 'Icons/kat3.png',       tp: tpByRoom(228) },
-        { id: 486,  label: 'Катакомбы 4', icon: 'Icons/kat4.png',       tp: tpByRoom(431) },
-        { id: 1477, label: 'Логово',       icon: 'Icons/podzenelie.png', tp: tpByRoom(1478) },
+        {id: 284, label: 'Катакомбы 3', icon: 'Icons/kat3.png', tp: tpByRoom(228)},
+        {id: 486, label: 'Катакомбы 4', icon: 'Icons/kat4.png', tp: tpByRoom(431)},
+        {id: 1477, label: 'Логово', icon: 'Icons/podzenelie.png', tp: tpByRoom(1478)},
     ],
     '8': [
-        { id: 352,  label: 'Катакомбы 4', icon: 'Icons/kat4.png',  tp: tpByRoom(324) },
-        { id: 509,  label: 'Озеро',        icon: 'Icons/ozero.png', tp: tpByRoom(537) },
+        {id: 352, label: 'Катакомбы 4', icon: 'Icons/kat4.png', tp: tpByRoom(324)},
+        {id: 509, label: 'Озеро', icon: 'Icons/ozero.png', tp: tpByRoom(537)},
     ],
     '9': [
-        { id: 226,  label: 'Магазин кристаллов', icon: 'Icons/crystall.png' },
-        { id: 116,  label: 'Город',               icon: 'Icons/gorod.png',   tp: tpByRoom(93) },
+        {id: 226, label: 'Магазин кристаллов', icon: 'Icons/crystall.png'},
+        {id: 116, label: 'Город', icon: 'Icons/gorod.png', tp: tpByRoom(93)},
     ],
     '10': [
-        { id: 404,  label: 'Саванна', icon: 'Icons/savanna.png',  tp: tpByRoom(363) },
-        { id: 297,  label: 'Пустыня', icon: 'Icons/pustinya.png', tp: tpByRoom(256) },
+        {id: 404, label: 'Саванна', icon: 'Icons/savanna.png', tp: tpByRoom(363)},
+        {id: 297, label: 'Пустыня', icon: 'Icons/pustinya.png', tp: tpByRoom(256)},
     ],
 };
 
@@ -100,12 +102,14 @@ const LOCATION_CONFIGS = {
 
 async function setupButtons(t, delay, walkAllMapStatus, configs) {
     const renderGrid = (json) => CommonHelper.renderGridInto(
-        document.getElementById('gridA'), json.grid || [], json.players || {}
+        document.getElementById('gridA'), json.grid || []
     );
 
-    const points = configs.map(({ id, label, icon, tp }) => ({
+    const points = configs.map(({id, label, icon, tp}) => ({
         id, label, icon,
-        action: async () => { await t.toPoint(id, delay, renderGrid, tp); }
+        action: async () => {
+            await t.toPoint(id, delay, renderGrid, tp);
+        }
     }));
 
     await moveOnDefaultMaps([...points, renderWalkAllMapButton(walkAllMapStatus, delay)]);
@@ -156,7 +160,7 @@ function renderWalkAllMapButton(walkAllMapStatus, delay) {
         action: async (e) => {
             const status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
             if (status?.active === true) {
-                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
+                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
                 await CommonHelper.reloadPage();
                 return;
             }
@@ -180,7 +184,7 @@ async function walkAroundMap(delay = [50, 100]) {
 
     if (path.length === 0) {
         alert('Все точки уже посещены!');
-        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
+        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
         CommonHelper.reloadPage();
         return;
     }
@@ -188,11 +192,13 @@ async function walkAroundMap(delay = [50, 100]) {
     await t.moveByPath(
         path,
         delay,
-        async (doc) => {
-            document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML;
-            const currentCell = doc.querySelector("td[style*='background-color: #00CC00'] div");
+        async (json) => {
+            CommonHelper.renderGridInto(document.getElementById('gridA'),json.grid || []);
+
+            const currentCell = json.grid.find(c => c.isCenter);
+
             if (currentCell) {
-                const id = currentCell.id.replace('r', '');
+                const id = currentCell.room;
                 visited[t.currentLocation] ??= [];
                 if (!visited[t.currentLocation].includes(id)) {
                     visited[t.currentLocation].push(id);
@@ -210,7 +216,7 @@ async function walkAroundMap(delay = [50, 100]) {
 
 async function moveOnDefaultMaps(points) {
     const menuList = document.querySelector('.menu_div ul');
-    points.forEach(({ id, label, icon, action }) => {
+    points.forEach(({id, label, icon, action}) => {
         const imgUrl = icon ? chrome.runtime.getURL(icon) : '';
         const li = document.createElement('li');
         li.innerHTML = `
@@ -232,8 +238,8 @@ async function moveOnDefaultMaps(points) {
 async function processBigTakt(delay) {
     await processTaktCommon({
         744: 'Левая лесопилка', 778: 'Правая лесопилка',
-        1094: 'Левая шахта',   1161: 'Правая шахта',
-        710: 'Каменоломня',    311: 'Левая ферма',    328: 'Правая ферма'
+        1094: 'Левая шахта', 1161: 'Правая шахта',
+        710: 'Каменоломня', 311: 'Левая ферма', 328: 'Правая ферма'
     }, delay);
 }
 
@@ -271,7 +277,9 @@ async function processTaktCommon(baseNames, delay) {
     // Собираем все спаны в массив в порядке их появления
     const clickableSpans = Array.from(container.querySelectorAll('.clickable-base'));
     // Пронумеровываем их в тексте: [1] Левая лесопилка, [2] Правая лесопилка и т.д.
-    clickableSpans.forEach((span, idx) => { span.textContent = `[${idx + 1}] ${span.textContent}`; });
+    clickableSpans.forEach((span, idx) => {
+        span.textContent = `[${idx + 1}] ${span.textContent}`;
+    });
 
     // Вешаем клики на каждый
     clickableSpans.forEach(span => {

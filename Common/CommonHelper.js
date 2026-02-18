@@ -698,7 +698,7 @@ class CommonHelper {
         return url.searchParams.get(name);
     }
 
-    static renderGridInto(container, grid, players) {
+    static renderGridInto(container, grid) {
         container.innerHTML = '';
 
         for (let i = 0; i < grid.length; i++) {
