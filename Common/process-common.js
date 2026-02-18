@@ -38,8 +38,9 @@ async function checkTrauma() {
             'Травма увеличилась! Теперь травма: ' + CommonHelper.getTraumaTime(),
             'common'
         );
-        await CommonHelper.setExtStorage('wor_fight_last_trauma_minutes', currentTime);
     }
+
+    await CommonHelper.setExtStorage('wor_fight_last_trauma_minutes', currentTime);
 }
 
 async function parsing() {
