@@ -19,12 +19,12 @@ export class CommonHelperBackground {
 
             if (toConsole) {
                 if (logActive) {
-                    console.log(message);
+                    await CommonHelperBackground.log(message);
                 }
             }
 
             if (important) {
-                console.log(message);
+                await CommonHelperBackground.log(message);
             }
         } catch (error) {
         }

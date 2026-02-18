@@ -80,7 +80,6 @@ window.addEventListener("load", async function () {
     }
 
     let cleanedHtml = captcha.cleanDocumentHTML();
-    // console.log(cleanedHtml);
     let actualHtmlHash = captcha.fnv1aHash(cleanedHtml);
     CommonHelper.log('Актуал хэш страницы:' + actualHtmlHash);
     CommonHelper.log('Актуал хэш ресурсов:' + actualCacheAllResourses);

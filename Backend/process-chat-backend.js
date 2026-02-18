@@ -14,7 +14,7 @@ export async function sendMessagesFromChat() {
         const targetTab = tabs.find(tab => tab.url && tab.url.includes("/wap/"));
 
         if (!targetTab || !targetTab.id) {
-            console.log('Вкладка с "/wap/" в URL не найдена');
+            await CommonHelperBackground.log('Вкладка с "/wap/" в URL не найдена');
             return;
         }
 
@@ -48,14 +48,6 @@ export async function sendMessagesFromChat() {
                 await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
 
                 if (resultMessages.length > 50) {
-                    console.log('actualMessages');
-                    console.log(actualMessages);
-                    console.log('oldMessages');
-                    console.log(oldMessages);
-                    console.log('newMessages');
-                    console.log(newMessages);
-                    console.log('oldNewestMessage');
-                    console.log(oldNewestMessage);
                     await CommonHelperBackground.sendTelegramMessage('Отправляем все сообщения со страницы');
                 }
 
