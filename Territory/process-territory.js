@@ -3,64 +3,30 @@
         await new Promise(r => setTimeout(r, 50));
     }
 
-    let delay = await CommonHelper.getAutoMoveDelay();
+    const delay = await CommonHelper.getAutoMoveDelay();
+    const currentLocation = Territory.getCurrentLocation();
+    const reloadDelay = await CommonHelper.getExtStorage('wor_map_reload_delay');
 
-    let currentLocation = Territory.getCurrentLocation();
-    let reloadDelay = await CommonHelper.getExtStorage('wor_map_reload_delay');
+    if (reloadDelay) processReloadPage(reloadDelay);
 
-    if (reloadDelay) {
-        processReloadPage(reloadDelay);
-    }
-
-    if (currentLocation == 1) {
-        await processGorod(delay);
-    }
-    if (currentLocation == 100) {
+    if (LOCATION_CONFIGS[String(currentLocation)]) {
+        await processLocation(currentLocation, delay);
+    } else if (currentLocation == 100) {
         await processBigTakt(delay);
-    }
-    if (currentLocation == 101) {
+    } else if (currentLocation == 101) {
         await processSmallTakt(delay);
-    }
-    if (currentLocation == 102) {
+    } else if (currentLocation == 102) {
         await processAnimeTakt(delay);
     }
-    if (currentLocation == 7) {
-        await processSavanna(delay);
-    }
-    if (currentLocation == 6) {
-        await processKat3(delay);
-    }
-    if (currentLocation == 5) {
-        await processKat2(delay);
-    }
-    if (currentLocation == 4) {
-        await processKat1(delay);
-    }
-    if (currentLocation == 3) {
-        await processPodzemka(delay);
-    }
-    if (currentLocation == 9) {
-        await processCrystall(delay);
-    }
-    if (currentLocation == 2) {
-        await processOzero(delay);
-    }
-    if (currentLocation == 8) {
-        await processDesert(delay);
-    }
-    if (currentLocation == 10) {
-        await processKat4(delay);
-    }
 
-    // Восстанавливаем кнопки после каждого AJAX-шага сайта (сайт перезаписывает belowWrap)
+    // Восстанавливаем кнопки после каждого AJAX-шага (сайт перезаписывает belowWrap)
     const belowWrap = document.getElementById('belowWrap');
-    const LOCATIONS_WITH_BUTTONS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
-    if (belowWrap && LOCATIONS_WITH_BUTTONS.includes(String(currentLocation))) {
+    if (belowWrap && LOCATION_CONFIGS[String(currentLocation)]) {
         let isRestoring = false;
         new MutationObserver(async () => {
             if (isRestoring || document.querySelector('.menu_div [id^="to"]')) return;
             const actualLocation = Territory.getCurrentLocation();
-            if (!actualLocation || !LOCATIONS_WITH_BUTTONS.includes(String(actualLocation))) return;
+            if (!LOCATION_CONFIGS[String(actualLocation)]) return;
             isRestoring = true;
             try {
                 await restoreButtons(actualLocation, delay);
@@ -73,511 +39,112 @@
     }
 })();
 
+// ─── Хелпер для teleport-колбэка ─────────────────────────────────────────────
+
+function tpByRoom(room) {
+    return () => { document.location = document.querySelector(`a[data-room="${room}"]`).href; };
+}
+
+// ─── Конфиги кнопок для каждой локации ───────────────────────────────────────
+
+const LOCATION_CONFIGS = {
+    '1': [
+        { id: 765,  label: 'Подземелье',        icon: 'Icons/podzenelie.png',    tp: tpByRoom(730) },
+        { id: 510,  label: 'Охотник',            icon: 'Icons/ohotnik.png' },
+        { id: 480,  label: 'Дровосек',           icon: 'Icons/drovosek.png' },
+        { id: 674,  label: 'Кристальный остров', icon: 'Icons/crystall.png',      tp: tpByRoom(710) },
+        { id: 442,  label: 'Озеро',              icon: 'Icons/ozero.png',         tp: tpByRoom(407) },
+    ],
+    '2': [
+        { id: 195,  label: 'Хижина рыбака', icon: 'Icons/fishman.png' },
+        { id: 301,  label: 'Город',         icon: 'Icons/gorod.png',    tp: tpByRoom(322) },
+        { id: 247,  label: 'Пустыня',       icon: 'Icons/pustinya.png', tp: tpByRoom(248) },
+    ],
+    '3': [
+        { id: 164,  label: 'Город',       icon: 'Icons/gorod.png', tp: tpByRoom(132) },
+        { id: 303,  label: 'Катакомбы 1', icon: 'Icons/kat1.png',  tp: tpByRoom(304) },
+    ],
+    '4': [
+        { id: 101,  label: 'Подземелье',  icon: 'Icons/podzenelie.png', tp: tpByRoom(81) },
+        { id: 108,  label: 'Катакомбы 2', icon: 'Icons/kat2.png',       tp: tpByRoom(90) },
+    ],
+    '5': [
+        { id: 135,  label: 'Чернокнижник', icon: 'Icons/chernoknizhnik.png' },
+        { id: 161,  label: 'Катакомбы 3',  icon: 'Icons/kat3.png', tp: tpByRoom(185) },
+        { id: 171,  label: 'Катакомбы 1',  icon: 'Icons/kat1.png', tp: tpByRoom(146) },
+    ],
+    '6': [
+        { id: 308,  label: 'Саванна',     icon: 'Icons/savanna.png', tp: tpByRoom(309) },
+        { id: 204,  label: 'Катакомбы 2', icon: 'Icons/kat2.png',    tp: tpByRoom(203) },
+    ],
+    '7': [
+        { id: 284,  label: 'Катакомбы 3', icon: 'Icons/kat3.png',       tp: tpByRoom(228) },
+        { id: 486,  label: 'Катакомбы 4', icon: 'Icons/kat4.png',       tp: tpByRoom(431) },
+        { id: 1477, label: 'Логово',       icon: 'Icons/podzenelie.png', tp: tpByRoom(1478) },
+    ],
+    '8': [
+        { id: 352,  label: 'Катакомбы 4', icon: 'Icons/kat4.png',  tp: tpByRoom(324) },
+        { id: 509,  label: 'Озеро',        icon: 'Icons/ozero.png', tp: tpByRoom(537) },
+    ],
+    '9': [
+        { id: 226,  label: 'Магазин кристаллов', icon: 'Icons/crystall.png' },
+        { id: 116,  label: 'Город',               icon: 'Icons/gorod.png',   tp: tpByRoom(93) },
+    ],
+    '10': [
+        { id: 404,  label: 'Саванна', icon: 'Icons/savanna.png',  tp: tpByRoom(363) },
+        { id: 297,  label: 'Пустыня', icon: 'Icons/pustinya.png', tp: tpByRoom(256) },
+    ],
+};
+
+// ─── Универсальные функции локаций ────────────────────────────────────────────
+
+async function setupButtons(t, delay, walkAllMapStatus, configs) {
+    const renderGrid = (json) => CommonHelper.renderGridInto(
+        document.getElementById('gridA'), json.grid || [], json.players || {}
+    );
+
+    const points = configs.map(({ id, label, icon, tp }) => ({
+        id, label, icon,
+        action: async () => { await t.toPoint(id, delay, renderGrid, tp); }
+    }));
+
+    await moveOnDefaultMaps([...points, renderWalkAllMapButton(walkAllMapStatus, delay)]);
+}
+
+async function processLocation(location, delay) {
+    const t = new Territory();
+    const walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+    await setupButtons(t, delay, walkAllMapStatus, LOCATION_CONFIGS[String(location)]);
+
+    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
+        await walkAroundMap(delay);
+    }
+}
+
+async function restoreButtons(location, delay) {
+    const t = new Territory();
+    const walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
+    await setupButtons(t, delay, walkAllMapStatus, LOCATION_CONFIGS[String(location)]);
+}
+
+// ─── Общие утилиты ────────────────────────────────────────────────────────────
+
 function processReloadPage(reloadDelay) {
-    if (reloadDelay) {
-        let delayStr = reloadDelay.trim();
+    const delayStr = reloadDelay.trim();
+    if (!delayStr || delayStr === '0') return;
 
-        if (delayStr !== "0" && delayStr !== "") {
-            let delayParts = delayStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
-
-            let delaySec;
-            if (delayParts.length === 1) {
-                delaySec = delayParts[0];
-            } else if (delayParts.length === 2) {
-                let min = Math.min(delayParts[0], delayParts[1]);
-                let max = Math.max(delayParts[0], delayParts[1]);
-                delaySec = Math.random() * (max - min) + min;
-            }
-
-
-            CommonHelper.log('Перезагружаем страницу через: ' + delaySec);
-
-            if (delaySec > 0) {
-                setTimeout(() => {
-                    CommonHelper.reloadPage();
-                }, delaySec * 1000);
-            }
-        }
+    const parts = delayStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+    let delaySec;
+    if (parts.length === 1) {
+        delaySec = parts[0];
+    } else if (parts.length === 2) {
+        const [min, max] = [Math.min(...parts), Math.max(...parts)];
+        delaySec = Math.random() * (max - min) + min;
     }
-}
 
-async function setupKat4Buttons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 404,
-            label: 'Саванна',
-            icon: 'Icons/savanna.png',
-            action: async (e) => {
-                await t.toPoint(404, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=363"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 297,
-            label: 'Пустыня',
-            icon: 'Icons/pustinya.png',
-            action: async (e) => {
-                await t.toPoint(297, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=256"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processKat4(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupKat4Buttons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupDesertButtons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 352,
-            label: 'Катакомбы 4',
-            icon: 'Icons/kat4.png',
-            action: async (e) => {
-                await t.toPoint(352, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=324"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 509,
-            label: 'Озеро',
-            icon: 'Icons/ozero.png',
-            action: async (e) => {
-                await t.toPoint(509, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=537"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processDesert(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupDesertButtons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupOzeroButtons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 195,
-            label: 'Хижина рыбака',
-            icon: 'Icons/fishman.png',
-            action: async (e) => {
-                await t.toPoint(195, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                });
-            }
-        },
-        {
-            id: 301,
-            label: 'Город',
-            icon: 'Icons/gorod.png',
-            action: async (e) => {
-                await t.toPoint(301, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=322"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 247,
-            label: 'Пустыня',
-            icon: 'Icons/pustinya.png',
-            action: async (e) => {
-                await t.toPoint(247, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=248"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processOzero(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupOzeroButtons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupCrystallButtons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 226,
-            label: 'Магазин кристаллов',
-            icon: 'Icons/crystall.png',
-            action: async (e) => {
-                await t.toPoint(226, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                });
-            }
-        },
-        {
-            id: 116,
-            label: 'Город',
-            icon: 'Icons/gorod.png',
-            action: async (e) => {
-                await t.toPoint(116, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=93"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processCrystall(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupCrystallButtons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupSavannaButtons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 284,
-            label: 'Катакомбы 3',
-            icon: 'Icons/kat3.png',
-            action: async (e) => {
-                await t.toPoint(284, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=228"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 486,
-            label: 'Катакомбы 4',
-            icon: 'Icons/kat4.png',
-            action: async (e) => {
-                await t.toPoint(486, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=431"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 1477,
-            label: 'Логово',
-            icon: 'Icons/podzenelie.png',
-            action: async (e) => {
-                await t.toPoint(1477, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=1478"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processSavanna(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupSavannaButtons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupKat3Buttons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 308,
-            label: 'Саванна',
-            icon: 'Icons/savanna.png',
-            action: async (e) => {
-                await t.toPoint(308, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=309"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 204,
-            label: 'Катакомбы 2',
-            icon: 'Icons/kat2.png',
-            action: async (e) => {
-                await t.toPoint(204, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=203"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processKat3(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupKat3Buttons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupKat2Buttons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 135,
-            label: 'Чернокнижник',
-            icon: 'Icons/chernoknizhnik.png',
-            action: async (e) => {
-                await t.toPoint(135, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                });
-            }
-        },
-        {
-            id: 161,
-            label: 'Катакомбы 3',
-            icon: 'Icons/kat3.png',
-            action: async (e) => {
-                await t.toPoint(161, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=185"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 171,
-            label: 'Катакомбы 1',
-            icon: 'Icons/kat1.png',
-            action: async (e) => {
-                await t.toPoint(171, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=146"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processKat2(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupKat2Buttons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupKat1Buttons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 101,
-            label: 'Подземелье',
-            icon: 'Icons/podzenelie.png',
-            action: async (e) => {
-                await t.toPoint(101, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=81"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 108,
-            label: 'Катакомбы 2',
-            icon: 'Icons/kat2.png',
-            action: async (e) => {
-                await t.toPoint(108, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=90"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processKat1(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupKat1Buttons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupPodzemkaButtons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 164,
-            label: 'Город',
-            icon: 'Icons/gorod.png',
-            action: async (e) => {
-                await t.toPoint(164, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=132"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        {
-            id: 303,
-            label: 'Катакомбы 1',
-            icon: 'Icons/kat1.png',
-            action: async (e) => {
-                await t.toPoint(303, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    const tpLink = document.querySelector('a[href*="crd=304"]');
-                    if (tpLink) { document.location = tpLink.href; } else { CommonHelper.reloadPage(); }
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processPodzemka(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupPodzemkaButtons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
-    }
-}
-
-async function setupGorodButtons(t, delay, walkAllMapStatus) {
-    await moveOnDefaultMaps([
-        {
-            id: 765,
-            label: 'Подземелье',
-            icon: 'Icons/podzenelie.png',
-            action: async (e) => {
-                await t.toPoint(765, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    document.location = document.querySelector('a[data-room="730"]').href;
-                });
-            }
-        },
-        {
-            id: 510,
-            label: 'Охотник',
-            icon: 'Icons/ohotnik.png',
-            action: async (e) => {
-                await t.toPoint(510, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                });
-            }
-        },
-        {
-            id: 480,
-            icon: 'Icons/drovosek.png',
-            label: 'Дровосек',
-            action: async (e) => {
-                await t.toPoint(480, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                });
-            }
-        },
-        {
-            id: 674,
-            label: 'Кристальный остров',
-            icon: 'Icons/crystall.png',
-            action: async (e) => {
-                await t.toPoint(674, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    document.location = document.querySelector('a[data-room="710"]').href;
-                });
-            }
-        },
-        {
-            id: 442,
-            label: 'Озеро',
-            icon: 'Icons/ozero.png',
-            action: async (e) => {
-                await t.toPoint(442, delay, (json) => {
-                    CommonHelper.renderGridInto(document.getElementById('gridA'), json.grid || [], json.players || {});
-                }, () => {
-                    document.location = document.querySelector('a[data-room="407"]').href;
-                });
-            }
-        },
-        renderWalkAllMapButton(walkAllMapStatus, delay)
-    ]);
-}
-
-async function processGorod(delay = [50, 100]) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-    await setupGorodButtons(t, delay, walkAllMapStatus);
-
-    if (walkAllMapStatus?.active === true && walkAllMapStatus?.location === Territory.getCurrentLocation()) {
-        await walkAroundMap(delay);
+    if (delaySec > 0) {
+        CommonHelper.log('Перезагружаем страницу через: ' + delaySec);
+        setTimeout(() => CommonHelper.reloadPage(), delaySec * 1000);
     }
 }
 
@@ -587,35 +154,33 @@ function renderWalkAllMapButton(walkAllMapStatus, delay) {
         icon: 'Icons/obhod.png',
         label: walkAllMapStatus?.active ? 'Остановить обход всех точек' : 'Запустить обход всех точек',
         action: async (e) => {
-            let status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-
+            const status = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
             if (status?.active === true) {
-                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
+                await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
                 await CommonHelper.reloadPage();
                 return;
             }
-
             await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {
                 active: true,
                 location: Territory.getCurrentLocation()
             });
-            e.target.innerHTML = e.target.innerHTML.replace('Запустить обход всех точек', 'Остановить обход всех точек');
-            e.target.innerHTML = e.target.innerHTML.replace('mini_karta', 'optsii_igroka');
+            e.target.innerHTML = e.target.innerHTML
+                .replace('Запустить обход всех точек', 'Остановить обход всех точек')
+                .replace('mini_karta', 'optsii_igroka');
             await walkAroundMap(delay);
         }
     };
 }
 
 async function walkAroundMap(delay = [50, 100]) {
-    let t = new Territory();
-
-    let visited = await CommonHelper.getExtStorage('visitedLocations') || {};
-    let path = t.traverseAllPoints(visited[t.currentLocation] || []);
+    const t = new Territory();
+    const visited = await CommonHelper.getExtStorage('visitedLocations') || {};
+    const path = t.traverseAllPoints(visited[t.currentLocation] || []);
     path.shift();
 
     if (path.length === 0) {
         alert('Все точки уже посещены!');
-        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', {active: false});
+        await CommonHelper.setExtStorage('wor_map_walk_all_map_active', { active: false });
         CommonHelper.reloadPage();
         return;
     }
@@ -625,24 +190,17 @@ async function walkAroundMap(delay = [50, 100]) {
         delay,
         async (doc) => {
             document.querySelector('table').innerHTML = doc.querySelector('table').innerHTML;
-
-            // «зелёная» клетка, на которой стоит герой
-            const currentCell = doc.querySelector(
-                "td[style*='background-color: #00CC00'] div"
-            );
-
+            const currentCell = doc.querySelector("td[style*='background-color: #00CC00'] div");
             if (currentCell) {
-                const id = currentCell.id.replace("r", "");
+                const id = currentCell.id.replace('r', '');
                 visited[t.currentLocation] ??= [];
-
                 if (!visited[t.currentLocation].includes(id)) {
-                    console.log('Добавляем точку');
                     visited[t.currentLocation].push(id);
                     await CommonHelper.setExtStorage('visitedLocations', visited);
                 }
             }
         },
-        async (doc) => {
+        async () => {
             await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
             alert('Все клетки посещены');
             CommonHelper.reloadPage();
@@ -650,28 +208,47 @@ async function walkAroundMap(delay = [50, 100]) {
     );
 }
 
-async function processBigTakt(delay = [50, 100]) {
-    const baseNames = {
-        744: 'Левая лесопилка',
-        778: 'Правая лесопилка',
-        1094: 'Левая шахта',
-        1161: 'Правая шахта',
-        710: 'Каменоломня',
-        311: 'Левая ферма',
-        328: 'Правая ферма'
-    };
-    processTaktCommon(baseNames, delay);
+async function moveOnDefaultMaps(points) {
+    const menuList = document.querySelector('.menu_div ul');
+    points.forEach(({ id, label, icon, action }) => {
+        const imgUrl = icon ? chrome.runtime.getURL(icon) : '';
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <a href="#" id="to${id}">
+            <img src="${imgUrl}" width="30" height="30" style="vertical-align:middle">
+            ${label}
+          </a>
+        `;
+        menuList.append(li);
+        li.querySelector('a').addEventListener('click', async e => {
+            e.preventDefault();
+            await action(e);
+        });
+    });
 }
 
-async function processAnimeTakt(delay = [50, 100]) {
-    const baseNames = {
-        324: 'Левая лесопилка',
-        341: 'Правая лесопилка',
-        334: 'Шахта кристаллов',
-        498: 'Левая ферма',
-        517: 'Правая ферма'
-    };
-    processTaktCommon(baseNames, delay);
+// ─── Такт-локации ─────────────────────────────────────────────────────────────
+
+async function processBigTakt(delay) {
+    await processTaktCommon({
+        744: 'Левая лесопилка', 778: 'Правая лесопилка',
+        1094: 'Левая шахта',   1161: 'Правая шахта',
+        710: 'Каменоломня',    311: 'Левая ферма',    328: 'Правая ферма'
+    }, delay);
+}
+
+async function processSmallTakt(delay) {
+    await processTaktCommon({
+        205: 'Левая лесопилка', 217: 'Правая лесопилка',
+        267: 'Шахта кристаллов', 429: 'Левая ферма', 441: 'Правая ферма'
+    }, delay);
+}
+
+async function processAnimeTakt(delay) {
+    await processTaktCommon({
+        324: 'Левая лесопилка', 341: 'Правая лесопилка',
+        334: 'Шахта кристаллов', 498: 'Левая ферма', 517: 'Правая ферма'
+    }, delay);
 }
 
 async function processTaktCommon(baseNames, delay) {
@@ -685,20 +262,16 @@ async function processTaktCommon(baseNames, delay) {
 
     // Заменяем названия баз на кликабельные спаны
     for (const [pointId, name] of Object.entries(baseNames)) {
-        const regex = new RegExp(name + ':');
         container.innerHTML = container.innerHTML.replace(
-            regex,
+            new RegExp(name + ':'),
             `<span class="clickable-base" data-point="${pointId}" style="cursor:pointer;">${name}</span>:`
         );
     }
 
     // Собираем все спаны в массив в порядке их появления
     const clickableSpans = Array.from(container.querySelectorAll('.clickable-base'));
-
     // Пронумеровываем их в тексте: [1] Левая лесопилка, [2] Правая лесопилка и т.д.
-    clickableSpans.forEach((span, idx) => {
-        span.textContent = `[${idx + 1}] ${span.textContent}`;
-    });
+    clickableSpans.forEach((span, idx) => { span.textContent = `[${idx + 1}] ${span.textContent}`; });
 
     // Вешаем клики на каждый
     clickableSpans.forEach(span => {
@@ -707,15 +280,10 @@ async function processTaktCommon(baseNames, delay) {
             const pointId = parseInt(el.getAttribute('data-point'), 10);
             const baseName = baseNames[pointId];
 
-            // 2. Определяем, была ли база наша уже в момент клика
-            let initialOurs = false;
             const nextElem = el.nextElementSibling;
-            if (nextElem) {
-                const m0 = nextElem.textContent.match(/№(\d+)/);
-                if (m0 && myTeam !== null) {
-                    initialOurs = parseInt(m0[1], 10) === myTeam;
-                }
-            }
+            const m0 = nextElem?.textContent.match(/№(\d+)/);
+            // 2. Определяем, была ли база наша уже в момент клика
+            const initialOurs = m0 && myTeam !== null && parseInt(m0[1], 10) === myTeam;
 
             // 3. Бежим к точке
             await t.toPoint(pointId, delay, doc => {
@@ -726,15 +294,10 @@ async function processTaktCommon(baseNames, delay) {
                 const newCont = doc.querySelector('.contur');
                 if (newCont && myTeam !== null) {
                     const re = new RegExp(
-                        baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
-                        ':[\\s\\S]*?№(\\d+)',
-                        'i'
+                        baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ':[\\s\\S]*?№(\\d+)', 'i'
                     );
                     const m = newCont.innerHTML.match(re);
-                    const capturedTeam = m ? parseInt(m[1], 10) : null;
-                    if (capturedTeam === myTeam) {
-                        return CommonHelper.reloadPage();
-                    }
+                    if (m && parseInt(m[1], 10) === myTeam) return CommonHelper.reloadPage();
                 }
                 document.body.innerHTML = doc.querySelector('body').innerHTML;
             });
@@ -745,75 +308,6 @@ async function processTaktCommon(baseNames, delay) {
     document.addEventListener('keydown', e => {
         if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
         const idx = Number(e.key) - 1;
-        if (!isNaN(idx) && idx >= 0 && idx < clickableSpans.length) {
-            clickableSpans[idx].click();
-        }
+        if (!isNaN(idx) && idx >= 0 && idx < clickableSpans.length) clickableSpans[idx].click();
     });
 }
-
-async function processSmallTakt(delay = [50, 100]) {
-    const baseNames = {
-        205: 'Левая лесопилка',
-        217: 'Правая лесопилка',
-        267: 'Шахта кристаллов',
-        429: 'Левая ферма',
-        441: 'Правая ферма'
-    };
-    processTaktCommon(baseNames, delay);
-}
-
-async function restoreButtons(location, delay) {
-    let t = new Territory();
-    let walkAllMapStatus = await CommonHelper.getExtStorage('wor_map_walk_all_map_active');
-
-    const setupFns = {
-        '1':  () => setupGorodButtons(t, delay, walkAllMapStatus),
-        '2':  () => setupOzeroButtons(t, delay, walkAllMapStatus),
-        '3':  () => setupPodzemkaButtons(t, delay, walkAllMapStatus),
-        '4':  () => setupKat1Buttons(t, delay, walkAllMapStatus),
-        '5':  () => setupKat2Buttons(t, delay, walkAllMapStatus),
-        '6':  () => setupKat3Buttons(t, delay, walkAllMapStatus),
-        '7':  () => setupSavannaButtons(t, delay, walkAllMapStatus),
-        '8':  () => setupDesertButtons(t, delay, walkAllMapStatus),
-        '9':  () => setupCrystallButtons(t, delay, walkAllMapStatus),
-        '10': () => setupKat4Buttons(t, delay, walkAllMapStatus),
-    };
-
-    const fn = setupFns[String(location)];
-    if (fn) await fn();
-}
-
-// Функция для установки спиннера
-function showLoadingIcon(linkElement) {
-    linkElement.innerHTML = `<img src="https://i.imgur.com/llF5iyg.gif" width="20" height="20" style="vertical-align:middle"> Выполнение...`;
-}
-
-async function moveOnDefaultMaps(points) {
-    const menuList = document.querySelector('.menu_div ul');
-
-    points.forEach(({id, label, action, icon}) => {
-        let imgUrl = '';
-
-        if (icon) {
-            imgUrl = chrome.runtime.getURL(icon);
-        }
-
-        // создаём пункт меню
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <a href="#" id="to${id}">
-            <img src="${imgUrl}" width="30" height="30" style="vertical-align:middle">
-            ${label}
-          </a>
-        `;
-        menuList.append(li);
-
-        // при клике идём в точку и по окончании вызываем action()
-        li.querySelector('a').addEventListener('click', async e => {
-            e.preventDefault();
-            await action(e);
-        });
-    });
-}
-
-
