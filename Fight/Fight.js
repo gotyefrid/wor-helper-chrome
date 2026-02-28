@@ -83,6 +83,11 @@ class Fight {
             await CommonHelper.log('Обычный бой, без вмешательства');
         }
 
+        if (giveUp) {
+            this.handleGiveUp();
+            return;
+        }
+
         let enemyName = this.getEnemyName();
 
         if (enemyName) {
@@ -163,11 +168,6 @@ class Fight {
                 CommonHelper.sendTelegramMessage('Скип боя, так как противник больше ' + this.levelToSkip + ' уровня');
                 await CommonHelper.delay(15000);
                 await CommonHelper.reloadPage();
-                return;
-            }
-
-            if (giveUp) {
-                this.handleGiveUp();
                 return;
             }
 
