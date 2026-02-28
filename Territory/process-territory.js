@@ -286,29 +286,11 @@ async function processTaktCommon(baseNames, delay) {
         span.addEventListener('click', async e => {
             const el = e.currentTarget;
             const pointId = parseInt(el.getAttribute('data-point'), 10);
-            const baseName = baseNames[pointId];
-
-            const nextElem = el.nextElementSibling;
-            const m0 = nextElem?.textContent.match(/№(\d+)/);
-            // 2. Определяем, была ли база наша уже в момент клика
-            const initialOurs = m0 && myTeam !== null && parseInt(m0[1], 10) === myTeam;
-
+            const renderGrid = (json) => CommonHelper.renderMiniGridInto(
+                document.getElementById('gridA'), json.grid || []
+            );
             // 3. Бежим к точке
-            await t.toPoint(pointId, delay, doc => {
-                if (initialOurs) {
-                    document.body.innerHTML = doc.querySelector('body').innerHTML;
-                    return;
-                }
-                const newCont = doc.querySelector('.contur');
-                if (newCont && myTeam !== null) {
-                    const re = new RegExp(
-                        baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ':[\\s\\S]*?№(\\d+)', 'i'
-                    );
-                    const m = newCont.innerHTML.match(re);
-                    if (m && parseInt(m[1], 10) === myTeam) return CommonHelper.reloadPage();
-                }
-                document.body.innerHTML = doc.querySelector('body').innerHTML;
-            });
+            await t.toPoint(pointId, delay, renderGrid);
         });
     });
 
