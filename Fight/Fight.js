@@ -268,12 +268,14 @@ class Fight {
 
 
     async handleGiveUp() {
-        CommonHelper.log('Нажимаем кнопку Сдаться!');
+        CommonHelper.log('Сдаёмся!');
         await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
         let giveUpButton = document.querySelector('a[href*=killme]');
 
         if (giveUpButton) {
-            await CommonHelper.clickAndWait(giveUpButton);
+            // Переходим по href напрямую, минуя onclick confirm()
+            document.location = giveUpButton.href;
+            return;
         }
 
         CommonHelper.log('Не нашлась кнопка Сдаться, ничего не делаем.');

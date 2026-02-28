@@ -266,6 +266,9 @@ async function processTaktCommon(baseNames, delay) {
     const teamMatch = container.textContent.match(/Вы в команде №(\d+)/);
     const myTeam = teamMatch ? parseInt(teamMatch[1], 10) : null;
 
+    // Авто-такт: вызываем ДО innerHTML.replace(), пока имена баз ещё в исходном виде
+    await handleAutoTakt(baseNames, container, myTeam, t, delay);
+
     // Заменяем названия баз на кликабельные спаны
     for (const [pointId, name] of Object.entries(baseNames)) {
         container.innerHTML = container.innerHTML.replace(

@@ -459,6 +459,12 @@ class Territory {
                     await endCallback(json);
                     return;
                 }
+                if (!json.realUrl) {
+                    CommonHelper.log('realUrl отсутствует в ответе, перезагружаем страницу');
+                    CommonHelper.reloadPage();
+                    return;
+                }
+
                 const normalizedLink = json.realUrl.replace(/&amp;/g, '&');
 
                 document.location = normalizedLink;

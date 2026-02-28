@@ -59,6 +59,12 @@ async function processCheckboxes() {
         toggleFightingOptActiveButton: { storageKey: "wor_fight_opt_active_button" },
         toggleFightingOnlyMobs: { storageKey: "wor_fight_only_mobs", defaultValue: true },
 
+        toggleTakt: {
+            storageKey: "wor_takt_active",
+            hasSubOptions: true,
+        },
+        toggleTaktOptActiveButton: { storageKey: "wor_takt_opt_active_button" },
+
         toggleBandits: { storageKey: "wor_bandits_active" },
 
         toggleParsing: {
