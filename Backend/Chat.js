@@ -186,6 +186,13 @@ export class Chat {
             return;
         }
 
+        const hour = new Date().getHours();
+        const isNightTime = hour >= 23 || hour < 7;
+
+        if (!isNightTime) {
+            return;
+        }
+
         const lastSent = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_last_sent');
         const couldownPassed = !lastSent || (Date.now() - lastSent) > 5 * 60 * 1000;
 
