@@ -1,0 +1,817 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords"
+          content="онлайн игра, RPG, WOR, World Of Rest, рпг игра, браузерная мобильная игра, рпг для андроид">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="refresh" content="200">
+    <title>World of Rest - мобильная online игра!</title>
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20250023">
+    <script type="text/javascript" src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container">
+    <div class="menu" align="center">WoR: Ваш персонаж</div>
+    <div class="chat">
+        <div class="header">
+            <div class="level-block">
+                <div style="display:flex; align-items:center;">
+                    <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                    <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>26</strong></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 77%"></div>
+                </div>
+            </div>
+            <div class="hp-mp-circle">
+                <div class="circle-bar">
+                    <div class="circle-fill hp-fill" style="height: 100%"></div>
+                </div>
+                <div class="circle-bar">
+                    <div class="circle-fill mp-fill" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+                <span>168.29</span>
+            </div>
+            <div class="status-item">
+                <img src="img/money.gif" alt="WR" title="WR">
+                <span>-164496</span>
+            </div>
+            <div class="status-item"><img src="img/clock.gif" border="0" alt="Время" title="Время"> 18:36</div>
+        </div>
+    </div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1772123797&amp;hash=7192830">общий</a>,
+        <a href="game.php?show=5&amp;chatmode=my&amp;uni=1772123797&amp;hash=412c719">мой</a>,
+        <a href="game.php?show=5&amp;chatmode=add&amp;uni=1772123797&amp;hash=ea96d10">написать</a>
+    </div>
+</div>
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+        /*border: 1px solid #888;*/
+        max-width: 260px;
+    }
+
+    .modal-content.game-modal {
+        max-width: 320px;
+    }
+
+    @media screen and (max-width: 360px) {
+        .modal-content.game-modal {
+            max-width: 90%;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 0;
+        right: 5px;
+        color: #aaa;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #loader {
+        display: none;
+        text-align: center;
+    }
+
+    .modal-content.ud-theme-default {
+        color: #FFFFFF;
+        background: rgba(51, 51, 51, 0.75);
+        border: 1px solid rgba(135, 135, 135, 0.5);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(151, 151, 151, 0.35);
+        padding: 0 10px
+    }
+
+    .modal-content.ud-theme-red {
+        color: #FFFFFF;
+        background: rgba(113, 11, 11, 0.58);
+        border: 1px solid rgba(168, 26, 26, 0.58);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(231, 76, 60, 0.35);
+        padding: 0 10px
+    }
+
+    .modal-content.ud-theme-green {
+        color: #FFFFFF;
+        background: rgba(14, 91, 47, 0.78);
+        border: 1px solid #0b7b3a;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(39, 174, 96, 0.35);
+        padding: 0 10px
+    }
+
+    .ud-footer {
+        display: flex;
+        padding: 12px;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .ud-btn {
+        appearance: none;
+        border: none;
+        background: #ddd;
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .ud-btn:hover {
+        filter: brightness(0.97);
+    }
+
+    .ud-btn.ud-primary {
+        border-color: #444;
+        font-weight: 600;
+    }
+
+    .ud-theme-red .ud-btn.ud-primary {
+        background-color: #d93222;
+        color: #ffffff;
+    }
+
+    .ud-theme-green .ud-btn.ud-primary {
+        background-color: #27ae60;
+        color: #ffffff;
+    }
+</style>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">×</span>
+        <div id="loader"></div>
+        <div id="dataContainer"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var modal = $('#myModal');
+        var modalContent = $('.modal-content');
+        var closeBtn = $('.close');
+        var dataContainer = $('#dataContainer');
+        var loader = $('#loader');
+
+        $(document).on('click', '.openItemModal', function () {
+            var url = $(this).data('url');
+            var isGame = $(this).hasClass('game-modal-btn');
+            modal.show();
+            dataContainer.hide();
+            loader.show();
+
+            if (isGame) {
+                $('.modal-content').addClass('game-modal');
+            } else {
+                $('.modal-content').removeClass('game-modal');
+            }
+
+            $.ajax({
+                url: url,
+                cache: true,
+                success: function (data) {
+                    dataContainer.html(data).show();
+                    loader.hide();
+                }
+            });
+        });
+
+        $(document).on('click', '.openStaticModal', function () {
+            var content = $(this).data('content');
+            var theme = ($(this).data('theme') || '').toLowerCase();
+
+            var $modalContent = $('.modal-content');
+            $modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+            if (theme) $modalContent.addClass('ud-theme-' + theme);
+
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+        });
+
+        closeBtn.click(function () {
+            modal.hide();
+            StopJsInModal();
+            removeUdFooter();
+            removeUdTheme();
+        });
+
+        $(window).click(function (event) {
+            if ($(event.target).is(modal)) {
+                modal.hide();
+                StopJsInModal();
+                removeUdFooter();
+                removeUdTheme();
+            }
+        });
+
+        $(document).on('click', '.openConfirmModal', function () {
+            removeUdTheme();
+            removeUdFooter();
+
+            var content = $(this).data('content') || '';
+            var theme = (($(this).data('theme') || 'default') + '').toLowerCase();
+            var primaryText = $(this).data('primary') || 'Ок';
+            var secondaryText = $(this).data('secondary') || 'Отмена';
+
+            var hrefPrimary = $(this).data('primary-href') || '';
+            var hrefSecondary = $(this).data('secondary-href') || '';
+
+            modalContent.removeClass('game-modal');
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+
+            applyUdTheme(theme);
+
+            var $footer = $('<div class="ud-footer" id="udFooter"></div>');
+            var $btnSecondary = $('<button type="button" class="ud-btn" id="udSecondary"></button>').text(secondaryText);
+            var $btnPrimary = $('<button type="button" class="ud-btn ud-primary" id="udPrimary"></button>').text(primaryText);
+
+            $footer.append($btnPrimary, $btnSecondary);
+            modalContent.append($footer);
+
+            $btnPrimary.on('click.ud', function () {
+                if (hrefPrimary) window.location.href = hrefPrimary;
+                udClose();
+            });
+
+            $btnSecondary.on('click.ud', function () {
+                if (hrefSecondary) window.location.href = hrefSecondary;
+                udClose();
+            });
+        });
+
+        function applyUdTheme(theme) {
+            var map = {'red': 'ud-theme-red', 'green': 'ud-theme-green', 'default': 'ud-theme-default'};
+            modalContent.addClass(map[theme] || 'ud-theme-default');
+        }
+
+        function removeUdTheme() {
+            modalContent.removeClass('ud-theme-default ud-theme-red ud-theme-green');
+        }
+
+        function removeUdFooter() {
+            $('#udFooter').remove();
+        }
+
+        function udClose() {
+            modal.hide();
+            removeUdFooter();
+            removeUdTheme();
+            StopJsInModal();
+        }
+    });
+
+    function StopJsInModal() {
+        if (typeof gameTimer !== 'undefined' && gameTimer) {
+            clearInterval(gameTimer);
+        }
+    }
+
+    window.udModalOpenHtml = function (html, theme) {
+        var modal = $('#myModal');
+        if (!modal.length) return;
+
+        var modalContent = modal.find('.modal-content');
+
+        $('#udFooter').remove();
+        modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+
+        theme = (theme || 'default').toLowerCase();
+        modalContent.addClass('ud-theme-' + theme);
+
+        $('#loader').hide();
+        $('#dataContainer').empty().append(html).show();
+        modal.show();
+    };
+
+</script>
+<div class="cont">
+    <div class="menu_div" align="left">
+        <ul>
+            <li><a href="main.php?uni=1772123797&amp;hash=bb4b72c"><img src="icons/glavnoe_menyu_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""> Главное меню</a></li>
+            <li><a href="teritory.php?uni=1772123797&amp;hash=c4c9a11"><img src="icons/priroda_128.png" border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""> Природа</a></li>
+            <li><a href="inventar.php?uni=1772123797&amp;hash=f382f07"><img src="icons/inventar_128.png" border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""> Инвентарь</a></li>
+            <li><a href="face.php?uni=1772123797&amp;hash=2ffb985"><img src="icons/odetie_veshchi_m1_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""> Одетые вещи</a></li>
+            <li><a href="viewuser.php?uni=1772123797&amp;hash=32898d6"><img src="icons/obzor_personazha_m1_128.png"
+                                                                            border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""> Обзор персонажа</a></li>
+            <li><a href="teleport.php?uni=1772123797&amp;hash=6ea4de0"><img src="icons/teleport_v_gorod_128.png"
+                                                                            border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""> Телепорт в город</a></li>
+        </ul>
+    </div>
+</div>
+
+<div style="position:relative; width:255px; height:80px; margin:5px; background: url(img/base.png)">
+    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/man10101.png" alt="">
+    <span style="position:absolute; top:0; left:70px; font-size:10px; font-weight:bold"><img src="/pic/sind.gif"
+                                                                                             style="vertical-align: middle"
+                                                                                             width="12" height="12"
+                                                                                             alt=""> WheeL</span>
+    <span style="position:absolute; top:60px; left:52px; font-size:10px; font-weight:bold; color:#FFFF00">26</span>
+    <img id="hp_bar" style="position:absolute; top:17px; left:74px;" src="img/hp.png" width="176" height="25" alt="">
+    <img id="mana_bar" style="position:absolute; top:45px; left:74px;" src="img/ma.png" width="157" height="14" alt="">
+    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">462/462</span>
+    <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">1822/1822</span>
+    <span style="position:absolute; top:65px; left:80px; font-size:10px; font-weight:bold">
+                <img src="img/rubin.gif" border="0" alt="Рубины"> 168.29                <img src="img/money.gif"
+                                                                                             alt="WR" title="WR"
+                                                                                             border="0"> <a
+        href="peredatm.php?uni=1772123797&amp;hash=d2086d5">-164496</a>
+                <img src="img/aid.gif" alt="Травма" title="Травма" border="0"> Нет            </span>
+</div>
+
+
+<br>
+
+<div align="left">
+    <a class="btninv" style="margin: 1px 2px" href="game.php?show=1&amp;uni=1772123797&amp;hash=ca1bf7b">Все сразу</a><a
+    class="btninv" style="margin: 1px 2px" href="game.php?show=2&amp;uni=1772123797&amp;hash=8b92258">Параметры</a><a
+    class="btninv" style="margin: 1px 2px" href="game.php?show=3&amp;uni=1772123797&amp;hash=80681ee">Свойства</a><a
+    class="btninv" style="margin: 1px 2px" href="game.php?show=4&amp;uni=1772123797&amp;hash=69b4de4">Умения</a><a
+    class="btninv" style="margin: 1px 2px" href="game.php?show=5&amp;uni=1772123797&amp;hash=dd2e995"><span
+    class="svet">Ресурсы</span></a></div>
+
+<br>
+
+
+<table border="0" cellpadding="0" cellspacing="0" class="table_modern" style="border:0; max-width:360px">
+    <tbody>
+    <tr>
+        <td colspan="3">Ресурсы</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res1.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Уголь</td>
+        <td align="center" valign="middle" style="font-size:15px">2499</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res2.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Камень</td>
+        <td align="center" valign="middle" style="font-size:15px">1504</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res3.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Руда</td>
+        <td align="center" valign="middle" style="font-size:15px">220</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res4.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Серебро</td>
+        <td align="center" valign="middle" style="font-size:15px">1234</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res5.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Медь</td>
+        <td align="center" valign="middle" style="font-size:15px">1825</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res6.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Золото</td>
+        <td align="center" valign="middle" style="font-size:15px">2190</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res7.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Фионид</td>
+        <td align="center" valign="middle" style="font-size:15px">2598</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res8.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Сапфир</td>
+        <td align="center" valign="middle" style="font-size:15px">3966</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res9.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Ясень</td>
+        <td align="center" valign="middle" style="font-size:15px">6536</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res10.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Клён</td>
+        <td align="center" valign="middle" style="font-size:15px">5226</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res11.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Дуб</td>
+        <td align="center" valign="middle" style="font-size:15px">6907</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res12.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Кр. дерево</td>
+        <td align="center" valign="middle" style="font-size:15px">5477</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res13.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Обр. камень</td>
+        <td align="center" valign="middle" style="font-size:15px">0</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res14.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Сл. руды</td>
+        <td align="center" valign="middle" style="font-size:15px">0</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res15.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Сл. серебра</td>
+        <td align="center" valign="middle" style="font-size:15px">0</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res16.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Сл. меди</td>
+        <td align="center" valign="middle" style="font-size:15px">0</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res17.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Сл. золота</td>
+        <td align="center" valign="middle" style="font-size:15px">0</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/res18.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Сл. фионида</td>
+        <td align="center" valign="middle" style="font-size:15px">0</td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<table border="0" cellpadding="0" cellspacing="0" class="table_modern" style="border:0; max-width:360px">
+    <tbody>
+    <tr>
+        <td colspan="3">В инвентаре и на всех складах *</td>
+    </tr>
+    <tr>
+        <td colspan="3" align="center"><span class="svet">Трофеи:</span></td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft4.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Большой клык</td>
+        <td align="center" valign="middle" style="font-size:15px">141</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft6.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Большой червь</td>
+        <td align="center" valign="middle" style="font-size:15px">175</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft14.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Деревянная часть оружия</td>
+        <td align="center" valign="middle" style="font-size:15px">11</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft10.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Кожа зверя</td>
+        <td align="center" valign="middle" style="font-size:15px">16</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft8.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Кости</td>
+        <td align="center" valign="middle" style="font-size:15px">14</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft3.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Кусок кости</td>
+        <td align="center" valign="middle" style="font-size:15px">178</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft13.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Металлическая часть оружия</td>
+        <td align="center" valign="middle" style="font-size:15px">18</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft5.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Прочная нить</td>
+        <td align="center" valign="middle" style="font-size:15px">169</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft1.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Рог</td>
+        <td align="center" valign="middle" style="font-size:15px">170</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft12.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Светлая кожа</td>
+        <td align="center" valign="middle" style="font-size:15px">22</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft7.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Слизь</td>
+        <td align="center" valign="middle" style="font-size:15px">24</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft11.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Темная кожа</td>
+        <td align="center" valign="middle" style="font-size:15px">26</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft9.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Часть доспеха монстра</td>
+        <td align="center" valign="middle" style="font-size:15px">35</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/craft2.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трофей: Чешуя</td>
+        <td align="center" valign="middle" style="font-size:15px">162</td>
+    </tr>
+    <tr>
+        <td colspan="3" align="center"><span class="svet">Рыба:</span></td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish1.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Карась</td>
+        <td align="center" valign="middle" style="font-size:15px">400</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish3.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Карп</td>
+        <td align="center" valign="middle" style="font-size:15px">608</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish4.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Лещ</td>
+        <td align="center" valign="middle" style="font-size:15px">2323</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish2.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Окунь</td>
+        <td align="center" valign="middle" style="font-size:15px">619</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish10.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Осётр</td>
+        <td align="center" valign="middle" style="font-size:15px">2004</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish6.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Сом</td>
+        <td align="center" valign="middle" style="font-size:15px">1411</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish5.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Судак</td>
+        <td align="center" valign="middle" style="font-size:15px">4235</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish8.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Угорь</td>
+        <td align="center" valign="middle" style="font-size:15px">501</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish9.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Форель</td>
+        <td align="center" valign="middle" style="font-size:15px">1206</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/fish7.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Щука</td>
+        <td align="center" valign="middle" style="font-size:15px">589</td>
+    </tr>
+    <tr>
+        <td colspan="3" align="center"><span class="svet">Семена:</span></td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/semena3.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Семена дуба</td>
+        <td align="center" valign="middle" style="font-size:15px">616</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/semena2.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Семена клена</td>
+        <td align="center" valign="middle" style="font-size:15px">667</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/semena4.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Семена красного дерева</td>
+        <td align="center" valign="middle" style="font-size:15px">1197</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/semena1.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Семена ясеня</td>
+        <td align="center" valign="middle" style="font-size:15px">798</td>
+    </tr>
+    <tr>
+        <td colspan="3" align="center"><span class="svet">Травы, корни и грибы:</span></td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava201.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Гриб дождевик</td>
+        <td align="center" valign="middle" style="font-size:15px">69</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava206.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Гриб лазурный</td>
+        <td align="center" valign="middle" style="font-size:15px">58</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava203.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Гриб мухомор</td>
+        <td align="center" valign="middle" style="font-size:15px">58</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava204.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Гриб паутинник</td>
+        <td align="center" valign="middle" style="font-size:15px">58</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava205.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Гриб родотус</td>
+        <td align="center" valign="middle" style="font-size:15px">56</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava202.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Гриб свинух</td>
+        <td align="center" valign="middle" style="font-size:15px">70</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava101.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни алтея</td>
+        <td align="center" valign="middle" style="font-size:15px">1935</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava102.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни арала</td>
+        <td align="center" valign="middle" style="font-size:15px">2012</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava103.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни арники</td>
+        <td align="center" valign="middle" style="font-size:15px">2042</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava108.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни володуши</td>
+        <td align="center" valign="middle" style="font-size:15px">808</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava105.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни галеги</td>
+        <td align="center" valign="middle" style="font-size:15px">1992</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava106.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни горечи</td>
+        <td align="center" valign="middle" style="font-size:15px">2048</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava107.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни гравилата</td>
+        <td align="center" valign="middle" style="font-size:15px">2025</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava111.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни девясила</td>
+        <td align="center" valign="middle" style="font-size:15px">972</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava109.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни женьшеня</td>
+        <td align="center" valign="middle" style="font-size:15px">873</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava104.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни лопуха</td>
+        <td align="center" valign="middle" style="font-size:15px">1902</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava110.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни мелиссы</td>
+        <td align="center" valign="middle" style="font-size:15px">982</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava112.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Корни чистотела</td>
+        <td align="center" valign="middle" style="font-size:15px">930</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava1.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава алтея</td>
+        <td align="center" valign="middle" style="font-size:15px">400</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava2.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава арала</td>
+        <td align="center" valign="middle" style="font-size:15px">384</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava3.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава арники</td>
+        <td align="center" valign="middle" style="font-size:15px">369</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava8.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава володуши</td>
+        <td align="center" valign="middle" style="font-size:15px">435</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava13.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава волчеягодника</td>
+        <td align="center" valign="middle" style="font-size:15px">2</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava14.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава вороньего глаза</td>
+        <td align="center" valign="middle" style="font-size:15px">1</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava5.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава галеги</td>
+        <td align="center" valign="middle" style="font-size:15px">380</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava6.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава горечи</td>
+        <td align="center" valign="middle" style="font-size:15px">380</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava7.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава гравилата</td>
+        <td align="center" valign="middle" style="font-size:15px">442</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava11.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава девясила</td>
+        <td align="center" valign="middle" style="font-size:15px">12</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava9.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава женьшеня</td>
+        <td align="center" valign="middle" style="font-size:15px">16</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava15.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава жимолости</td>
+        <td align="center" valign="middle" style="font-size:15px">2</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava4.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава лопуха</td>
+        <td align="center" valign="middle" style="font-size:15px">439</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava10.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава мелиссы</td>
+        <td align="center" valign="middle" style="font-size:15px">20</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava16.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава мордовника</td>
+        <td align="center" valign="middle" style="font-size:15px">2</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava18.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава цикория</td>
+        <td align="center" valign="middle" style="font-size:15px">1</td>
+    </tr>
+    <tr>
+        <td width="32"><img src="../images/trava12.png" width="32" border="0" alt=""></td>
+        <td align="left" valign="middle" style="font-size:12px">Трава чистотела</td>
+        <td align="center" valign="middle" style="font-size:15px">8</td>
+    </tr>
+    </tbody>
+</table>
+* данные о ресурсах в инвентаре/складах обновляются не чаще, чем 1 раз в 60 секунд.
+<br>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+
+</body>
+</html>

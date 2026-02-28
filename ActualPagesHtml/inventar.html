@@ -1,0 +1,974 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords"
+          content="онлайн игра, RPG, WOR, World Of Rest, рпг игра, браузерная мобильная игра, рпг для андроид">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="refresh" content="200">
+    <title>World of Rest - мобильная online игра!</title>
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20250023">
+    <script type="text/javascript" src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container">
+    <div class="menu" align="center">WoR: Инвентарь</div>
+    <div class="chat">
+        <div class="header">
+            <div class="level-block">
+                <div style="display:flex; align-items:center;">
+                    <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                    <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>26</strong></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 77%"></div>
+                </div>
+            </div>
+            <div class="hp-mp-circle">
+                <div class="circle-bar">
+                    <div class="circle-fill hp-fill" style="height: 100%"></div>
+                </div>
+                <div class="circle-bar">
+                    <div class="circle-fill mp-fill" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+                <span>168.29</span>
+            </div>
+            <div class="status-item">
+                <img src="img/money.gif" alt="WR" title="WR">
+                <span>-164496</span>
+            </div>
+            <div class="status-item"><img src="img/clock.gif" border="0" alt="Время" title="Время"> 18:38</div>
+        </div>
+    </div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1772123881&amp;hash=d180255">общий</a>,
+        <a href="inventar.php?chatmode=my&amp;uni=1772123881&amp;hash=8300556">мой</a>,
+        <a href="inventar.php?chatmode=add&amp;uni=1772123881&amp;hash=9318da8">написать</a>
+    </div>
+</div>
+<div class="cont">
+    <div class="menu_div" align="left">
+        <ul>
+            <li><a href="main.php?uni=1772123881&amp;hash=ef6aae6"><img src="icons/glavnoe_menyu_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""> Главное меню</a></li>
+            <li><a href="teritory.php?uni=1772123881&amp;hash=c04cf43"><img src="icons/priroda_128.png" border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""> Природа</a></li>
+            <li><a href="game.php?uni=1772123881&amp;hash=32c1f15"><img src="icons/vash_personazh_m1_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""> Ваш персонаж</a></li>
+            <li><a href="face.php?uni=1772123881&amp;hash=f472ec0"><img src="icons/odetie_veshchi_m1_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""> Одетые вещи</a></li>
+            <li><a href="viewuser.php?uni=1772123881&amp;hash=498ab0c"><img src="icons/obzor_personazha_m1_128.png"
+                                                                            border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""> Обзор персонажа</a></li>
+            <li><a href="sets.php?uni=1772123881&amp;hash=8d96727"><img src="icons/sets_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""> Комплекты вещей</a></li>
+            <li><a href="sumkasort.php?uni=1772123881&amp;hash=03ff3a9"><img src="icons/sumkasort_128.png" border="0"
+                                                                             style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                             alt=""> Сортировка боевой сумки</a></li>
+        </ul>
+    </div>
+</div>
+<div style="position:relative; width:255px; height:80px; margin:5px; background: url(img/base.png)">
+    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/man10101.png" alt="">
+    <span style="position:absolute; top:0; left:70px; font-size:10px; font-weight:bold"><img src="/pic/sind.gif"
+                                                                                             style="vertical-align: middle"
+                                                                                             width="12" height="12"
+                                                                                             alt=""> WheeL</span>
+    <span style="position:absolute; top:60px; left:52px; font-size:10px; font-weight:bold; color:#FFFF00">26</span>
+    <img id="hp_bar" style="position:absolute; top:17px; left:74px;" src="img/hp.png" width="176" height="25" alt="">
+    <img id="mana_bar" style="position:absolute; top:45px; left:74px;" src="img/ma.png" width="157" height="14" alt="">
+    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">462/462</span>
+    <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">1822/1822</span>
+    <span style="position:absolute; top:65px; left:80px; font-size:10px; font-weight:bold">
+                <img src="img/rubin.gif" border="0" alt="Рубины"> 168.29                <img src="img/money.gif"
+                                                                                             alt="WR" title="WR"
+                                                                                             border="0"> <a
+        href="peredatm.php?uni=1772123881&amp;hash=456c854">-164496</a>
+                <img src="img/aid.gif" alt="Травма" title="Травма" border="0"> Нет            </span>
+</div>
+
+<style>
+    .bluebtn {
+        background: linear-gradient(to bottom, #789fd6 0%, #4373bd 100%);
+        border-radius: 4px;
+        font-size: 9px;
+        color: white !important;
+        text-shadow: none;
+        padding: 1px 7px;
+        cursor: pointer;
+    }
+</style>
+<script>
+    function ajaxFunction() {
+        document.location.href = 'inventar.php?sel=1&uni=1772123881&hash=0cfcfcb&search=' + encodeURIComponent(document.getElementById('textsearch').value);
+    }
+</script>
+<form id="invform" method="post" action="perpropre.php?sel=1&amp;uni=1772123881&amp;hash=fefb2c3">
+
+
+    <table border="0" cellpadding="0" cellspacing="0" class="table_menu">
+        <tbody>
+        <tr>
+            <td align="center">
+                <input name="nameperedat" type="text" class="checkbox">
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <select name="dejstv" class="checkbox">
+                    <option value="1" selected="selected">Передать</option>
+                    <option value="2">Продать</option>
+                    <option value="3">В склад</option>
+                </select>
+                <input type="submit" value="Выполнить" class="button">
+                <br><br>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <a class="btninv" style="margin: 1px 2px"
+                   href="inventar.php?sel=1&amp;str=1&amp;uni=1772123881&amp;hash=b010656"><span
+                    class="svet">Оружие</span></a><a class="btninv" style="margin: 1px 2px"
+                                                     href="inventar.php?sel=2&amp;str=1&amp;uni=1772123881&amp;hash=b6beb6b">Бронь</a><a
+                class="btninv" style="margin: 1px 2px"
+                href="inventar.php?sel=3&amp;str=1&amp;uni=1772123881&amp;hash=daff264">Украшения</a><a class="btninv"
+                                                                                                        style="margin: 1px 2px"
+                                                                                                        href="inventar.php?sel=4&amp;str=1&amp;uni=1772123881&amp;hash=9ffd4ef">Снаряжение</a><a
+                class="btninv" style="margin: 1px 2px"
+                href="inventar.php?sel=5&amp;str=1&amp;uni=1772123881&amp;hash=f1e8d0a">Разное</a><a class="btninv"
+                                                                                                     style="margin: 1px 2px"
+                                                                                                     href="inventar.php?sel=6&amp;str=1&amp;uni=1772123881&amp;hash=f6fc316">В
+                комплектах</a><a class="btninv" style="margin: 1px 2px"
+                                 href="inventar.php?sel=7&amp;str=1&amp;uni=1772123881&amp;hash=c7cedb8">За 24 часа</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td align="left">
+                <br>
+                <a href="#" id="toggle-checkboxes">
+                    <img src="img/allselect.gif" border="0" alt="" style="vertical-align:middle">
+                    <span id="toggle-text">Выделить все</span>
+                </a>
+
+                <a href="inventar.php?sel=1&amp;easystyle=1&amp;uni=1772123881&amp;hash=b061650">
+                    <img src="img/allnoinfo.gif" border="0" alt="" style="vertical-align:middle">Кратко </a>
+                <a href="inventar.php?sel=1&amp;textsearch=1&amp;uni=1772123881&amp;hash=c234c33"><img
+                    src="img/search.gif" border="0" alt="" style="vertical-align:middle">Поиск</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="display: flex; flex-wrap: wrap;">
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37026335]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37026335&amp;pin_action=pin&amp;uni=1772123881&amp;hash=c6f35ed"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37026335&amp;uni=1772123881&amp;hash=c869c12"><img
+                                src="images/info.gif" alt="ссылка"></a> Дубина кузнеца от Кузнеца (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p2/sw211.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>27</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>131</strong><br>Кузнец: <strong>29</strong><br>Сокрушение: <strong>63</strong><br><img
+                        src="images/slot.gif" alt=""> <i>Пустой слот</i><br><img src="images/slot.gif" alt=""> <i>Пустой
+                        слот</i><br><img src="images/slot.gif" alt=""> <i>Пустой слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37026335&amp;uni=1772123881&amp;hash=a513ca5" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37026335&amp;sel=1&amp;uni=1772123881&amp;hash=e6019a4" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37171594]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37171594&amp;pin_action=pin&amp;uni=1772123881&amp;hash=cfeb511"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37171594&amp;uni=1772123881&amp;hash=7716660"><img
+                                src="images/info.gif" alt="ссылка"></a> Дубина от Обители (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw213.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>30</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>130</strong><br><img src="images/slot.gif" alt=""> <i>Пустой слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37171594&amp;uni=1772123881&amp;hash=8a98876" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37171594&amp;sel=1&amp;uni=1772123881&amp;hash=a02018b" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[26978490]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=26978490&amp;pin_action=pin&amp;uni=1772123881&amp;hash=7d47c98"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=26978490&amp;uni=1772123881&amp;hash=a6ec73d"><img
+                                src="images/info.gif" alt="ссылка"></a> Дубина силы от Смотрителя (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p3/sw210.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>28</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>142</strong><br>Сила: <strong>36</strong><br>Рукопашный бой: <strong>44</strong><br>Лекарь:
+                        <strong>25</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=26978490&amp;uni=1772123881&amp;hash=b176738" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=26978490&amp;sel=1&amp;uni=1772123881&amp;hash=753385d" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37015014]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37015014&amp;pin_action=pin&amp;uni=1772123881&amp;hash=4433816"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37015014&amp;uni=1772123881&amp;hash=be2bb4a"><img
+                                src="images/info.gif" alt="ссылка"></a> Дубина торговца от Стражника (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw206.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень:
+                        <strong>25</strong><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>142</strong><br>Торговец: <strong>33</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37015014&amp;uni=1772123881&amp;hash=53a1363" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37015014&amp;sel=1&amp;uni=1772123881&amp;hash=f727df5" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37283482]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37283482&amp;pin_action=pin&amp;uni=1772123881&amp;hash=a3248e3"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37283482&amp;uni=1772123881&amp;hash=57cc17d"><img
+                                src="images/info.gif" alt="ссылка"></a> Кинжал от Абигор (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw306.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>27</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>172</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37283482&amp;uni=1772123881&amp;hash=ea3461a" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37283482&amp;sel=1&amp;uni=1772123881&amp;hash=61322d7" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37483075]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37483075&amp;pin_action=pin&amp;uni=1772123881&amp;hash=70256d9"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37483075&amp;uni=1772123881&amp;hash=aecd3f3"><img
+                                src="images/info.gif" alt="ссылка"></a> Кинжал от Абигор (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw312.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень:
+                        <strong>24</strong><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>156</strong><br><img src="images/slot.gif" alt=""> <i>Пустой слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37483075&amp;uni=1772123881&amp;hash=eed5181" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37483075&amp;sel=1&amp;uni=1772123881&amp;hash=cd6c48a" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37635903]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37635903&amp;pin_action=pin&amp;uni=1772123881&amp;hash=cf6ed1d"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37635903&amp;uni=1772123881&amp;hash=d3fb57d"><img
+                                src="images/info.gif" alt="ссылка"></a> Кинжал от Абигор (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw306.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>27</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>151</strong><br><img src="images/slot.gif" alt=""> <i>Пустой слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37635903&amp;uni=1772123881&amp;hash=ac288d2" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37635903&amp;sel=1&amp;uni=1772123881&amp;hash=18da14e" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37671990]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37671990&amp;pin_action=pin&amp;uni=1772123881&amp;hash=806308d"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37671990&amp;uni=1772123881&amp;hash=5ce5e36"><img
+                                src="images/info.gif" alt="ссылка"></a> Кинжал от Абигор (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw313.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень:
+                        <strong>26</strong><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>118</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37671990&amp;uni=1772123881&amp;hash=9e50601" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37671990&amp;sel=1&amp;uni=1772123881&amp;hash=9d201cc" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37052413]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37052413&amp;pin_action=pin&amp;uni=1772123881&amp;hash=55cf78d"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37052413&amp;uni=1772123881&amp;hash=16ec8f7"><img
+                                src="images/info.gif" alt="ссылка"></a> Кинжал от Монстро (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw306.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>29</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>182</strong><br><img src="images/slot.gif" alt=""> <i>Пустой слот</i><br><img
+                        src="images/slot.gif" alt=""> <i>Пустой слот</i><br><img src="images/slot.gif" alt=""> <i>Пустой
+                        слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37052413&amp;uni=1772123881&amp;hash=d195835" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37052413&amp;sel=1&amp;uni=1772123881&amp;hash=ce0d728" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37066149]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37066149&amp;pin_action=pin&amp;uni=1772123881&amp;hash=8437af2"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37066149&amp;uni=1772123881&amp;hash=2b92f6b"><img
+                                src="images/info.gif" alt="ссылка"></a> Кинжал Фурфура (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/sw328.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень:
+                        <strong>15</strong><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>70</strong><br>Сила: <strong>10</strong><br>Ловкость: <strong>10</strong><br>Удача:
+                        <strong>10</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37066149&amp;uni=1772123881&amp;hash=79283e4" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37066149&amp;sel=1&amp;uni=1772123881&amp;hash=7727c27" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37640193]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37640193&amp;pin_action=pin&amp;uni=1772123881&amp;hash=b94efbd"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37640193&amp;uni=1772123881&amp;hash=7caebe2"><img
+                                src="images/info.gif" alt="ссылка"></a> Меч брони от Монстро (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw12.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>28</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>127</strong><br>Броня головы: <strong>184</strong><br><img src="images/slot.gif" alt="">
+                        <i>Пустой слот</i><br><img src="images/slot.gif" alt=""> <i>Пустой слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37640193&amp;uni=1772123881&amp;hash=6b37e11" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37640193&amp;sel=1&amp;uni=1772123881&amp;hash=ff962d7" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37532460]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37532460&amp;pin_action=pin&amp;uni=1772123881&amp;hash=2ba6c2a"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37532460&amp;uni=1772123881&amp;hash=34147fe"><img
+                                src="images/info.gif" alt="ссылка"></a> Посох Деда Мороза (2026)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/sw499.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>3406</strong></span><br>
+                        </div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень:
+                        <strong>26</strong><br>Интеллект: <strong>131</strong><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>204</strong><br>Интеллект: <strong>48</strong><br>Удача: <strong>55</strong><br>Алхимик:
+                        <strong>48</strong><br>Маны: <strong>98</strong><br><img src="images/slot.gif" alt=""> <i>Пустой
+                        слот</i><br><img src="images/slot.gif" alt=""> <i>Пустой слот</i><br><img src="images/slot.gif"
+                                                                                                  alt=""> <i>Пустой
+                        слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37532460&amp;uni=1772123881&amp;hash=a09208d" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37532460&amp;sel=1&amp;uni=1772123881&amp;hash=93f3010" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37267743]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37267743&amp;pin_action=pin&amp;uni=1772123881&amp;hash=c360288"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37267743&amp;uni=1772123881&amp;hash=95156e0"><img
+                                src="images/info.gif" alt="ссылка"></a> Посох маны от Стражника (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw405.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень:
+                        <strong>26</strong><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>147</strong><br>Маны: <strong>156</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37267743&amp;uni=1772123881&amp;hash=8f51865" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37267743&amp;sel=1&amp;uni=1772123881&amp;hash=3afad99" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37672969]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37672969&amp;pin_action=pin&amp;uni=1772123881&amp;hash=2d1ff35"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37672969&amp;uni=1772123881&amp;hash=b95ec06"><img
+                                src="images/info.gif" alt="ссылка"></a> Топор от Абигор (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw108.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень:
+                        <strong>25</strong><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>122</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37672969&amp;uni=1772123881&amp;hash=121495a" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37672969&amp;sel=1&amp;uni=1772123881&amp;hash=d9c5e02" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37517532]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37517532&amp;pin_action=pin&amp;uni=1772123881&amp;hash=532b0a8"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37517532&amp;uni=1772123881&amp;hash=6700a15"><img
+                                src="images/info.gif" alt="ссылка"></a> Топор от Разбойник (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p1/sw113.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>28</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>140</strong><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37517532&amp;uni=1772123881&amp;hash=3e46ad0" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37517532&amp;sel=1&amp;uni=1772123881&amp;hash=949e8a0" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+        <div class="invcell"
+             style="text-align: left; max-width: 250px; margin: 2px; flex: 0 1 250px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="padding: 3px">
+                <div style="display: flex; align-items: center; margin-bottom: 10px">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <span style="display:inline-flex; align-items:center; gap:2px;"><input name="form[37645578]"
+                                                                                               type="checkbox"
+                                                                                               class="item-checkbox"><a
+                            href="invpinned.php?sel=1&amp;item_id=37645578&amp;pin_action=pin&amp;uni=1772123881&amp;hash=a73ccd8"
+                            style="display:inline-flex; align-items:center;"><img src="/images/unpinned.png"
+                                                                                  alt="Закрепить"
+                                                                                  style="width:16px; display:block;"></a></span>
+                    </div>
+                    <div>
+                        <span style="color:#00FFFF">
+                            <strong><a href="itemlink.php?id=37645578&amp;uni=1772123881&amp;hash=e1478aa"><img
+                                src="images/info.gif" alt="ссылка"></a> Топор сокрушения от Монстро (M)</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin-top: 5px;">
+                    <div style="margin-right: 10px; flex: 0 0 64px;">
+                        <img src="../images/p2/sw111.jpg" style="border-radius: 7px; max-width: 64px;" alt="">
+                    </div>
+                    <div>
+                        <div><img src="img/money.gif" alt="WR"> <span class="white"><strong>30</strong></span><br></div>
+                        <strong><span style="color:#AA0000">Требования:</span></strong><br>Уровень: <span
+                        style="color:#FF0000"><strong>29</strong></span><br>
+                        <div style="margin-bottom: 5px"></div>
+                        <strong><span style="color:#00AABB">Свойства:</span></strong><br>Бонус урона:
+                        <strong>171</strong><br>Удача: <strong>37</strong><br>Сокрушение: <strong>52</strong><br><img
+                        src="images/slot.gif" alt=""> <i>Пустой слот</i><br>
+                        <div style="margin-bottom: 3px"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding: 0 3px; margin-top: 5px;">
+                <div>
+                    <div style="padding-bottom: 10px"></div>
+                </div>
+                <div><a href="odet.php?sel=1&amp;ID=37645578&amp;uni=1772123881&amp;hash=2021cfd" class="btninv"
+                        style="margin-bottom: 5px">Надеть на себя</a> <a
+                    href="prodat.php?nomer=37645578&amp;sel=1&amp;uni=1772123881&amp;hash=4bfc506" class="btninv"
+                    style="margin-bottom: 5px">Продать</a></div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    $(document).ready(function () {
+        var isChecked = false;
+
+        $('#btn_selall').click(function () {
+            $('.item-checkbox').prop('checked', !isChecked);
+            isChecked = !isChecked;
+
+            $(this).val(isChecked ? "Снять выделение" : "Выделить все");
+        });
+
+        $('#toggle-checkboxes').click(function (e) {
+            e.preventDefault();
+
+            $('.item-checkbox').prop('checked', !isChecked);
+            isChecked = !isChecked;
+
+            if (isChecked) {
+                $('#toggle-checkboxes img').attr('src', 'img/allunselect.gif');
+                $('#toggle-text').text('Снять выделение');
+            } else {
+                $('#toggle-checkboxes img').attr('src', 'img/allselect.gif');
+                $('#toggle-text').text('Выделить все');
+            }
+        });
+    });
+</script>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+
+</body>
+</html>
