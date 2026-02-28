@@ -118,12 +118,16 @@ class Fight {
                 skip = true;
             }
 
-            let isMonster = this.isMonster();
+            let onlyMobs = await CommonHelper.getExtStorage('wor_fight_only_mobs');
+            if (onlyMobs === undefined) onlyMobs = true;
 
-            if (!isMonster) {
-                CommonHelper.log('Против меня зашёл в бой игрок ' + enemyName);
-                CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
-                skip = true;
+            if (onlyMobs) {
+                let isMonster = this.isMonster();
+                if (!isMonster) {
+                    CommonHelper.log('Против меня зашёл в бой игрок ' + enemyName);
+                    CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
+                    skip = true;
+                }
             }
 
             let enemyLevel = parseInt(enemyName.match(/\d+/)[0], 10);

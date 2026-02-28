@@ -145,6 +145,7 @@ this.isWaitingFishPage = zag.some(div => div.textContent.includes('удочка 
 - `quest-warlock-process2.html` - страница выполнения квеста чернокнижника (пример 2)
 - `quest-warlock-finish.html` - страница с найденным выходом из лабиринта (кнопка завершения)
 - `quest-warlock-finish-earn.html` - страница выбора награды после завершения квеста
+- `teritory-takt.html` - страница тактического боя
 
 При написании селекторов или поиске элементов **всегда сверяйся** с соответствующим файлом из этой папки.
 

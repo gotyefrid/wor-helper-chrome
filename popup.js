@@ -57,6 +57,7 @@ async function processCheckboxes() {
         toggleFightingCheckTrauma: { storageKey: "wor_fight_check_trauma", },
         toggleFightingActivatePrimanka: { storageKey: "wor_fight_activate_primanka", },
         toggleFightingOptActiveButton: { storageKey: "wor_fight_opt_active_button" },
+        toggleFightingOnlyMobs: { storageKey: "wor_fight_only_mobs", defaultValue: true },
 
         toggleBandits: { storageKey: "wor_bandits_active" },
 
@@ -79,17 +80,17 @@ async function processCheckboxes() {
     };
 
     for (let id in toggles) {
-        addCheckboxEvents(id, toggles[id].storageKey, toggles[id].hasSubOptions);
+        addCheckboxEvents(id, toggles[id].storageKey, toggles[id].hasSubOptions, toggles[id].defaultValue);
     }
 
     // Функция добавления прослушки
-    function addCheckboxEvents(id, storageKey, hasSubOptions) {
+    function addCheckboxEvents(id, storageKey, hasSubOptions, defaultValue = false) {
         let input = document.querySelector('#' + id);
         if (!input) return;
 
         // Загружаем сохранённое состояние из storage
         chrome.storage.local.get(storageKey, function (data) {
-            input.checked = data[storageKey] || false;
+            input.checked = data[storageKey] !== undefined ? data[storageKey] : defaultValue;
         });
 
         // Добавляем обработчик события
