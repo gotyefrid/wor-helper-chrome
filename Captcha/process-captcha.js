@@ -97,7 +97,7 @@ window.addEventListener("load", async function () {
         return;
     }
 
-    CommonHelper.log('Хэш одинаковый - можно проходить капчу, ничгео не изменилось');
+    CommonHelper.log('Хэш одинаковый - можно проходить капчу, ничего не изменилось');
 
     let imgElement = this.document.querySelector('img[src*=captcha_main]');
 
