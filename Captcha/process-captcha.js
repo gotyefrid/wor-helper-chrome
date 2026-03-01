@@ -24,6 +24,7 @@ window.addEventListener("load", async function () {
     let captcha = new Captcha();
 
     if (captcha.lastTryWasWrong()) {
+        await CommonHelper.setExtStorage('wor_captcha_last_solve_time', 0);
         await CommonHelper.delay(CommonHelper.MEDIUM_RANDOM);
         let currentErrorCount = await CommonHelper.getExtStorage('wor_captcha_error_count') || 0; // либо получить значение - либо 0
 
