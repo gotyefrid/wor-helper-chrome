@@ -436,50 +436,71 @@ class Territory {
      * Строит путь от текущей позиции игрока до указанной точки и начинает движение.
      *
      * @param {number} pointId - ID целевой клетки карты.
-     * @param {number[]} [delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
-     * @param {Function|null} [eachCallback=null] - Вызывается после каждого шага с JSON-ответом
-     *   сервера. Сигнатура: async (json) => void. Используется, например, для обновления
-     *   мини-карты на экране.
-     * @param {Function|null} [endCallback=null] - Вызывается вместо навигации по realUrl
-     *   при достижении финальной точки. Сигнатура: async (json) => void. Если не задан,
-     *   происходит автоматический переход по json.realUrl.
-     * @param {Object} [options={}] - Дополнительные параметры.
+     * @param {Object} [options={}]
+     * @param {number[]} [options.delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
      * @param {Set<number>} [options.blockedIds=new Set()] - Клетки, которые нужно обойти
-     *   при первоначальном построении пути (например, известные заранее позиции игроков).
-     * @param {Function|null} [options.getBlockedIds=null] - Функция для динамической
-     *   перестройки пути во время движения. Вызывается после каждого шага с JSON-ответом
-     *   сервера. Сигнатура: (json) => Set<number>. Если хоть одна клетка из оставшегося
-     *   пути оказалась в возвращённом множестве, путь перестраивается автоматически.
+     *   при первоначальном построении пути (например, известные заранее позиции врагов).
+     * @param {Function|null} [options.eachCallback=null] - Вызывается после каждого шага
+     *   с JSON-ответом сервера. Сигнатура: async (json) => void.
+     *   Используется для обновления UI (например, рендер мини-карты).
+     * @param {Function|null} [options.endCallback=null] - Вызывается вместо навигации по
+     *   realUrl при достижении финальной точки. Сигнатура: async (json) => void.
+     *   Если не задан — происходит автоматический переход по json.realUrl.
+     * @param {Function|null} [options.getBlockedIds=null] - Динамическая перестройка пути.
+     *   Вызывается после каждого шага. Сигнатура: (json) => Set<number>.
+     *   Если хоть одна клетка оставшегося пути оказалась в возвращённом множестве —
+     *   путь перестраивается в обход. Если обхода нет — идём напрямую игнорируя блокировку.
+     * @param {Function|null} [options.shouldAbort=null] - Досрочное прерывание движения.
+     *   Вызывается после каждого шага до проверки пути. Сигнатура: (json) => boolean.
+     *   Если вернула true — движение немедленно останавливается,
+     *   toPoint возвращает строку 'aborted'.
+     * @returns {Promise<'aborted'|undefined>} Возвращает 'aborted' если сработал shouldAbort.
      */
-    async toPoint(pointId, delay = [50, 100], eachCallback = null, endCallback = null, options = {}) {
-        const { blockedIds = new Set(), getBlockedIds = null } = options;
+    async toPoint(pointId, options = {}) {
+        const {
+            delay = [50, 100],
+            blockedIds = new Set(),
+            eachCallback = null,
+            endCallback = null,
+            getBlockedIds = null,
+            shouldAbort = null,
+        } = options;
 
         const path = this.findPath(this.currentPointId, pointId, blockedIds);
         path.shift();
         CommonHelper.log('Путь:' + JSON.stringify(path));
 
-        await this.moveByPath(path, delay, eachCallback, endCallback, getBlockedIds);
+        return await this.moveByPath(path, { delay, eachCallback, endCallback, getBlockedIds, shouldAbort });
     }
 
     /**
      * Выполняет движение по заранее построенному маршруту, шаг за шагом отправляя
-     * запросы к teritorystep.php. Поддерживает динамическую перестройку пути, если
-     * на оставшемся маршруте появились заблокированные клетки.
+     * запросы к teritorystep.php.
      *
      * @param {number[]} path - Массив ID клеток маршрута (без стартовой точки).
      *   Модифицируется на месте при перестройке пути.
-     * @param {number[]} [delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
-     * @param {Function|null} [eachCallback=null] - Вызывается после каждого шага с JSON-ответом
-     *   сервера. Сигнатура: async (json) => void.
-     * @param {Function|null} [endCallback=null] - Вызывается вместо навигации по realUrl
-     *   при достижении финальной точки. Сигнатура: async (json) => void.
-     * @param {Function|null} [getBlockedIds=null] - Функция динамического обновления
-     *   заблокированных клеток. Сигнатура: (json) => Set<number>. Вызывается после
-     *   каждого шага; если в оставшемся пути есть заблокированные клетки — путь
-     *   перестраивается через findPath. Если обходного пути нет, движение продолжается
-     *   по исходному маршруту.
+     * @param {Object} [options={}]
+     * @param {number[]} [options.delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
+     * @param {Function|null} [options.eachCallback=null] - Вызывается после каждого шага
+     *   с JSON-ответом сервера. Сигнатура: async (json) => void.
+     * @param {Function|null} [options.endCallback=null] - Вызывается вместо навигации по
+     *   realUrl при достижении финальной точки. Сигнатура: async (json) => void.
+     * @param {Function|null} [options.getBlockedIds=null] - Динамическая перестройка пути.
+     *   Сигнатура: (json) => Set<number>. Если возвращённое множество пересекается с
+     *   оставшимся маршрутом — путь перестраивается. При отсутствии обхода идём напрямую.
+     * @param {Function|null} [options.shouldAbort=null] - Досрочное прерывание.
+     *   Сигнатура: (json) => boolean. При true — возвращает 'aborted'.
+     * @returns {Promise<'aborted'|undefined>}
      */
-    async moveByPath(path, delay = [50, 100], eachCallback = null, endCallback = null, getBlockedIds = null) {
+    async moveByPath(path, options = {}) {
+        const {
+            delay = [50, 100],
+            eachCallback = null,
+            endCallback = null,
+            getBlockedIds = null,
+            shouldAbort = null,
+        } = options;
+
         // Для первой итерации будем использовать текущий document
         let currentDocument = document;
 
@@ -522,6 +543,13 @@ class Territory {
                 CommonHelper.log('Ошибка при fetch запросе:' + JSON.stringify(error));
                 CommonHelper.reloadPage();
                 break;
+            }
+
+            // Проверка досрочного прерывания: цель могла стать неактуальной (например,
+            // базу захватил союзник). Проверяем до перестройки пути, чтобы не тратить
+            // время на пересчёт маршрута к цели, к которой уже не нужно идти.
+            if (typeof shouldAbort === "function" && shouldAbort(json)) {
+                return 'aborted';
             }
 
             // Динамическая перестройка пути: проверяем, не занял ли игрок клетку на маршруте

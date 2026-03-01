@@ -108,7 +108,7 @@ async function setupButtons(t, delay, walkAllMapStatus, configs) {
     const points = configs.map(({id, label, icon, tp}) => ({
         id, label, icon,
         action: async () => {
-            await t.toPoint(id, delay, renderGrid, tp);
+            await t.toPoint(id, { delay, eachCallback: renderGrid, endCallback: tp });
         }
     }));
 
@@ -189,10 +189,9 @@ async function walkAroundMap(delay = [50, 100]) {
         return;
     }
 
-    await t.moveByPath(
-        path,
+    await t.moveByPath(path, {
         delay,
-        async (json) => {
+        eachCallback: async (json) => {
             CommonHelper.renderMiniGridInto(document.getElementById('gridA'),json.grid || []);
 
             const currentCell = json.grid.find(c => c.isCenter);
@@ -206,12 +205,12 @@ async function walkAroundMap(delay = [50, 100]) {
                 }
             }
         },
-        async () => {
+        endCallback: async () => {
             await CommonHelper.setExtStorage('wor_map_walk_all_map_active', false);
             alert('Все клетки посещены');
             CommonHelper.reloadPage();
-        }
-    );
+        },
+    });
 }
 
 async function moveOnDefaultMaps(points) {
@@ -293,7 +292,7 @@ async function processTaktCommon(baseNames, delay) {
                 document.getElementById('gridA'), json.grid || []
             );
             // 3. Бежим к точке
-            await t.toPoint(pointId, delay, renderGrid);
+            await t.toPoint(pointId, { delay, eachCallback: renderGrid });
         });
     });
 
