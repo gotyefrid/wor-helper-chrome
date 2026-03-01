@@ -337,6 +337,10 @@ class CommonHelper {
         await CommonHelper.setExtStorage('wor_captcha_active', active);
     }
 
+    static async turnWarlockQuest(active = true) {
+        await CommonHelper.setExtStorage('wor_quest_warlock_active', active);
+    }
+
     static async createDisableButton(name, toDo) {
         (function () {
             // Определяем количество уже существующих кнопок

@@ -187,6 +187,16 @@
             "js": [
                 "Rating/process-rating.js"
             ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/quest*",
+                "http://185.212.47.8/wap/quest*"
+            ],
+            "js": [
+                "Quest/WarlockQuestClass.js",
+                "Quest/process-warlock-quest.js"
+            ]
         }
     ]
 }
