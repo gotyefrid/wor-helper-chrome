@@ -24,7 +24,7 @@ class Captcha {
             return false;
         }
 
-        if (html.innerText.includes('Неправильно поставлен пазл!')) {
+        if (html.innerText.includes('Неправильно')) {
             return true;
         }
 

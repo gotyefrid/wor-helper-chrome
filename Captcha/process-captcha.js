@@ -20,12 +20,6 @@ window.addEventListener("load", async function () {
     }
 
     let urlType = document.location.href.includes('cap') ? 'cap' : 'primanka';
-    let canResolve = await checkTimeout(urlType);
-
-    if (!canResolve) {
-        CommonHelper.sendTelegramMessage(`Капча "${urlType}" вылезла раньше чем 8 минут`);
-        return;
-    }
 
     let captcha = new Captcha();
 
@@ -44,6 +38,13 @@ window.addEventListener("load", async function () {
         // Обновляем картинку
         document.querySelector('a[href*=shuffle]').click();
 
+        return;
+    }
+
+    let canResolve = await checkTimeout(urlType);
+
+    if (!canResolve) {
+        CommonHelper.sendTelegramMessage(`Капча "${urlType}" вылезла раньше чем 8 минут`);
         return;
     }
 

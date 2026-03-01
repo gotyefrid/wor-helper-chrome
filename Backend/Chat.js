@@ -275,6 +275,11 @@ export class Chat {
                 }
 
                 const list = response.names || [];
+
+                if (!list.includes('Misha')) {
+                    list.push('Misha');
+                }
+                
                 await CommonHelperBackground.setExtStorage('wor_chat_moderators_list', {
                     list,
                     timestamp: Date.now()
