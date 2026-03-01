@@ -349,12 +349,20 @@ class Territory {
      * @param {Set<number>} [blockedIds=new Set()] - Множество ID клеток, которые нужно
      *   обходить стороной (например, клетки с игроками). Клетки со значением 0
      *   в матрице карты всегда непроходимы независимо от этого параметра.
+     *   Финальная клетка (targetId) никогда не блокируется — на неё всегда можно зайти.
      * @returns {number[]} Массив ID клеток от startId до targetId включительно.
      *   Возвращает пустой массив, если путь не найден.
      */
     findPath(startId, targetId, blockedIds = new Set()) {
         const start = this.findCoordinatesById(startId);
         const target = this.findCoordinatesById(targetId);
+
+        // Финальная точка никогда не должна блокироваться: на неё нужно зайти в любом случае.
+        // Копируем Set, чтобы не мутировать аргумент вызывающего кода.
+        if (blockedIds.has(targetId)) {
+            blockedIds = new Set(blockedIds);
+            blockedIds.delete(targetId);
+        }
 
         if (!start || !target) {
             CommonHelper.log("Начальная или конечная точка не найдена в сетке. Начальная: " + JSON.stringify(start) + " , конечная: " + JSON.stringify(target));
@@ -533,7 +541,19 @@ class Territory {
                             path.splice(i + 1, remainingPath.length, ...newRemainingPath);
                             CommonHelper.log('Перестройка пути из-за игроков на маршруте: ' + JSON.stringify(path));
                         } else {
-                            CommonHelper.log('Перестройка пути: обходного маршрута нет, продолжаем по исходному');
+                            // Обходного пути нет (например, узкий мост и там стоит игрок).
+                            // Пересчитываем маршрут полностью игнорируя игроков — лучше
+                            // наступить на занятую клетку, чем вообще не двигаться.
+                            const targetId = path[path.length - 1];
+                            const fallbackPath = this.findPath(id, targetId, new Set());
+                            fallbackPath.shift(); // убираем текущую позицию
+
+                            if (fallbackPath.length > 0) {
+                                path.splice(i + 1, remainingPath.length, ...fallbackPath);
+                                CommonHelper.log('Перестройка пути: обхода нет, идём напрямую игнорируя игроков: ' + JSON.stringify(path));
+                            } else {
+                                CommonHelper.log('Перестройка пути: путь не найден даже без ограничений, продолжаем по исходному');
+                            }
                         }
                     }
                 }
