@@ -6,7 +6,7 @@
     let fightStatus = await CommonHelper.getExtStorage('wor_fight_active');
     // Настройка сражения
     let fight = new Fight();
-    fight.potOrder();
+    // fight.potOrder();
     
     let buttonAction = await CommonHelper.getExtStorage('wor_fight_opt_active_button');
 
