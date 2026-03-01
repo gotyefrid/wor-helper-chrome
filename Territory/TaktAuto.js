@@ -61,6 +61,10 @@ async function runAutoTakt(t, bases, myTeam, delay) {
         document.getElementById('gridA'), json.grid || []
     );
 
-    // toPoint идёт к точке и в конце навигирует через json.realUrl → страница перезагружается
-    await t.toPoint(target.id, delay, renderGrid);
+    // toPoint идёт к точке и в конце навигирует через json.realUrl → страница перезагружается.
+    // getBlockedIds вызывается после каждого шага: если другой игрок встал на маршрут,
+    // путь автоматически перестраивается в обход занятых клеток.
+    await t.toPoint(target.id, delay, renderGrid, null, {
+        getBlockedIds: (json) => Territory.extractOccupiedRooms(json?.players),
+    });
 }

@@ -327,8 +327,32 @@ class Territory {
         return null;
     }
 
-    // Метод для поиска кратчайшего пути от startId до targetId
-    findPath(startId, targetId) {
+    /**
+     * Извлекает множество ID комнат, занятых игроками, из ответа teritorystep.php.
+     *
+     * @param {Object|null} playersJson - Объект `players` из JSON-ответа сервера.
+     *   Структура: { "205": { room: "205", kilk_player: "2", names: "..." }, ... }
+     *   Передайте null или undefined, если данных нет — вернётся пустое множество.
+     * @returns {Set<number>} Множество числовых ID комнат, где стоят другие игроки.
+     */
+    static extractOccupiedRooms(playersJson) {
+        if (!playersJson) return new Set();
+        return new Set(Object.values(playersJson).map(p => Number(p.room)));
+    }
+
+    /**
+     * Ищет кратчайший путь между двумя точками карты методом BFS (обход в ширину).
+     * Поддерживает 8 направлений движения (включая диагонали).
+     *
+     * @param {number} startId  - ID стартовой клетки карты.
+     * @param {number} targetId - ID целевой клетки карты.
+     * @param {Set<number>} [blockedIds=new Set()] - Множество ID клеток, которые нужно
+     *   обходить стороной (например, клетки с игроками). Клетки со значением 0
+     *   в матрице карты всегда непроходимы независимо от этого параметра.
+     * @returns {number[]} Массив ID клеток от startId до targetId включительно.
+     *   Возвращает пустой массив, если путь не найден.
+     */
+    findPath(startId, targetId, blockedIds = new Set()) {
         const start = this.findCoordinatesById(startId);
         const target = this.findCoordinatesById(targetId);
 
@@ -380,12 +404,14 @@ class Territory {
             for (const { dr, dc } of directions) {
                 const newRow = current.row + dr;
                 const newCol = current.col + dc;
+                const cellId = this.currentMap[newRow]?.[newCol];
 
                 if (
                     newRow >= 0 && newRow < this.mapNumRows &&
                     newCol >= 0 && newCol < this.mapNumCols &&
                     !visited[newRow][newCol] &&
-                    this.currentMap[newRow][newCol] !== 0
+                    cellId !== 0 &&
+                    !blockedIds.has(cellId)
                 ) {
                     visited[newRow][newCol] = true;
                     parent[newRow][newCol] = current;
@@ -398,15 +424,54 @@ class Territory {
         return [];
     }
 
-    async toPoint(pointId, delay = [50, 100], eachCallback = null, endCallback = null) {
-        const path = this.findPath(this.currentPointId, pointId);
+    /**
+     * Строит путь от текущей позиции игрока до указанной точки и начинает движение.
+     *
+     * @param {number} pointId - ID целевой клетки карты.
+     * @param {number[]} [delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
+     * @param {Function|null} [eachCallback=null] - Вызывается после каждого шага с JSON-ответом
+     *   сервера. Сигнатура: async (json) => void. Используется, например, для обновления
+     *   мини-карты на экране.
+     * @param {Function|null} [endCallback=null] - Вызывается вместо навигации по realUrl
+     *   при достижении финальной точки. Сигнатура: async (json) => void. Если не задан,
+     *   происходит автоматический переход по json.realUrl.
+     * @param {Object} [options={}] - Дополнительные параметры.
+     * @param {Set<number>} [options.blockedIds=new Set()] - Клетки, которые нужно обойти
+     *   при первоначальном построении пути (например, известные заранее позиции игроков).
+     * @param {Function|null} [options.getBlockedIds=null] - Функция для динамической
+     *   перестройки пути во время движения. Вызывается после каждого шага с JSON-ответом
+     *   сервера. Сигнатура: (json) => Set<number>. Если хоть одна клетка из оставшегося
+     *   пути оказалась в возвращённом множестве, путь перестраивается автоматически.
+     */
+    async toPoint(pointId, delay = [50, 100], eachCallback = null, endCallback = null, options = {}) {
+        const { blockedIds = new Set(), getBlockedIds = null } = options;
+
+        const path = this.findPath(this.currentPointId, pointId, blockedIds);
         path.shift();
         CommonHelper.log('Путь:' + JSON.stringify(path));
 
-        await this.moveByPath(path, delay, eachCallback, endCallback);
+        await this.moveByPath(path, delay, eachCallback, endCallback, getBlockedIds);
     }
 
-    async moveByPath(path, delay = [50, 100], eachCallback = null, endCallback = null) {
+    /**
+     * Выполняет движение по заранее построенному маршруту, шаг за шагом отправляя
+     * запросы к teritorystep.php. Поддерживает динамическую перестройку пути, если
+     * на оставшемся маршруте появились заблокированные клетки.
+     *
+     * @param {number[]} path - Массив ID клеток маршрута (без стартовой точки).
+     *   Модифицируется на месте при перестройке пути.
+     * @param {number[]} [delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
+     * @param {Function|null} [eachCallback=null] - Вызывается после каждого шага с JSON-ответом
+     *   сервера. Сигнатура: async (json) => void.
+     * @param {Function|null} [endCallback=null] - Вызывается вместо навигации по realUrl
+     *   при достижении финальной точки. Сигнатура: async (json) => void.
+     * @param {Function|null} [getBlockedIds=null] - Функция динамического обновления
+     *   заблокированных клеток. Сигнатура: (json) => Set<number>. Вызывается после
+     *   каждого шага; если в оставшемся пути есть заблокированные клетки — путь
+     *   перестраивается через findPath. Если обходного пути нет, движение продолжается
+     *   по исходному маршруту.
+     */
+    async moveByPath(path, delay = [50, 100], eachCallback = null, endCallback = null, getBlockedIds = null) {
         // Для первой итерации будем использовать текущий document
         let currentDocument = document;
 
@@ -416,8 +481,10 @@ class Territory {
             }
         }
 
-        // Проходим по всем точкам пути
-        for (const id of path) {
+        // Проходим по всем точкам пути через индекс, чтобы иметь возможность
+        // перестраивать хвост массива при динамическом изменении маршрута
+        for (let i = 0; i < path.length; i++) {
+            const id = path[i];
             CommonHelper.log('Переходим на точку ' + id);
 
             // Формируем селектор для ячейки и ищем её в текущем документе (полученном на предыдущем шаге или изначальном)
@@ -442,8 +509,6 @@ class Territory {
 
                 if (typeof eachCallback === "function") {
                     await eachCallback(json);
-                } else {
-                    // ничего не делаем пока
                 }
             } catch (error) {
                 CommonHelper.log('Ошибка при fetch запросе:' + JSON.stringify(error));
@@ -451,8 +516,31 @@ class Territory {
                 break;
             }
 
+            // Динамическая перестройка пути: проверяем, не занял ли игрок клетку на маршруте
+            if (typeof getBlockedIds === "function") {
+                const newBlocked = getBlockedIds(json);
+
+                if (newBlocked.size > 0) {
+                    const remainingPath = path.slice(i + 1);
+                    const hasBlockedOnPath = remainingPath.some(cellId => newBlocked.has(cellId));
+
+                    if (hasBlockedOnPath) {
+                        const targetId = path[path.length - 1];
+                        const newRemainingPath = this.findPath(id, targetId, newBlocked);
+                        newRemainingPath.shift(); // убираем текущую позицию
+
+                        if (newRemainingPath.length > 0) {
+                            path.splice(i + 1, remainingPath.length, ...newRemainingPath);
+                            CommonHelper.log('Перестройка пути из-за игроков на маршруте: ' + JSON.stringify(path));
+                        } else {
+                            CommonHelper.log('Перестройка пути: обходного маршрута нет, продолжаем по исходному');
+                        }
+                    }
+                }
+            }
+
             // Если достигнута финальная точка, перезагружаем страницу
-            if (id === path[path.length - 1]) {
+            if (i === path.length - 1) {
                 CommonHelper.log('Достигнута финальная точка, перезагружаем страницу...');
 
                 if (typeof endCallback === "function") {
