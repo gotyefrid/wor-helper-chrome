@@ -3,11 +3,15 @@
         await new Promise(r => setTimeout(r, 50));
     }
 
+    // Проверяем runner до определения типа страницы — на случай нестандартного HTML (Отойти от двери и т.п.)
+    const runnerHandled = await WarlockQuestRunner.handleQuestPage();
+    if (runnerHandled) return;
+
     const quest = new WarlockQuest();
 
     if (!quest.isQuestPage) return;
 
-    // На странице ask всегда инжектируем ссылку запуска (независимо от активности)
+    // На странице ask: вставляем ручную кнопку (runner уже проверили выше)
     if (quest.pageType === 'ask') {
         await quest.processAskPage();
         return;

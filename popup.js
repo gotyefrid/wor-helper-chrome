@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Обработчик выбора боссов
     processFightingBossesModal();
+
+    processQuests();
 });
 
 async function processCheckboxes() {
@@ -387,6 +389,25 @@ async function processInputs() {
             chrome.storage.local.set({ [storageKey]: value });
         });
     }
+}
+
+async function processQuests() {
+    const wrapper = document.getElementById('toggleQuestsWrapper');
+    const optWrapper = document.getElementById('toggleQuestsOptionsWrapper');
+    const expandBtn = wrapper.querySelector('.toggle-title');
+    const btnLabel = expandBtn.textContent;
+
+    optWrapper.style.display = 'none';
+    expandBtn.addEventListener('click', () => {
+        const isHidden = optWrapper.style.display === 'none' || optWrapper.style.display === '';
+        optWrapper.style.display = isHidden ? 'block' : 'none';
+        expandBtn.textContent = isHidden ? btnLabel.slice(0, -1) + '▲' : btnLabel;
+    });
+
+    document.getElementById('btnQuestWarlock').addEventListener('click', async () => {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        chrome.tabs.sendMessage(tab.id, { action: 'startWarlockQuestRun' });
+    });
 }
 
 async function processFightingBossesModal() {

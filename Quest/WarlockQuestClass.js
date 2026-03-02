@@ -49,7 +49,7 @@ class WarlockQuest {
             .find(a => a.textContent.includes('Берусь за это'));
 
         if (!acceptLink) {
-            CommonHelper.log('Чернокнижник: нет ссылки "Берусь за это"', false, true);
+            CommonHelper.log('Чернокнижник: нет ссылки "Берусь за это"');
             return;
         }
 
@@ -67,7 +67,7 @@ class WarlockQuest {
             await CommonHelper.setExtStorage('wor_quest_warlock_history', []);
             await CommonHelper.setExtStorage('wor_quest_warlock_steps', 0);
 
-            CommonHelper.log('Чернокнижник: квест начат', false, true);
+            CommonHelper.log('Чернокнижник: квест начат');
             await CommonHelper.sendTelegramMessage('Квест чернокнижника начат');
 
             await CommonHelper.delay(CommonHelper.SMALL_RANDOM);
@@ -130,14 +130,14 @@ class WarlockQuest {
             await CommonHelper.setExtStorage('wor_quest_warlock_history', history);
             await CommonHelper.setExtStorage('wor_quest_warlock_steps', steps);
 
-            CommonHelper.log(`Чернокнижник: шаг ${steps}, иду ${chosenDir} → (${pos.x},${pos.y})`, false, true);
+            CommonHelper.log(`Чернокнижник: шаг ${steps}, иду ${chosenDir} → (${pos.x},${pos.y})`);
 
             await CommonHelper.delay(100, 200);
             window.location.href = available[chosenDir];
         } else {
             // Тупик — откатываемся
             if (history.length === 0) {
-                CommonHelper.log('Чернокнижник: тупик, история пуста!', false, true);
+                CommonHelper.log('Чернокнижник: тупик, история пуста!');
                 await CommonHelper.sendTelegramMessage('Ошибка: лабиринт чернокнижника — невозможно продолжить');
                 await CommonHelper.setExtStorage('wor_quest_warlock_active', false);
                 return;
@@ -152,7 +152,7 @@ class WarlockQuest {
             await CommonHelper.setExtStorage('wor_quest_warlock_history', history);
             await CommonHelper.setExtStorage('wor_quest_warlock_steps', steps);
 
-            CommonHelper.log(`Чернокнижник: тупик, откатываюсь ${backDir} → (${pos.x},${pos.y})`, false, true);
+            CommonHelper.log(`Чернокнижник: тупик, откатываюсь ${backDir} → (${pos.x},${pos.y})`);
 
             await CommonHelper.delay(100, 200);
             window.location.href = available[backDir];
@@ -165,11 +165,11 @@ class WarlockQuest {
             .find(a => a.textContent.includes('Завершить маршрут'));
 
         if (!finishLink) {
-            CommonHelper.log('Чернокнижник: нет ссылки завершения', false, true);
+            CommonHelper.log('Чернокнижник: нет ссылки завершения');
             return;
         }
 
-        CommonHelper.log('Чернокнижник: нашли выход, завершаем маршрут', false, true);
+        CommonHelper.log('Чернокнижник: нашли выход, завершаем маршрут');
         await CommonHelper.delay(100, 200);
         finishLink.click();
     }
@@ -180,7 +180,7 @@ class WarlockQuest {
             .find(a => a.textContent.includes('WR'));
 
         if (!earnLink) {
-            CommonHelper.log('Чернокнижник: нет ссылки награды WR', false, true);
+            CommonHelper.log('Чернокнижник: нет ссылки награды WR');
             return;
         }
 
@@ -191,7 +191,7 @@ class WarlockQuest {
         await CommonHelper.setExtStorage('wor_quest_warlock_visited', []);
         await CommonHelper.setExtStorage('wor_quest_warlock_history', []);
 
-        CommonHelper.log(`Чернокнижник: квест пройден за ${steps} шагов`, false, true);
+        CommonHelper.log(`Чернокнижник: квест пройден за ${steps} шагов`);
         await CommonHelper.sendTelegramMessage(`Квест чернокнижника пройден за ${steps} шагов, получена награда WR`);
 
         await CommonHelper.delay(CommonHelper.SMALL_RANDOM);

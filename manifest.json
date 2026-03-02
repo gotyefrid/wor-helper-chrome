@@ -48,7 +48,9 @@
                 "Chat/luxon.js",
                 "Chat/Chat.js",
                 "Common/process-common.js",
-                "Common/process-commands.js"
+                "Common/process-commands.js",
+                "Quest/WarlockQuestRunner.js",
+                "Quest/process-warlock-runner.js"
             ]
         },
         {

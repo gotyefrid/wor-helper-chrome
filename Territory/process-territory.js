@@ -9,6 +9,12 @@
 
     if (reloadDelay) processReloadPage(reloadDelay);
 
+    const globalNavState = await CommonHelper.getExtStorage('wor_global_nav');
+    if (globalNavState?.active && LOCATION_CONFIGS[String(currentLocation)]) {
+        await resumeGlobalNav();
+        return;
+    }
+
     if (LOCATION_CONFIGS[String(currentLocation)]) {
         await processLocation(currentLocation, delay);
     } else if (currentLocation == 100) {
@@ -97,6 +103,176 @@ const LOCATION_CONFIGS = {
         {id: 297, label: 'Пустыня', icon: 'Icons/pustinya.png', tp: tpByRoom(256)},
     ],
 };
+
+// ─── Переходы между локациями ─────────────────────────────────────────────────
+
+const LOCATION_TRANSITIONS = {
+    '1': {
+        '2': { exitRoom: 442, tpRoom: 407 },
+        '3': { exitRoom: 765, tpRoom: 730 },
+        '9': { exitRoom: 674, tpRoom: 710 },
+    },
+    '2': {
+        '1': { exitRoom: 301, tpRoom: 322 },
+        '8': { exitRoom: 247, tpRoom: 248 },
+    },
+    '3': {
+        '1': { exitRoom: 164, tpRoom: 132 },
+        '4': { exitRoom: 303, tpRoom: 304 },
+    },
+    '4': {
+        '3': { exitRoom: 101, tpRoom: 81 },
+        '5': { exitRoom: 108, tpRoom: 90 },
+    },
+    '5': {
+        '4': { exitRoom: 171, tpRoom: 146 },
+        '6': { exitRoom: 161, tpRoom: 185 },
+    },
+    '6': {
+        '5': { exitRoom: 204, tpRoom: 203 },
+        '7': { exitRoom: 308, tpRoom: 309 },
+    },
+    '7': {
+        '6': { exitRoom: 284, tpRoom: 228 },
+        '10': { exitRoom: 486, tpRoom: 431 },
+    },
+    '8': {
+        '2': { exitRoom: 509, tpRoom: 537 },
+        '10': { exitRoom: 352, tpRoom: 324 },
+    },
+    '9': {
+        '1': { exitRoom: 116, tpRoom: 93 },
+    },
+    '10': {
+        '7': { exitRoom: 404, tpRoom: 363 },
+        '8': { exitRoom: 297, tpRoom: 256 },
+    },
+};
+
+/**
+ * BFS-поиск маршрута между локациями.
+ * @param {string} fromLocation
+ * @param {string} toLocation
+ * @returns {string[]|null} Массив ID локаций от start до end включительно, или null если пути нет.
+ */
+function findLocationPath(fromLocation, toLocation) {
+    fromLocation = String(fromLocation);
+    toLocation = String(toLocation);
+    if (fromLocation === toLocation) return [fromLocation];
+
+    const queue = [[fromLocation]];
+    const visited = new Set([fromLocation]);
+
+    while (queue.length > 0) {
+        const path = queue.shift();
+        const current = path[path.length - 1];
+
+        for (const neighbor of Object.keys(LOCATION_TRANSITIONS[current] || {})) {
+            if (neighbor === toLocation) return [...path, neighbor];
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push([...path, neighbor]);
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Запустить глобальную навигацию к указанной точке в любой локации.
+ * Состояние сохраняется в storage — переживает перезагрузки и бои.
+ * @param {string|number} targetLocation
+ * @param {number} targetRoom
+ */
+async function goToPoint(targetLocation, targetRoom) {
+    const currentLocation = Territory.getCurrentLocation();
+    const locationPath = findLocationPath(String(currentLocation), String(targetLocation));
+
+    if (!locationPath) {
+        CommonHelper.log(`Глобальная навигация: путь ${currentLocation} → ${targetLocation} не найден`);
+        return;
+    }
+
+    await CommonHelper.setExtStorage('wor_global_nav', {
+        active: true,
+        targetLocation: String(targetLocation),
+        targetRoom: Number(targetRoom),
+        locationPath,
+    });
+
+    await resumeGlobalNav();
+}
+
+async function resumeGlobalNav() {
+    const state = await CommonHelper.getExtStorage('wor_global_nav');
+    if (!state?.active) return;
+
+    const currentLocation = String(Territory.getCurrentLocation());
+
+    // Перестройка пути если текущая локация не совпадает с ожидаемой (например, после боя с редиректом)
+    if (state.locationPath[0] !== currentLocation) {
+        const newPath = findLocationPath(currentLocation, state.targetLocation);
+        if (!newPath) {
+            CommonHelper.log('Глобальная навигация: не удалось перестроить путь, останавливаемся');
+            await CommonHelper.setExtStorage('wor_global_nav', { active: false });
+            return;
+        }
+        state.locationPath = newPath;
+        await CommonHelper.setExtStorage('wor_global_nav', state);
+    }
+
+    const t = new Territory();
+    const delay = await CommonHelper.getAutoMoveDelay();
+    const renderGrid = (json) => CommonHelper.renderMiniGridInto(document.getElementById('gridA'), json.grid || []);
+
+    CommonHelper.createDisableButton('Остановить навигацию', async () => {
+        await CommonHelper.setExtStorage('wor_global_nav', { active: false });
+        CommonHelper.reloadPage();
+    });
+
+    if (state.locationPath.length === 1) {
+        // Уже в нужной локации — идём к целевой точке
+        await t.toPoint(state.targetRoom, {
+            delay,
+            eachCallback: renderGrid,
+            endCallback: async (json) => {
+                await CommonHelper.setExtStorage('wor_global_nav', { active: false });
+                const url = json?.realUrl?.replace(/&amp;/g, '&');
+                if (url) {
+                    document.location = url;
+                } else {
+                    CommonHelper.reloadPage();
+                }
+            },
+        });
+    } else {
+        // Идём к точке перехода в следующую локацию
+        const nextLocation = state.locationPath[1];
+        const transition = LOCATION_TRANSITIONS[currentLocation]?.[nextLocation];
+
+        if (!transition) {
+            CommonHelper.log(`Глобальная навигация: нет перехода ${currentLocation} → ${nextLocation}`);
+            await CommonHelper.setExtStorage('wor_global_nav', { active: false });
+            return;
+        }
+
+        await t.toPoint(transition.exitRoom, {
+            delay,
+            eachCallback: renderGrid,
+            endCallback: async () => {
+                const updatedState = { ...state, locationPath: state.locationPath.slice(1) };
+                await CommonHelper.setExtStorage('wor_global_nav', updatedState);
+                const portalLink = document.querySelector(`a[data-room="${transition.tpRoom}"]`);
+                if (portalLink) {
+                    document.location = portalLink.href;
+                } else {
+                    CommonHelper.log(`Глобальная навигация: портал ${transition.tpRoom} не найден, перезагружаемся`);
+                    CommonHelper.reloadPage();
+                }
+            },
+        });
+    }
+}
 
 // ─── Универсальные функции локаций ────────────────────────────────────────────
 
@@ -303,3 +479,11 @@ async function processTaktCommon(baseNames, delay) {
         if (!isNaN(idx) && idx >= 0 && idx < clickableSpans.length) clickableSpans[idx].click();
     });
 }
+
+// ─── Обработка сообщений из popup ─────────────────────────────────────────────
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === 'goToPoint') {
+        goToPoint(message.targetLocation, message.targetRoom);
+    }
+});

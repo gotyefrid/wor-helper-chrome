@@ -260,7 +260,7 @@ class Territory {
     };
 
     isTerritoryPage = false;
-    currentLocation = null;
+    currentLocation = null;Не
     currentMap = null;
     currentPointId = null;
     mapNumRows = null;
