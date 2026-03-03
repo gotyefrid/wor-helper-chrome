@@ -92,8 +92,8 @@ class Fight {
 
         if (enemyName) {
             let skip = false;
-            const threshold = 50;
-            let isLowDamage = await this.isLowDamage(threshold);
+            const threshold = Number(await CommonHelper.getExtStorage('wor_fight_low_damage_threshold')) || 0;
+            let isLowDamage = threshold > 0 && await this.isLowDamage(threshold);
 
             if (isLowDamage) {
                 let message = 'Я бью меньше ' + threshold + ', что-то тут не так, ничего не делаю больше';

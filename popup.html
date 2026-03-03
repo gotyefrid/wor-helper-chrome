@@ -208,6 +208,12 @@
                 <input type="checkbox" id="toggleFightingOnlyMobs"><span class="slider round"></span>
             </label>
         </div>
+        <div class="toggle-wrapper">
+            <span class="info-icon" title="Если урон по врагу ниже этого значения — бот останавливается и пишет в Telegram. 0 = проверка отключена. Добивающие удары (когда у врага 0 HP) не учитываются.">?</span><span class="toggle-title small">Мин. урон</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingLowDamageThreshold" min="0" max="9999" maxlength="4">
+            </label>
+        </div>
     </div>
     <hr class="divider">
 
@@ -310,7 +316,9 @@
     <div class="sub-toggle-wrapper" id="toggleQuestsOptionsWrapper">
         <div class="toggle-wrapper">
             <span class="toggle-title small">Чернокнижник</span>
-            <button id="btnQuestWarlock" class="quest-btn">Старт</button>
+            <label class="switch">
+                <input type="checkbox" id="toggleQuestWarlock"><span class="slider round"></span>
+            </label>
         </div>
     </div>
     <hr class="divider">

@@ -230,11 +230,17 @@ async function resumeGlobalNav() {
         CommonHelper.reloadPage();
     });
 
+    const navShouldAbort = async () => {
+        const s = await CommonHelper.getExtStorage('wor_global_nav');
+        return !s?.active;
+    };
+
     if (state.locationPath.length === 1) {
         // Уже в нужной локации — идём к целевой точке
         await t.toPoint(state.targetRoom, {
             delay,
             eachCallback: renderGrid,
+            shouldAbort: navShouldAbort,
             endCallback: async (json) => {
                 await CommonHelper.setExtStorage('wor_global_nav', { active: false });
                 const url = json?.realUrl?.replace(/&amp;/g, '&');
@@ -259,6 +265,7 @@ async function resumeGlobalNav() {
         await t.toPoint(transition.exitRoom, {
             delay,
             eachCallback: renderGrid,
+            shouldAbort: navShouldAbort,
             endCallback: async () => {
                 const updatedState = { ...state, locationPath: state.locationPath.slice(1) };
                 await CommonHelper.setExtStorage('wor_global_nav', updatedState);

@@ -548,7 +548,7 @@ class Territory {
             // Проверка досрочного прерывания: цель могла стать неактуальной (например,
             // базу захватил союзник). Проверяем до перестройки пути, чтобы не тратить
             // время на пересчёт маршрута к цели, к которой уже не нужно идти.
-            if (typeof shouldAbort === "function" && shouldAbort(json)) {
+            if (typeof shouldAbort === "function" && await shouldAbort(json)) {
                 return 'aborted';
             }
 

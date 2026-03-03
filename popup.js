@@ -329,6 +329,7 @@ async function processInputs() {
         inputPlayerName: { storageKey: "wor_chat_player_name" },
         inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
         inputFightingMaxTrauma: { storageKey: "wor_fight_max_trauma" },
+        inputFightingLowDamageThreshold: { storageKey: "wor_fight_low_damage_threshold" },
         inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
         inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
         inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },
@@ -404,9 +405,27 @@ async function processQuests() {
         expandBtn.textContent = isHidden ? btnLabel.slice(0, -1) + '▲' : btnLabel;
     });
 
-    document.getElementById('btnQuestWarlock').addEventListener('click', async () => {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        chrome.tabs.sendMessage(tab.id, { action: 'startWarlockQuestRun' });
+    const toggle = document.getElementById('toggleQuestWarlock');
+
+    // Загружаем текущее состояние
+    chrome.storage.local.get('wor_warlock_quest_run', (data) => {
+        toggle.checked = data.wor_warlock_quest_run?.active === true;
+    });
+
+    toggle.addEventListener('change', async () => {
+        if (toggle.checked) {
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            chrome.tabs.sendMessage(tab.id, { action: 'startWarlockQuestRun' });
+        } else {
+            chrome.storage.local.set({
+                wor_warlock_quest_run: { active: false },
+                wor_quest_warlock_active: false,
+                wor_quest_warlock_pos: null,
+                wor_quest_warlock_visited: [],
+                wor_quest_warlock_history: [],
+                wor_global_nav: { active: false },
+            });
+        }
     });
 }
 
