@@ -314,8 +314,9 @@ async function showMailModal(nickname) {
         return;
     }
 
-    // Достаём action формы
+    // Достаём action формы и CSRF токен
     const mailAction = form.getAttribute('action');
+    const csrfToken = form.querySelector('input[name="_csrf"]')?.value || '';
 
     // === 3) Строим модалку ===
 
@@ -395,6 +396,7 @@ async function showMailModal(nickname) {
 
     sendBtn.addEventListener('click', async () => {
         const data = new FormData();
+        data.append('_csrf', csrfToken);
         data.append('mail_name', inputTo.value.trim());
         data.append('mail_tema', inputTema.value.trim());
         data.append('mail_message', textarea.value.trim());
