@@ -151,6 +151,7 @@ this.isWaitingFishPage = zag.some(div => div.textContent.includes('удочка 
 - `teritory-common-teritorystep.json` - пример JSON-ответа `teritorystep.php` на обычной карте
 - `mail-main.html` - страница почтового ящика (входящие/отправленные), URL: `mail.php?act=inbox`
 - `mail-send-tab.html` - страница написания нового письма, URL: `mail.php?act=newmail`. Форма `action="mail.php?act=mailadd"`, поля: `_csrf` (hidden), `mail_name`, `mail_tema`, `mail_message`, `button`
+- `peredatm.html` - страница передачи WR другому игроку, URL: `peredatm.php`. Форма `action="permoneyact.php"`, поля: `_csrf` (hidden), `nameperedat`, `suma`
 
 При написании селекторов или поиске элементов **всегда сверяйся** с соответствующим файлом из этой папки.
 

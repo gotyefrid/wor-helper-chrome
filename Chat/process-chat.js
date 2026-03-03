@@ -179,48 +179,61 @@ function contextMenu() {
     }, true);
 }
 
-function showWRModal(nickname) {
+async function showWRModal(nickname) {
     // Если уже есть модалка — не создаём повторно
     if (document.getElementById('wrModal')) return;
 
-    // Создание затемнённого фона
+    // === 1) Загружаем страницу передачи WR для получения CSRF-токена ===
+    const page = await fetch('/wap/peredatm.php').then(r => r.text());
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(page, 'text/html');
+
+    const form = doc.querySelector('form[action*="permoneyact"]');
+    if (!form) {
+        alert("Не удалось загрузить форму передачи WR.");
+        return;
+    }
+
+    const formAction = form.getAttribute('action');
+    const csrfToken = form.querySelector('input[name="_csrf"]')?.value || '';
+
+    // === 2) Строим модалку ===
     const overlay = document.createElement('div');
     overlay.id = 'wrOverlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = 0;
-    overlay.style.left = 0;
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.background = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.zIndex = 10001;
+    overlay.style = `
+        position: fixed; top:0; left:0; width:100vw; height:100vh;
+        background: rgba(0,0,0,0.5);
+        z-index: 10001;
+    `;
 
-    // Создание модального окна
     const modal = document.createElement('div');
     modal.id = 'wrModal';
-    modal.style.position = 'fixed';
-    modal.style.top = '50%';
-    modal.style.left = '50%';
-    modal.style.transform = 'translate(-50%, -50%)';
-    modal.style.padding = '20px';
-    modal.style.border = '1px solid #ccc';
-    modal.style.zIndex = 10002;
-    modal.style.minWidth = '300px';
-    modal.style.textAlign = 'center';
-    modal.style.background = 'rgba(0, 0, 0, 0.5)';
-    modal.style.backdropFilter = 'blur(6px)';
-    modal.style.webkitBackdropFilter = 'blur(6px)'; // для Safari
+    modal.style = `
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        border: 1px solid #ccc;
+        z-index: 10002;
+        min-width: 300px;
+        text-align: center;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        color: #fff;
+        font-family: sans-serif;
+    `;
 
-    // Заголовок
     const title = document.createElement('h3');
-    title.textContent = `Отправить WR: ${nickname}`;
+    title.textContent = `Передать WR: ${nickname}`;
     modal.appendChild(title);
 
-    // Форма
     const input = document.createElement('input');
     input.type = 'text';
     input.name = 'suma';
     input.value = '0';
     input.style.marginTop = '10px';
+    input.style.width = '95%';
     input.className = 'do_button';
     modal.appendChild(input);
 
@@ -228,52 +241,41 @@ function showWRModal(nickname) {
     label.textContent = ' WR';
     modal.appendChild(label);
 
-    // Кнопка отправки
     const sendBtn = document.createElement('button');
     sendBtn.textContent = 'Передать';
     sendBtn.className = 'button';
-    sendBtn.style.display = 'block';
-    sendBtn.style.margin = '15px auto 0';
+    sendBtn.style = 'display:block; margin:15px auto 0;';
 
-    sendBtn.addEventListener('click', () => {
+    sendBtn.addEventListener('click', async () => {
         const amount = input.value.trim();
         if (!/^\d+$/.test(amount) || parseInt(amount) <= 0) {
             alert('Введите корректную сумму WR.');
             return;
         }
 
-        // Создаём FormData
         const data = new FormData();
+        data.append('_csrf', csrfToken);
         data.append('nameperedat', nickname);
         data.append('suma', amount);
 
-        // Отправка POST-запроса
-        fetch('permoneyact.php', {
-            method: 'POST',
-            body: data,
-        })
-            .then(response => {
-                if (response.url.includes('boj')) {
-                    throw new Error('Персонаж находится в бою, нельзя переслать деньги');
-                }
-                return response.text();
-            })
-            .then(text => {
-                alert('Успешно отправлено!');
-                document.body.removeChild(overlay);
-                document.body.removeChild(modal);
-                CommonHelper.reloadPage();
-            })
-            .catch(error => {
-                alert('Ошибка: ' + error.message);
-                document.body.removeChild(overlay);
-                document.body.removeChild(modal);
-            });
+        try {
+            const response = await fetch(formAction, { method: 'POST', body: data });
+            if (response.url.includes('boj')) {
+                throw new Error('Персонаж находится в бою, нельзя переслать деньги');
+            }
+            alert('Успешно отправлено!');
+            document.body.removeChild(overlay);
+            document.body.removeChild(modal);
+            CommonHelper.reloadPage();
+        } catch (error) {
+            alert('Ошибка: ' + error.message);
+            document.body.removeChild(overlay);
+            document.body.removeChild(modal);
+        }
     });
 
     modal.appendChild(sendBtn);
 
-    // Закрытие по клику вне окна
     overlay.addEventListener('click', () => {
         document.body.removeChild(overlay);
         document.body.removeChild(modal);
