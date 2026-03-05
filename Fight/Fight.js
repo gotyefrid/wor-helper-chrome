@@ -231,14 +231,16 @@ class Fight {
             const html = await (await fetch(chatUrl)).text();
             const doc = new DOMParser().parseFromString(html, 'text/html');
             const msgBox = doc.querySelector('#msg_box');
-            const messages = Chat.getParsedMessages(msgBox);      // newest → oldest
+            // getParsedMessagesNew возвращает сообщения от новых к старым (как и старый парсер)
+            const messages = Chat.getParsedMessagesNew(msgBox);
 
             // --- 3. ищем первое релевантное system-сообщение ----------------------
             const endedRe = /Бой №\d+\s+закончен/i;
             let intervened = false;
 
             for (const msg of messages) {
-                if (msg.type !== 'system') continue;
+                // type в верхнем регистре: 'SYSTEM', 'PUBLIC', 'PUBLIC_TO', 'PRIVATE'
+                if (msg.type !== 'SYSTEM') continue;
 
                 if (endedRe.test(msg.text)) {       // бой закончился
                     intervened = false;

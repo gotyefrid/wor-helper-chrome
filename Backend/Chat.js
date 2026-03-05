@@ -123,6 +123,22 @@ export class Chat {
     }
 
 
+    /**
+     * Форматирует одно сообщение чата и отправляет его в Telegram.
+     *
+     * Поддерживает оба формата сообщений:
+     *   - Новый (getParsedMessagesNew): type = 'SYSTEM' | 'PUBLIC' | 'PUBLIC_TO' | 'PRIVATE'
+     *   - Старый (getParsedMessages, устарел): type = 'system' | 'chat'
+     *   Старый формат нужен для плавного перехода — старые сообщения могут ещё
+     *   находиться в очереди wor_chat_message_queue в момент обновления.
+     *
+     * Логика отправки:
+     *   1. Если сообщение адресовано игроку (isToMe) — шлём в бот 'common' с 🔔.
+     *   2. Если системное и касается игрока (травма, штраф, письмо и т.д.) — тоже в 'common'.
+     *   3. Все сообщения всегда идут в бот 'chat' для полного архива.
+     *
+     * @param {Object} msg - объект сообщения из getParsedMessagesNew (или старого парсера)
+     */
     async sendMessagesToTelegram(msg) {
         let isToMe = false;
         let playerName = await CommonHelperBackground.getExtStorage('wor_chat_player_name');
@@ -140,11 +156,16 @@ export class Chat {
         let text = `[${time}] `;
         text += isToMe ? `🔔 ` : '';
 
-        if (msg.type === 'chat') {
+        // Проверяем тип: новый формат ('PUBLIC'/'PUBLIC_TO'/'PRIVATE') и старый ('chat')
+        const isChat = msg.type === 'PUBLIC' || msg.type === 'PUBLIC_TO' || msg.type === 'PRIVATE' || msg.type === 'chat';
+        // Проверяем системный тип: новый ('SYSTEM') и старый ('system')
+        const isSystem = msg.type === 'SYSTEM' || msg.type === 'system';
+
+        if (isChat) {
             text += `\`${escape(msg.from)}\``;
             if (msg.to) text += ` → \`${escape(msg.to)}\``;
             text += `: ${escape(msg.text)}`;
-        } else if (msg.type === 'system') {
+        } else if (isSystem) {
             text += `*Система*: ${escape(msg.text)}`;
         } else {
             text += escape(msg.text);
@@ -155,8 +176,9 @@ export class Chat {
             await this.processDirectMessage(msg);
         }
 
+        // Системные сообщения, которые касаются игрока — дополнительно шлём в 'common'
         if (
-            msg.type === 'system' &&
+            isSystem &&
             (
                 msg.text.includes('изъята и возвращена') ||
                 msg.text.includes('получена и будет доступна') ||
@@ -169,6 +191,7 @@ export class Chat {
             await CommonHelperBackground.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
         }
 
+        // Все сообщения идут в чат-бот для полного архива
         await CommonHelperBackground.sendTelegramMessage(text, 'chat', isToMe, 'MarkdownV2');
         await CommonHelperBackground.delay(200);
     }

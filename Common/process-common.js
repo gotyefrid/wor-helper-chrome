@@ -130,7 +130,8 @@ async function checkFlashNotifications() {
         CommonHelper.sendTelegramMessage('Для того, чтобы ловить рыбу, Вам необходима удочка!', 'common', true, 'html', 60);
     }
 
-    let messages = Chat.getParsedMessages(html);
+    // Парсим flash-уведомления новым парсером (результат сохраняется в storage для возможного будущего использования)
+    let messages = Chat.getParsedMessagesNew(html);
 
     await CommonHelper.setExtStorage('wor_chat_flash_notifications', messages);
 }
@@ -156,7 +157,10 @@ function backgroundListener() {
                     let parser = new DOMParser();
                     let htmlPage = parser.parseFromString(html, 'text/html');
                     let msgBox = htmlPage.querySelector('#msg_box');
-                    let formattedMessages = Chat.getParsedMessages(msgBox);
+
+                    // Получаем ник игрока для корректного определения поля isForMe в каждом сообщении
+                    const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+                    let formattedMessages = Chat.getParsedMessagesNew(msgBox, playerName);
 
                     processActualMessages(formattedMessages);
 
@@ -285,7 +289,8 @@ async function processPrimanka(messages) {
         }
 
         for (const msg of messages) {
-            if (msg.type !== 'system') continue;
+            // getParsedMessagesNew возвращает type в верхнем регистре: 'SYSTEM', 'PUBLIC', 'PUBLIC_TO', 'PRIVATE'
+            if (msg.type !== 'SYSTEM') continue;
 
             if (msg.text.includes('Приманка активирована!')) {
                 CommonHelper.log('Приманка ещё активна');

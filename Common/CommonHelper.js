@@ -667,6 +667,13 @@ class CommonHelper {
         }
     }
 
+    /**
+     * Загружает страницу чата и возвращает распарсенные сообщения.
+     * Использует getParsedMessagesNew — возвращает объекты с полями:
+     * type (SYSTEM/PUBLIC/PUBLIC_TO/PRIVATE), from, to, time, text, isPrivate, isForMe, date, id.
+     *
+     * @returns {Array|null} массив сообщений или null при ошибке
+     */
     static async fetchChat() {
         try {
             let chatUrl = document.querySelector('a[href*=chat2]')?.href;
@@ -682,7 +689,10 @@ class CommonHelper {
             let parser = new DOMParser();
             let htmlPage = parser.parseFromString(html, 'text/html');
             let msgBox = htmlPage.querySelector('#msg_box');
-            let formattedMessages = Chat.getParsedMessages(msgBox);
+
+            // Получаем ник игрока для корректного определения поля isForMe в сообщениях
+            const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+            let formattedMessages = Chat.getParsedMessagesNew(msgBox, playerName);
 
             return formattedMessages;
         } catch (err) {
