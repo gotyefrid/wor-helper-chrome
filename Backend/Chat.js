@@ -186,13 +186,6 @@ export class Chat {
             return;
         }
 
-        const hour = new Date().getHours();
-        const isNightTime = hour >= 23 || hour < 7;
-
-        if (!isNightTime) {
-            return;
-        }
-
         const lastSent = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_last_sent');
         const couldownPassed = !lastSent || (Date.now() - lastSent) > 5 * 60 * 1000;
 
@@ -208,7 +201,7 @@ export class Chat {
     }
 
     getAutoReply(message) {
-        const defaultText = 'шо шо';
+        const defaultText = '.гг.';
 
         if (!message) return defaultText;
 
@@ -217,7 +210,7 @@ export class Chat {
         const patterns = [
             {
                 check: (t) => t.includes("тут"),
-                replies: ["да, но ухожу уже", "тут, но ухожу уже", "уже нет, ушел.", "ухожу уже"]
+                replies: ["да", "тут", "неа", "пока да"]
             },
             {
                 check: (t) => t.includes("живой") || t.includes("живы"),
@@ -229,7 +222,7 @@ export class Chat {
             },
             {
                 check: (t) => t.includes("проверка"),
-                replies: ["всё работает", "нормально", "без проблем"]
+                replies: ["всё работает", "проверяет", "без проблем"]
             },
             {
                 check: (t) => t.includes("бот"),
