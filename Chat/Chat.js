@@ -308,7 +308,6 @@ class Chat {
         assignDates(msgs);
         for (const msg of msgs) msg.id = makeId(msg);
 
-        console.log(msgs)
         return msgs;
     }
 }
