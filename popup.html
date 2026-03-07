@@ -14,12 +14,25 @@
 <body>
     <h2>WOR Helper</h2>
 
-    <div class="toggle-wrapper">
-        <span class="toggle-title">Ник</span>
-        <label class="text-input-nick">
-            <input type="text" id="inputPlayerName">
-        </label>
+    <div class="toggle-wrapper" id="toggleCharacterWrapper">
+        <span class="toggle-title toggle-expand">Персонаж ▼</span>
     </div>
+    <div class="sub-toggle-wrapper" id="toggleCharacterOptionsWrapper">
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Ник</span>
+            <label class="text-input-nick">
+                <input type="text" id="inputPlayerName">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Пароль</span>
+            <label class="text-input-nick">
+                <input type="password" id="inputPlayerPassword">
+            </label>
+        </div>
+    </div>
+    <hr class="divider">
+
     <div class="toggle-wrapper" id="toggleFishingWrapper">
         <span class="toggle-title toggle-expand">Рыбалка ▼</span>
         <label class="switch">

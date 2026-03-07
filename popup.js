@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Обработчик чекбоксов
     processCheckboxes();
     processInputs();
+    processCharacter();
 
     // Обработчики парсинга
     processParsing();
@@ -327,6 +328,7 @@ async function processInputs() {
     // Определяем настройки переключателей
     const inputs = {
         inputPlayerName: { storageKey: "wor_chat_player_name" },
+        inputPlayerPassword: { storageKey: "wor_player_password" },
         inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
         inputFightingMaxTrauma: { storageKey: "wor_fight_max_trauma" },
         inputFightingLowDamageThreshold: { storageKey: "wor_fight_low_damage_threshold" },
@@ -390,6 +392,20 @@ async function processInputs() {
             chrome.storage.local.set({ [storageKey]: value });
         });
     }
+}
+
+async function processCharacter() {
+    const wrapper = document.getElementById('toggleCharacterWrapper');
+    const optWrapper = document.getElementById('toggleCharacterOptionsWrapper');
+    const expandBtn = wrapper.querySelector('.toggle-title');
+    const btnLabel = expandBtn.textContent;
+
+    optWrapper.style.display = 'none';
+    expandBtn.addEventListener('click', () => {
+        const isHidden = optWrapper.style.display === 'none' || optWrapper.style.display === '';
+        optWrapper.style.display = isHidden ? 'block' : 'none';
+        expandBtn.textContent = isHidden ? btnLabel.slice(0, -1) + '▲' : btnLabel;
+    });
 }
 
 async function processQuests() {
