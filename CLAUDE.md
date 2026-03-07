@@ -29,6 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Territory/** - работа с картой, история перемещений
 - **Chat/** - функции чата, быстрые ответы
 - **Rating/** - обработка рейтинга
+- **Login/** - автоматическая авторизация на странице входа (`process-login.js`)
 - **ActualPagesHtml/** - актуальная HTML-вёрстка страниц игры для справки
 
 Файлы `process-*.js` обычно:
@@ -76,6 +77,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `wor_tg_bot_common_token` - токен Telegram бота
 - `wor_tg_chat_id` - ID чата Telegram
 - `wor_map_move_delay` - задержка при автоперемещениях
+- `wor_player_password` - пароль игрока для авто-авторизации (хранится в popup, используется в `Login/process-login.js`)
 - и т.д.
 
 Для работы с storage используйте:
@@ -152,6 +154,7 @@ this.isWaitingFishPage = zag.some(div => div.textContent.includes('удочка 
 - `mail-main.html` - страница почтового ящика (входящие/отправленные), URL: `mail.php?act=inbox`
 - `mail-send-tab.html` - страница написания нового письма, URL: `mail.php?act=newmail`. Форма `action="mail.php?act=mailadd"`, поля: `_csrf` (hidden), `mail_name`, `mail_tema`, `mail_message`, `button`
 - `peredatm.html` - страница передачи WR другому игроку, URL: `peredatm.php`. Форма `action="permoneyact.php"`, поля: `_csrf` (hidden), `nameperedat`, `suma`
+- `login.html` - страница авторизации, URL: `http://185.212.47.8/wap/` (появляется когда пользователь не авторизован). Форма `action="login.php" method="post"`, поля: `pname` (логин), `pass` (пароль), `cap` (hidden=111), кнопка `login` (submit)
 
 При написании селекторов или поиске элементов **всегда сверяйся** с соответствующим файлом из этой папки.
 

@@ -40,7 +40,8 @@
         {
             "matches": [
                 "*://wor.com.ua/wap/*",
-                "http://185.212.47.8/wap/*"
+                "http://185.212.47.8/wap/*",
+                "http://185.212.47.8/wap/"
             ],
             "js": [
                 "Common/moving-key.js",
@@ -179,6 +180,15 @@
                 "Territory/TaktAuto.js",
                 "Territory/process-territory.js",
                 "Territory/map-history.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://wor.com.ua/wap/",
+                "http://185.212.47.8/wap/"
+            ],
+            "js": [
+                "Login/process-login.js"
             ]
         },
         {
