@@ -2,12 +2,17 @@ import { sendMessagesFromChat } from './process-chat-backend.js';
 import { disableChaosBattle } from './process-common-backend.js';
 import { CommonHelperBackground } from './CommonHelperBackground.js';
 
+const GAME_URL = 'http://185.212.47.8/wap/';
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.alarms.create('sendMessagesAlarm', {
         periodInMinutes: 0.25 // 15 секунд (0.25 мин)
     });
     chrome.alarms.create('disableChaosBattle', {
         periodInMinutes: 30
+    });
+    chrome.alarms.create('tabWatchdog', {
+        periodInMinutes: 1
     });
 });
 
@@ -17,6 +22,22 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
     if (alarm.name === 'disableChaosBattle') {
         disableChaosBattle();
+    }
+    if (alarm.name === 'tabWatchdog') {
+        chrome.tabs.query({}, (tabs) => {
+            for (const tab of tabs) {
+                if (tab.url && tab.url.startsWith('chrome-error://')) {
+                    chrome.tabs.update(tab.id, { url: GAME_URL });
+                }
+            }
+        });
+    }
+});
+
+// Мгновенная реакция на "Aw, Snap!" — не ждём следующего alarm
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    if (changeInfo.url && changeInfo.url.startsWith('chrome-error://')) {
+        chrome.tabs.update(tabId, { url: GAME_URL });
     }
 });
 
