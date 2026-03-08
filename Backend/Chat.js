@@ -126,18 +126,12 @@ export class Chat {
     /**
      * Форматирует одно сообщение чата и отправляет его в Telegram.
      *
-     * Поддерживает оба формата сообщений:
-     *   - Новый (getParsedMessagesNew): type = 'SYSTEM' | 'PUBLIC' | 'PUBLIC_TO' | 'PRIVATE'
-     *   - Старый (getParsedMessages, устарел): type = 'system' | 'chat'
-     *   Старый формат нужен для плавного перехода — старые сообщения могут ещё
-     *   находиться в очереди wor_chat_message_queue в момент обновления.
-     *
      * Логика отправки:
      *   1. Если сообщение адресовано игроку (isToMe) — шлём в бот 'common' с 🔔.
      *   2. Если системное и касается игрока (травма, штраф, письмо и т.д.) — тоже в 'common'.
      *   3. Все сообщения всегда идут в бот 'chat' для полного архива.
      *
-     * @param {Object} msg - объект сообщения из getParsedMessagesNew (или старого парсера)
+     * @param {Object} msg - объект сообщения из getParsedMessagesNew
      */
     async sendMessagesToTelegram(msg) {
         let isToMe = false;
@@ -156,10 +150,8 @@ export class Chat {
         let text = `[${time}] `;
         text += isToMe ? `🔔 ` : '';
 
-        // Проверяем тип: новый формат ('PUBLIC'/'PUBLIC_TO'/'PRIVATE') и старый ('chat')
-        const isChat = msg.type === 'PUBLIC' || msg.type === 'PUBLIC_TO' || msg.type === 'PRIVATE' || msg.type === 'chat';
-        // Проверяем системный тип: новый ('SYSTEM') и старый ('system')
-        const isSystem = msg.type === 'SYSTEM' || msg.type === 'system';
+        const isChat = msg.type === 'PUBLIC' || msg.type === 'PUBLIC_TO' || msg.type === 'PRIVATE';
+        const isSystem = msg.type === 'SYSTEM';
 
         if (isChat) {
             text += `\`${escape(msg.from)}\``;
@@ -219,14 +211,15 @@ export class Chat {
                 answer = this.getAutoReply(msg.text)
             }
 
-            await this.sendDirectMessage(msg.from, answer);
+            await this.sendDirectMessage(msg.from, answer, msg.isPrivate);
         }
     }
 
     getAutoReply(message) {
-        const defaultText = '.гг.';
+        const defaults = ['.гг.', '.гыы.', '.гы.'];
+        const defaultText = () => defaults[Math.floor(Math.random() * defaults.length)];
 
-        if (!message) return defaultText;
+        if (!message) return defaultText();
 
         const text = message.toLowerCase().trim();
 
@@ -264,7 +257,7 @@ export class Chat {
             }
         }
 
-        return defaultText; // если ничего не подошло
+        return defaultText(); // если ничего не подошло
     }
 
     async isPlayerModerator(name) {
@@ -306,7 +299,7 @@ export class Chat {
         });
     }
 
-    async sendDirectMessage(to, answer) {
+    async sendDirectMessage(to, answer, isPrivate = true) {
         const tabId = await this._getGameTabId();
         if (!tabId) {
             CommonHelperBackground.log('Вкладка игры не найдена для отправки сообщения');
@@ -314,7 +307,7 @@ export class Chat {
         }
 
         return new Promise((resolve) => {
-            chrome.tabs.sendMessage(tabId, { type: 'sendDirectMessage', to, answer }, async (response) => {
+            chrome.tabs.sendMessage(tabId, { type: 'sendDirectMessage', to, answer, isPrivate }, async (response) => {
                 if (chrome.runtime.lastError || !response) {
                     CommonHelperBackground.log('Ошибка отправки личного сообщения: ' + chrome.runtime.lastError?.message);
                     resolve(false);

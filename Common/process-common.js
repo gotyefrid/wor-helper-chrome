@@ -198,7 +198,7 @@ function backgroundListener() {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: new URLSearchParams({
-                            privat: true,
+                            privat: message.isPrivate ? 1 : 0,
                             komy: message.to,
                             message: message.answer
                         })
