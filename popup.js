@@ -336,13 +336,19 @@ async function processAutoReply() {
         }
     });
 
-    // Загрузка состояния чекбокса
-    chrome.storage.local.get('wor_chat_auto_reply_active', (data) => {
+    // Загрузка состояния чекбокса и кулдауна
+    chrome.storage.local.get(['wor_chat_auto_reply_active', 'wor_chat_auto_reply_cooldown'], (data) => {
         document.getElementById('toggleAutoReplyActive').checked = !!data.wor_chat_auto_reply_active;
+        document.getElementById('inputAutoReplyCooldown').value = data.wor_chat_auto_reply_cooldown ?? 5;
     });
 
     document.getElementById('toggleAutoReplyActive').addEventListener('change', function () {
         chrome.storage.local.set({ wor_chat_auto_reply_active: this.checked });
+    });
+
+    document.getElementById('inputAutoReplyCooldown').addEventListener('input', function () {
+        const val = parseInt(this.value);
+        if (val > 0) chrome.storage.local.set({ wor_chat_auto_reply_cooldown: val });
     });
 
     // Открытие модалки

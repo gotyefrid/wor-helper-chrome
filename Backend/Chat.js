@@ -203,7 +203,8 @@ export class Chat {
         if (!isAllowed) return;
 
         const lastSent = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_last_sent');
-        const couldownPassed = !lastSent || (Date.now() - lastSent) > 5 * 60 * 1000;
+        const cooldownMin = (await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_cooldown')) ?? 5;
+        const couldownPassed = !lastSent || (Date.now() - lastSent) > cooldownMin * 60 * 1000;
 
         if (couldownPassed) {
             let answer = await CommonHelperBackground.getExtStorage('wor_chat_auto_answer_text');
