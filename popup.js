@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     processParsing();
 
     processChat();
+    processAutoReply();
     processMap();
 
     // Обработчик рыбалки
@@ -292,6 +293,99 @@ async function processChat() {
 
     // Закрытие модалки (крестик)
     document.querySelector('#modal-fast-address-close').addEventListener('click', () => {
+        closeModal(modalId);
+    });
+}
+
+async function processAutoReply() {
+    const modalId = 'modal_auto_reply';
+
+    const SENDER_PRESETS = ['Модераторы', 'Все'];
+
+    const DEFAULT_PATTERNS = [
+        'тут:да|тут|неа|пока да',
+        'живой:да, живой|всё ок|на связи',
+        'кто:я тут|здесь|слушаю',
+        'проверка:всё работает|проверяет|без проблем',
+        'бот:разумеется)|ничего подобного|.восадок.',
+        'клик:клик-клак|.восадок.|.гг.',
+    ];
+
+    // Инициализация select2 для отправителей (пресеты + произвольные ники)
+    $('#modal-auto-reply-senders').select2({
+        tags: true,
+        width: '100%',
+        placeholder: 'Выберите или введите ник...',
+        tokenSeparators: [','],
+        data: SENDER_PRESETS.map(s => ({ id: s, text: s }))
+    });
+
+    // Инициализация select2 для паттернов ответов
+    $('#modal-auto-reply-patterns').select2({
+        tags: true,
+        width: '100%',
+        placeholder: 'слово:ответ1|ответ2 и Enter',
+        tokenSeparators: ['\n'],
+        createTag: function (params) {
+            const term = params.term.trim();
+            const colonIdx = term.indexOf(':');
+            if (colonIdx > 0 && colonIdx < term.length - 1) {
+                return { id: term, text: term };
+            }
+            return null;
+        }
+    });
+
+    // Загрузка состояния чекбокса
+    chrome.storage.local.get('wor_chat_auto_reply_active', (data) => {
+        document.getElementById('toggleAutoReplyActive').checked = !!data.wor_chat_auto_reply_active;
+    });
+
+    document.getElementById('toggleAutoReplyActive').addEventListener('change', function () {
+        chrome.storage.local.set({ wor_chat_auto_reply_active: this.checked });
+    });
+
+    // Открытие модалки
+    document.getElementById('toggleChatOptAutoReply').addEventListener('click', () => {
+        chrome.storage.local.get(['wor_chat_auto_reply_senders', 'wor_chat_auto_reply_patterns'], (data) => {
+            const senders = data.wor_chat_auto_reply_senders || ['Модераторы'];
+            const patterns = data.wor_chat_auto_reply_patterns || DEFAULT_PATTERNS;
+
+            const $senders = $('#modal-auto-reply-senders').empty();
+            SENDER_PRESETS.forEach(s => {
+                $senders.append(new Option(s, s, false, senders.includes(s)));
+            });
+            // Кастомные ники (не из пресетов)
+            senders.filter(s => !SENDER_PRESETS.includes(s)).forEach(s => {
+                $senders.append(new Option(s, s, true, true));
+            });
+            $senders.trigger('change');
+
+            const $patterns = $('#modal-auto-reply-patterns').empty();
+            patterns.forEach(p => {
+                $patterns.append(new Option(p, p, true, true));
+            });
+            $patterns.trigger('change');
+
+            openModal(modalId);
+        });
+    });
+
+    // Сохранение
+    document.getElementById('modal-auto-reply-save').addEventListener('click', () => {
+        const senders = $('#modal-auto-reply-senders').val() || [];
+        const patterns = $('#modal-auto-reply-patterns').val() || [];
+
+        chrome.storage.local.set({
+            wor_chat_auto_reply_senders: senders,
+            wor_chat_auto_reply_patterns: patterns,
+        });
+
+        closeModal(modalId);
+    });
+
+    // Закрытие модалки (крестик)
+    document.getElementById('modal-auto-reply-close').addEventListener('click', () => {
         closeModal(modalId);
     });
 }

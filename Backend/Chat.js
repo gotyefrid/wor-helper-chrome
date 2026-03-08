@@ -195,11 +195,12 @@ export class Chat {
     }
 
     async processDirectMessage(msg) {
-        const isFromModerator = await this.isPlayerModerator(msg.from);
+        const isActive = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_active');
+        if (!isActive) return;
 
-        if (!isFromModerator) {
-            return;
-        }
+        const senders = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_senders') || ['Модераторы'];
+        const isAllowed = await this._isSenderAllowed(msg.from, senders);
+        if (!isAllowed) return;
 
         const lastSent = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_last_sent');
         const couldownPassed = !lastSent || (Date.now() - lastSent) > 5 * 60 * 1000;
@@ -208,14 +209,21 @@ export class Chat {
             let answer = await CommonHelperBackground.getExtStorage('wor_chat_auto_answer_text');
 
             if (!answer) {
-                answer = this.getAutoReply(msg.text)
+                const patterns = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_patterns') || [];
+                answer = this.getAutoReply(msg.text, patterns);
             }
 
             await this.sendDirectMessage(msg.from, answer, msg.isPrivate);
         }
     }
 
-    getAutoReply(message) {
+    async _isSenderAllowed(name, senders) {
+        if (senders.includes('Все')) return true;
+        if (senders.includes('Модераторы') && await this.isPlayerModerator(name)) return true;
+        return senders.includes(name);
+    }
+
+    getAutoReply(message, storedPatterns = []) {
         const defaults = ['.гг.', '.гыы.', '.гы.'];
         const defaultText = () => defaults[Math.floor(Math.random() * defaults.length)];
 
@@ -223,41 +231,19 @@ export class Chat {
 
         const text = message.toLowerCase().trim();
 
-        const patterns = [
-            {
-                check: (t) => t.includes("тут"),
-                replies: ["да", "тут", "неа", "пока да"]
-            },
-            {
-                check: (t) => t.includes("живой") || t.includes("живы"),
-                replies: ["да, живой", "всё ок", "на связи"]
-            },
-            {
-                check: (t) => t.includes("кто") || t.includes("кто"),
-                replies: ["я тут", "здесь", "слушаю"]
-            },
-            {
-                check: (t) => t.includes("проверка"),
-                replies: ["всё работает", "проверяет", "без проблем"]
-            },
-            {
-                check: (t) => t.includes("бот"),
-                replies: ["разумеется)", "ничего подобного", ".восадок."]
-            },
-            {
-                check: (t) => t.includes("клик"),
-                replies: ["клик-клак", ".восадок.", ".гг."]
-            }
-        ];
-
-        for (const p of patterns) {
-            if (p.check(text)) {
-                const randomIndex = Math.floor(Math.random() * p.replies.length);
-                return p.replies[randomIndex];
+        // Формат паттерна: "ключевое_слово:ответ1|ответ2|ответ3"
+        for (const patternStr of storedPatterns) {
+            const colonIdx = patternStr.indexOf(':');
+            if (colonIdx === -1) continue;
+            const keyword = patternStr.slice(0, colonIdx).trim().toLowerCase();
+            const replies = patternStr.slice(colonIdx + 1).split('|').map(r => r.trim()).filter(Boolean);
+            if (!keyword || !replies.length) continue;
+            if (text.includes(keyword)) {
+                return replies[Math.floor(Math.random() * replies.length)];
             }
         }
 
-        return defaultText(); // если ничего не подошло
+        return defaultText();
     }
 
     async isPlayerModerator(name) {

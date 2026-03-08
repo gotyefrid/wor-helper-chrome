@@ -320,6 +320,12 @@
                 <a id="toggleChatOptFastAddress">Редактировать</a>
             </label>
         </div>
+        <div class="toggle-wrapper">
+            <span class="toggle-title small">Автоответ</span>
+            <label class="">
+                <a id="toggleChatOptAutoReply">Редактировать</a>
+            </label>
+        </div>
     </div>
     <hr class="divider">
 
@@ -385,6 +391,27 @@
             </div>
 
             <button id="modal-parsing-save" class="modal-save">Сохранить</button>
+        </div>
+    </div>
+
+    <div id="modal_auto_reply" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="modal-auto-reply-close">&times;</span>
+            <h3>Автоответ</h3>
+            <div class="toggle-wrapper">
+                <span class="toggle-title small">Включено</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggleAutoReplyActive"><span class="slider round"></span>
+                </label>
+            </div>
+
+            <label class="modal-label">От кого отвечать <span class="info-icon" title="Модераторы — проверяет список модераторов клана. Все — отвечает всем. Можно добавить конкретные ники игроков.">?</span></label>
+            <select id="modal-auto-reply-senders" class="select2" multiple style="width:100%"></select>
+
+            <label class="modal-label">Правила ответов <span class="info-icon" title="Формат: ключевое_слово:ответ1|ответ2|ответ3. Если во входящем сообщении найдено ключевое слово — выбирается случайный ответ из списка.">?</span></label>
+            <select id="modal-auto-reply-patterns" class="select2" multiple style="width:100%"></select>
+
+            <button id="modal-auto-reply-save" class="modal-save">Сохранить</button>
         </div>
     </div>
 
