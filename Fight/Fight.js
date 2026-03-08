@@ -10,6 +10,9 @@ class Fight {
     levelSkipCallback = null;
     needPotHP = false;
     needPotMP = false;
+    potHPThreshold = 50;
+    potMPThreshold = 50;
+    attackType = 2; // 1 = физический, 2 = магический
 
     static BOSS_NAMES = Object.freeze([
         'Единорог',
@@ -187,8 +190,14 @@ class Fight {
         // Если мы тут - значит мы на странице боя
         await CommonHelper.log('Атакуем');
 
-        if (this.needPotHP) await this.potHP();
-        if (this.needPotMP) await this.potMP();
+        if (this.needPotHP) await this.potHP(this.potHPThreshold);
+        if (this.needPotMP) await this.potMP(this.potMPThreshold);
+
+        // Устанавливаем тип удара (1 = физический, 2 = магический)
+        const udtypeEl = document.querySelector('#udartype');
+        const toggleUdtypeEl = document.querySelector('#toggle-udartype');
+        if (udtypeEl) udtypeEl.value = this.attackType;
+        if (toggleUdtypeEl) toggleUdtypeEl.checked = (String(this.attackType) === '2');
 
         let hitButton = document.querySelector('input[name=bitvraga]');
 
@@ -397,7 +406,7 @@ class Fight {
     }
 
     // Unified potion consumption for HP and МА
-    async consumePotion(selector, resourceLabel) {
+    async consumePotion(selector, resourceLabel, threshold = 50) {
         try {
             const [current, max] = document
                 .querySelector(selector)
@@ -407,26 +416,22 @@ class Fight {
             const percent = (current / max) * 100;
             await CommonHelper.log(`Текущее ${resourceLabel}: ${current}/${max} (${percent.toFixed(2)}%)`);
 
-            // Формируем список приоритетных банок в зависимости от процента ресурса
-            let potionPriority = [];
-            if (percent <= 10) {
-                potionPriority = [`500 ${resourceLabel}`];
-            } else if (percent <= 20) {
-                potionPriority = [`250 ${resourceLabel}`];
-            } else if (percent <= 30) {
-                potionPriority = [`100 ${resourceLabel}`];
-            } else if (percent <= 40) {
-                potionPriority = [`50 ${resourceLabel}`];
-            } else if (percent <= 50) {
-                potionPriority = [`10 ${resourceLabel}`, `20 ${resourceLabel}`]; // пробуем 10, если нет — 20
-            }
-
-            if (potionPriority.length === 0) {
-                await CommonHelper.log(`${resourceLabel} выше 50%, пить ничего не не нужно.`);
+            if (percent > threshold) {
+                await CommonHelper.log(`${resourceLabel} выше ${threshold}%, пить ничего не нужно.`);
                 return;
             }
 
-            await CommonHelper.log(`Выбраны банки: ${potionPriority.join(', ')} в зависимости от ${resourceLabel}%`);
+            // Приоритет от наименьшего к наибольшему — чтобы сначала расходовать мелкие банки
+            const potionPriority = [
+                `10 ${resourceLabel}`,
+                `20 ${resourceLabel}`,
+                `50 ${resourceLabel}`,
+                `100 ${resourceLabel}`,
+                `250 ${resourceLabel}`,
+                `500 ${resourceLabel}`,
+            ];
+
+            await CommonHelper.log(`Ищем наименьшую доступную банку ${resourceLabel}`);
 
             // Ищем первую доступную банку из списка приоритета
             for (const potionName of potionPriority) {
@@ -448,12 +453,12 @@ class Fight {
         }
     }
 
-    async potHP() {
-        await this.consumePotion('#hp_text', 'HP');
+    async potHP(threshold = 50) {
+        await this.consumePotion('#hp_text', 'HP', threshold);
     }
 
-    async potMP() {
-        await this.consumePotion('#mana_text', 'МА');
+    async potMP(threshold = 50) {
+        await this.consumePotion('#mana_text', 'МА', threshold);
     }
 
     async processEnemyNotAllowed(enemyName) {

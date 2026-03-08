@@ -32,14 +32,6 @@ class Chat {
             msgBox = document.querySelector("div#msg_box");
         }
 
-        const pager = msgBox.querySelector('.navigation');
-        const isNotFirstPage = pager.querySelector('span.svet').textContent !== "1"
-
-        if ((pager && isNotFirstPage) || !pager) {
-            CommonHelper.log('Мы не первой странице общего чата, а значит не актуальные сообщения не добавляем');
-            return [];
-        }
-
         function kyivDateStr() {
             const kyiv = new Date(new Date().toLocaleString('en-US', {timeZone: 'Europe/Kyiv'}));
             const y = kyiv.getFullYear();

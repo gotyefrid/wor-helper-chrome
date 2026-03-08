@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Обработчик рыбалки
     processFishing();
 
+    // Тип удара в бою
+    processFightingAttackType();
+
     // Обработчик выбора боссов
     processFightingBossesModal();
 
@@ -424,6 +427,18 @@ async function processFishing() {
     });
 }
 
+async function processFightingAttackType() {
+    const select = document.getElementById('selectFightingAttackType');
+
+    chrome.storage.local.get('wor_fight_attack_type', (data) => {
+        select.value = data.wor_fight_attack_type ?? '2';
+    });
+
+    select.addEventListener('change', () => {
+        chrome.storage.local.set({ wor_fight_attack_type: select.value });
+    });
+}
+
 async function processInputs() {
     // Определяем настройки переключателей
     const inputs = {
@@ -432,6 +447,8 @@ async function processInputs() {
         inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
         inputFightingMaxTrauma: { storageKey: "wor_fight_max_trauma" },
         inputFightingLowDamageThreshold: { storageKey: "wor_fight_low_damage_threshold" },
+        inputFightingPotHPThreshold: { storageKey: "wor_fight_pot_hp_threshold" },
+        inputFightingPotMPThreshold: { storageKey: "wor_fight_pot_mp_threshold" },
         inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
         inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
         inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },

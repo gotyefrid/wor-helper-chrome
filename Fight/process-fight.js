@@ -28,6 +28,9 @@
 
         fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_hp_active');
         fight.needPotMP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
+        fight.potHPThreshold = parseInt(await CommonHelper.getExtStorage('wor_fight_pot_hp_threshold')) || 50;
+        fight.potMPThreshold = parseInt(await CommonHelper.getExtStorage('wor_fight_pot_mp_threshold')) || 50;
+        fight.attackType = parseInt(await CommonHelper.getExtStorage('wor_fight_attack_type')) || 2;
 
         // Ссылка выхода из файта
         let exitUrl = await CommonHelper.getFightExitUrl() || null;

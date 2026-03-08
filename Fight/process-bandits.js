@@ -19,6 +19,9 @@
 
         fight.needPotHP = await CommonHelper.getExtStorage('wor_fight_pot_hp_active');
         fight.needPotMP = await CommonHelper.getExtStorage('wor_fight_pot_mp_active');
+        fight.potHPThreshold = parseInt(await CommonHelper.getExtStorage('wor_fight_pot_hp_threshold')) || 50;
+        fight.potMPThreshold = parseInt(await CommonHelper.getExtStorage('wor_fight_pot_mp_threshold')) || 50;
+        fight.attackType = parseInt(await CommonHelper.getExtStorage('wor_fight_attack_type')) || 2;
 
         // Действие если моб из стоп листа
         fight.enemiesSkipListCallback = async function (enemyName, _enemyLevel, fightClass) {
@@ -78,12 +81,18 @@ async function process(fightClass) {
     await CommonHelper.delay(CommonHelper.EXTRA_SMALL_RANDOM);
 
     if (fightClass.needPotHP) {
-        await fightClass.potHP();
+        await fightClass.potHP(fightClass.potHPThreshold);
     }
 
     if (fightClass.needPotMP) {
-        await fightClass.potMP();
+        await fightClass.potMP(fightClass.potMPThreshold);
     }
+
+    // Устанавливаем тип удара (1 = физический, 2 = магический)
+    const udtypeEl = document.querySelector('#udartype');
+    const toggleUdtypeEl = document.querySelector('#toggle-udartype');
+    if (udtypeEl) udtypeEl.value = fightClass.attackType;
+    if (toggleUdtypeEl) toggleUdtypeEl.checked = (String(fightClass.attackType) === '2');
 
     let hitButton = document.querySelector('input[name=bitvraga]');
 

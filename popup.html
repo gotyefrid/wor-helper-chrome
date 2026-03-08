@@ -180,15 +180,36 @@
             </label>
         </div>
         <div class="toggle-wrapper">
+            <span class="toggle-title small">Тип удара</span>
+            <label class="">
+                <select id="selectFightingAttackType" class="dropdown">
+                    <option value="1">Физический</option>
+                    <option value="2">Магический</option>
+                </select>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
             <span class="toggle-title small">Пить HP</span>
             <label class="switch">
                 <input type="checkbox" id="toggleFightingPotHP"><span class="slider round"></span>
             </label>
         </div>
         <div class="toggle-wrapper">
+            <span class="info-icon" title="При каком % HP начинать пить зелья здоровья (например: 70 = пить при HP ниже 70%)">?</span><span class="toggle-title small">HP% для зелья</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingPotHPThreshold" min="1" max="100" style="width: 50px;">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
             <span class="toggle-title small">Пить MA</span>
             <label class="switch">
                 <input type="checkbox" id="toggleFightingPotMP"><span class="slider round"></span>
+            </label>
+        </div>
+        <div class="toggle-wrapper">
+            <span class="info-icon" title="При каком % MA начинать пить зелья маны (например: 70 = пить при MA ниже 70%)">?</span><span class="toggle-title small">MA% для зелья</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingPotMPThreshold" min="1" max="100" style="width: 50px;">
             </label>
         </div>
         <div class="toggle-wrapper">
