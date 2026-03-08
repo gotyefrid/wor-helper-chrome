@@ -56,6 +56,29 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.action === "downloadFailedCaptcha") {
+        (async () => {
+            try {
+                const base64 = message.data.imageBase64;
+                const now = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                const filename = `captcha_failed_${now}.png`;
+
+                chrome.downloads.download({
+                    url: base64,
+                    filename: filename,
+                    saveAs: false
+                });
+
+                sendResponse({ success: true });
+            } catch (e) {
+                CommonHelperBackground.log("Ошибка при сохранении капчи: " + e.toString());
+                sendResponse({ success: false, error: e.toString() });
+            }
+        })();
+
+        return true;
+    }
+
     if (message.action === "sendRequestResolveCaptcha") {
         (async () => {
             try {

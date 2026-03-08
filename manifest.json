@@ -8,7 +8,8 @@
         "scripting",
         "activeTab",
         "tabs",
-        "alarms"
+        "alarms",
+        "downloads"
     ],
     "host_permissions": [
         "http://185.212.47.8/wap/*",

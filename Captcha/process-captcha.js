@@ -36,6 +36,22 @@ window.addEventListener("load", async function () {
         CommonHelper.sendTelegramMessage('Неправильно поставлен пазл! Запрашиваем новую картинку!', 'common', true, 'html');
         await CommonHelper.setExtStorage('wor_captcha_error_count', ++currentErrorCount);
 
+        // Сохраняем провальную картинку перед обновлением
+        let failedImgElement = document.querySelector('img[src*=captcha_main]');
+        if (failedImgElement) {
+            let failedImage = await captcha.getImageFromDOM(failedImgElement);
+            if (failedImage) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    chrome.runtime.sendMessage({
+                        action: "downloadFailedCaptcha",
+                        data: { imageBase64: reader.result }
+                    });
+                };
+                reader.readAsDataURL(failedImage);
+            }
+        }
+
         // Обновляем картинку
         document.querySelector('a[href*=shuffle]').click();
 
