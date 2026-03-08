@@ -26,7 +26,14 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'tabWatchdog') {
         chrome.tabs.query({}, (tabs) => {
             for (const tab of tabs) {
-                if (tab.url && tab.url.startsWith('chrome-error://')) {
+                const isChromeError = tab.url && tab.url.startsWith('chrome-error://');
+                const isCrashed = tab.status === 'crashed';
+                const isGameTab = tab.url && (
+                    tab.url.startsWith('http://185.212.47.8/wap/') ||
+                    tab.url.includes('wor.com.ua/wap/') ||
+                    tab.url.includes('worldofrest.com/wap/')
+                );
+                if (isChromeError || (isCrashed && isGameTab)) {
                     chrome.tabs.update(tab.id, { url: GAME_URL });
                 }
             }
@@ -35,8 +42,15 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 // Мгновенная реакция на "Aw, Snap!" — не ждём следующего alarm
-chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-    if (changeInfo.url && changeInfo.url.startsWith('chrome-error://')) {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    const isChromeError = changeInfo.url && changeInfo.url.startsWith('chrome-error://');
+    const isCrashed = changeInfo.status === 'crashed';
+    const isGameTab = tab.url && (
+        tab.url.startsWith('http://185.212.47.8/wap/') ||
+        tab.url.includes('wor.com.ua/wap/') ||
+        tab.url.includes('worldofrest.com/wap/')
+    );
+    if (isChromeError || (isCrashed && isGameTab)) {
         chrome.tabs.update(tabId, { url: GAME_URL });
     }
 });
