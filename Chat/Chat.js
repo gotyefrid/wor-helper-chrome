@@ -35,7 +35,7 @@ class Chat {
         const pager = msgBox.querySelector('.navigation');
         const isNotFirstPage = pager.querySelector('span.svet').textContent !== "1"
 
-        if (pager && isNotFirstPage) {
+        if ((pager && isNotFirstPage) || !pager) {
             CommonHelper.log('Мы не первой странице общего чата, а значит не актуальные сообщения не добавляем');
             return [];
         }
