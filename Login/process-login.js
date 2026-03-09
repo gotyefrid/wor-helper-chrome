@@ -10,7 +10,7 @@
 
     if (!password) return;
 
-    const doLogin = await CommonHelper.askWithTimeout('Авторизоваться автоматически?', 15000);
+    const doLogin = await CommonHelper.askWithTimeout('Авторизоваться автоматически?', 3000);
 
     if (doLogin) {
         const form = document.querySelector('form[action="login.php"]');

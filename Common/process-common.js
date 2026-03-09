@@ -9,12 +9,9 @@
     checkTrauma();
 
     const isParsingActive = await CommonHelper.getExtStorage('wor_parsing_active');
+
     if (isParsingActive) {
         parsing();
-    };
-
-    if (document.location.href.includes('forum=12&topic=2289')) {
-        sendRandomFact();
     }
 
     backgroundListener();
