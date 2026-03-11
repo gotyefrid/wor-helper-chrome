@@ -1,6 +1,6 @@
 class Captcha {
     // плавающий скрипт хэш 2931440912
-    HTML_HASH = 1046671626;
+    HTML_HASH = 2251357741;
     RESOURCES_HASH = 408120367;
 
     constructor() {
