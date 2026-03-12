@@ -11,9 +11,6 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.alarms.create('disableChaosBattle', {
         periodInMinutes: 30
     });
-    chrome.alarms.create('tabWatchdog', {
-        periodInMinutes: 1
-    });
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -22,22 +19,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
     if (alarm.name === 'disableChaosBattle') {
         disableChaosBattle();
-    }
-    if (alarm.name === 'tabWatchdog') {
-        chrome.tabs.query({}, (tabs) => {
-            for (const tab of tabs) {
-                const isChromeError = tab.url && tab.url.startsWith('chrome-error://');
-                const isCrashed = tab.status === 'crashed';
-                const isGameTab = tab.url && (
-                    tab.url.startsWith('http://185.212.47.8/wap/') ||
-                    tab.url.includes('wor.com.ua/wap/') ||
-                    tab.url.includes('worldofrest.com/wap/')
-                );
-                if (isChromeError || (isCrashed && isGameTab)) {
-                    chrome.tabs.update(tab.id, { url: GAME_URL });
-                }
-            }
-        });
     }
 });
 
