@@ -117,14 +117,21 @@ async function checkFlashNotifications() {
         return;
     }
 
-    if (html.innerText.includes('Скрыть сообщение')) {
-        CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 1200);
-    }
+    const text = html.innerText;
 
-    if (html.innerText.includes('Для того, чтобы ловить рыбу, Вам необходима удочка!')) {
+    if (text.includes('Для того, чтобы ловить рыбу, Вам необходима удочка!')) {
         await CommonHelper.turnFishing(false);
         await CommonHelper.turnFighting(false);
         CommonHelper.sendTelegramMessage('Для того, чтобы ловить рыбу, Вам необходима удочка!', 'common', true, 'html', 60);
+    }
+
+    if (text.includes('Скрыть сообщение')) {
+        const isBattle = text.includes('Тактическое сражение');
+        const hasReward = text.includes('колеса фортуны') || text.includes('1 рубину') || text.includes('5000');
+
+        if (!isBattle || hasReward) {
+            CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 1200);
+        }
     }
 
     // Парсим flash-уведомления новым парсером (результат сохраняется в storage для возможного будущего использования)
