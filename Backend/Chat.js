@@ -225,7 +225,7 @@ export class Chat {
     }
 
     getAutoReply(message, storedPatterns = []) {
-        const defaults = ['.гг.', '.гыы.', '.гы.'];
+        const defaults = ['.гг.', '.гыы.', '.гы.', '.еду.', '.фотограф.', '.куку.'];
         const defaultText = () => defaults[Math.floor(Math.random() * defaults.length)];
 
         if (!message) return defaultText();
