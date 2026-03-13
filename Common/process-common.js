@@ -198,40 +198,14 @@ function backgroundListener() {
         if (message.type === 'sendDirectMessage') {
             (async () => {
                 try {
-                    const chatLink = document.querySelector('a[href*="chat2.php"]');
-                    if (!chatLink) {
-                        sendResponse({ error: 'Ссылка на чат не найдена' });
-                        return;
-                    }
-                    const chatUrl = chatLink.href;
-
-                    const chatPageResponse = await fetch(chatUrl);
-                    const html = await chatPageResponse.text();
-
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-
-                    const form = doc.querySelector('#chatline');
-
-                    if (!form) {
-                        sendResponse({ error: 'Форма чата не найдена' });
-                        return;
-                    }
-
-                    const formAction = form.getAttribute('action') || chatUrl;
-
-                    const params = new URLSearchParams();
-                    form.querySelectorAll('input[type="hidden"]').forEach(input => {
-                        params.set(input.name, input.value);
-                    });
-                    params.set('komy', message.to);
-                    params.set('message', message.answer);
-                    params.set('privat', message.isPrivate ? 'true' : 'false');
-
-                    const response = await fetch(formAction, {
+                    const response = await fetch('/wap/otpravit.php?js=1', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: params
+                        body: new URLSearchParams({
+                            privat: message.isPrivate ? 1 : 0,
+                            komy: message.to,
+                            message: message.answer
+                        })
                     });
                     sendResponse({ status: response.status });
                 } catch (err) {
