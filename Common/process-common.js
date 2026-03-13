@@ -197,16 +197,20 @@ function backgroundListener() {
 
         if (message.type === 'sendDirectMessage') {
             (async () => {
+                console.log('Начали отправлять личку')
                 try {
                     const chatLink = document.querySelector('a[href*="chat2.php"]');
                     if (!chatLink) {
                         sendResponse({ error: 'Ссылка на чат не найдена' });
                         return;
                     }
+
+                    console.log('Налши линк чата')
                     const chatUrl = chatLink.href;
 
                     const chatPageResponse = await fetch(chatUrl);
                     const html = await chatPageResponse.text();
+                    console.log('Зафетчили')
 
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
@@ -228,11 +232,15 @@ function backgroundListener() {
                     params.set('message', message.answer);
                     params.set('privat', message.isPrivate ? 'true' : 'false');
 
+                    console.log('Отправляем', params)
+
                     const response = await fetch(formAction, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: params
                     });
+
+                    console.log(response)
                     sendResponse({ status: response.status });
                 } catch (err) {
                     sendResponse({ error: err.toString() });
