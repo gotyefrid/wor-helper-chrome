@@ -19,11 +19,13 @@ import { CommonHelperBackground } from './CommonHelperBackground.js';
  */
 export async function sendMessagesFromChat() {
     try {
-        let notification = await CommonHelperBackground.getExtStorage('wor_tg_notifications_active');
+        let parseActive = await CommonHelperBackground.getExtStorage('wor_chat_parse_active');
 
-        if (!notification) {
+        if (!parseActive) {
             return;
         }
+
+        let notification = await CommonHelperBackground.getExtStorage('wor_tg_notifications_active');
 
         const tabs = await chrome.tabs.query({});
         // Находим первую вкладку, где в URL есть "/wap/"
@@ -59,7 +61,9 @@ export async function sendMessagesFromChat() {
                 if (oldMessages.length === 0) {
                     // Первый запуск или очередь была очищена — берём все актуальные сообщения
                     resultMessages = actualMessages;
-                    await CommonHelperBackground.sendTelegramMessage('Очередь пуста, беру все сообщения.');
+                    if (notification) {
+                        await CommonHelperBackground.sendTelegramMessage('Очередь пуста, беру все сообщения.');
+                    }
                 } else if (oldNewestMessage) {
                     // Отрезаем из actualMessages всё, что старше или равно oldNewestMessage
                     // removeFromMatch возвращает только сообщения НОВЕЕ oldNewestMessage
@@ -70,12 +74,12 @@ export async function sendMessagesFromChat() {
 
                 await CommonHelperBackground.setExtStorage('wor_chat_message_queue', resultMessages);
 
-                if (resultMessages.length > 50) {
+                if (notification && resultMessages.length > 50) {
                     await CommonHelperBackground.sendTelegramMessage('Отправляем все сообщения со страницы');
                 }
 
                 // Отправляем сообщения из очереди по одному, начиная с самого старого (с конца массива)
-                while (resultMessages.length >= 1) {
+                while (notification && resultMessages.length >= 1) {
                     if (resultMessages.length == 1 && resultMessages[0] !== undefined) {
                         // Последний (и самый новый) элемент — отправляем только если ещё не был отправлен
                         if (resultMessages[0].sended == true) {

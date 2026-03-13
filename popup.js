@@ -89,6 +89,7 @@ async function processCheckboxes() {
             storageKey: "wor_chat_active",
             hasSubOptions: true,
         },
+        toggleChatParseActive: { storageKey: "wor_chat_parse_active" },
         toggleChatOptFastAddressActive: { storageKey: "wor_chat_fast_answers_active" },
     };
 
@@ -346,7 +347,18 @@ async function processAutoReply() {
     });
 
     document.getElementById('toggleAutoReplyActive').addEventListener('change', function () {
-        chrome.storage.local.set({ wor_chat_auto_reply_active: this.checked });
+        if (this.checked) {
+            chrome.storage.local.get('wor_chat_parse_active', (data) => {
+                if (!data.wor_chat_parse_active) {
+                    this.checked = false;
+                    alert('Сначала включите "Парсить сообщения" в разделе Чат.');
+                } else {
+                    chrome.storage.local.set({ wor_chat_auto_reply_active: true });
+                }
+            });
+        } else {
+            chrome.storage.local.set({ wor_chat_auto_reply_active: false });
+        }
     });
 
     document.getElementById('inputAutoReplyCooldown').addEventListener('input', function () {
