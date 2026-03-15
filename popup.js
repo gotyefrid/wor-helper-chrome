@@ -71,6 +71,7 @@ async function processCheckboxes() {
             hasSubOptions: true,
         },
         toggleTaktOptActiveButton: { storageKey: "wor_takt_opt_active_button" },
+        toggleTaktRandom: { storageKey: "wor_takt_random", defaultValue: true },
 
         toggleBandits: { storageKey: "wor_bandits_active" },
 

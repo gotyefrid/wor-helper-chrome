@@ -98,8 +98,25 @@ async function runAutoTakt(t, bases, myTeam, delay, baseNames) {
         return;
     }
 
-    // Случайный выбор цели из доступных
-    const target = targets[Math.floor(Math.random() * targets.length)];
+    const randomMode = await CommonHelper.getExtStorage('wor_takt_random');
+    let target;
+
+    if (randomMode !== false) {
+        // Случайный выбор цели из доступных
+        target = targets[Math.floor(Math.random() * targets.length)];
+    } else {
+        // Выбираем ближайшую базу по длине пути
+        let minLen = Infinity;
+        for (const b of targets) {
+            const path = t.findPath(t.currentPointId, b.id);
+            if (path.length > 0 && path.length < minLen) {
+                minLen = path.length;
+                target = b;
+            }
+        }
+        if (!target) target = targets[0];
+    }
+
     CommonHelper.log('Авто-такт: идём к базе "' + target.name + '" (команда: ' + (target.team ?? 'нейтральная') + ')');
 
     const renderGrid = (json) => CommonHelper.renderMiniGridInto(

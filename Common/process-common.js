@@ -126,7 +126,7 @@ async function checkFlashNotifications() {
     }
 
     if (text.includes('Скрыть сообщение')) {
-        const isBattle = text.includes('Тактическое сражение');
+        const isBattle = text.includes('Тактическое сражение') || text.includes('Боевое сражение');
         const hasReward = text.includes('колеса фортуны') || text.includes('1 рубину') || text.includes('5000');
 
         if (!isBattle || hasReward) {

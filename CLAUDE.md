@@ -155,6 +155,7 @@ this.isWaitingFishPage = zag.some(div => div.textContent.includes('удочка 
 - `mail-send-tab.html` - страница написания нового письма, URL: `mail.php?act=newmail`. Форма `action="mail.php?act=mailadd"`, поля: `_csrf` (hidden), `mail_name`, `mail_tema`, `mail_message`, `button`
 - `peredatm.html` - страница передачи WR другому игроку, URL: `peredatm.php`. Форма `action="permoneyact.php"`, поля: `_csrf` (hidden), `nameperedat`, `suma`
 - `login.html` - страница авторизации, URL: `http://185.212.47.8/wap/` (появляется когда пользователь не авторизован). Форма `action="login.php" method="post"`, поля: `pname` (логин), `pass` (пароль), `cap` (hidden=111), кнопка `login` (submit)
+- `boj-join.html` - страница текущего боя, к которому можно присоединиться (используется для реализации автоприсоединения к бою)
 
 При написании селекторов или поиске элементов **всегда сверяйся** с соответствующим файлом из этой папки.
 
