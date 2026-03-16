@@ -125,14 +125,18 @@ async function checkFlashNotifications() {
         CommonHelper.sendTelegramMessage('Для того, чтобы ловить рыбу, Вам необходима удочка!', 'common', true, 'html', 60);
     }
 
+    let needNotify = false;
+
     if (text.includes('Скрыть сообщение')) {
         const isBattle = text.includes('Тактическое сражение') || text.includes('Боевое сражение');
         const hasReward = text.includes('колеса фортуны') || text.includes('1 рубину') || text.includes('5000');
 
-        if (!isBattle || hasReward) {
-            CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 1200);
+        if (isBattle && hasReward) {
+            needNotify = true;
         }
     }
+
+    CommonHelper.sendTelegramMessage(html.innerText, 'common', needNotify, 'html', 1200);
 
     // Парсим flash-уведомления новым парсером (результат сохраняется в storage для возможного будущего использования)
     let messages = Chat.getParsedMessagesNew(html);
