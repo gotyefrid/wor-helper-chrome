@@ -134,9 +134,10 @@ async function checkFlashNotifications() {
         if (isBattle && hasReward) {
             needNotify = true;
         }
+
+        CommonHelper.sendTelegramMessage(html.innerText, 'common', needNotify, 'html', 1200);
     }
 
-    CommonHelper.sendTelegramMessage(html.innerText, 'common', needNotify, 'html', 1200);
 
     // Парсим flash-уведомления новым парсером (результат сохраняется в storage для возможного будущего использования)
     let messages = Chat.getParsedMessagesNew(html);
