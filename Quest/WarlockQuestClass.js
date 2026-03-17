@@ -131,8 +131,6 @@ class WarlockQuest {
             await CommonHelper.setExtStorage('wor_quest_warlock_steps', steps);
 
             CommonHelper.log(`Чернокнижник: шаг ${steps}, иду ${chosenDir} → (${pos.x},${pos.y})`);
-
-            await CommonHelper.delay(100, 200);
             window.location.href = available[chosenDir];
         } else {
             // Тупик — откатываемся
