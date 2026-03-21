@@ -24,9 +24,10 @@ async function checkTaktRedirect() {
     if (!taktActive) return;
 
     const path = location.pathname;
-    if (path.includes('teritory') || path.includes('chat')) return;
 
-    window.location.href = '/wap/teritory.php';
+    if (path.includes('game') || path.includes('main')) {
+        window.location.href = '/wap/teritory.php';
+    };
 }
 
 async function checkTrauma() {
