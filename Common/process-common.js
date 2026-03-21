@@ -8,8 +8,6 @@
     checkFlashNotifications();
     checkTrauma();
 
-    await checkTaktRedirect();
-
     const isParsingActive = await CommonHelper.getExtStorage('wor_parsing_active');
 
     if (isParsingActive) {
@@ -18,16 +16,6 @@
 
     backgroundListener();
 })();
-
-async function checkTaktRedirect() {
-    const taktActive = await CommonHelper.getExtStorage('wor_takt_active');
-    if (!taktActive) return;
-
-    const path = location.pathname;
-    if (path.includes('teritory') || path.includes('chat')) return;
-
-    window.location.href = '/wap/teritory.php';
-}
 
 async function checkTrauma() {
     const currentTime = CommonHelper.getTraumaTime(true);
