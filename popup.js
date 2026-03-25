@@ -469,9 +469,10 @@ async function processInputs() {
         inputCaptchaHost: { storageKey: "wor_captcha_host" },
         inputMapDelay: { storageKey: "wor_map_move_delay" },
         inputReloadDelay: { storageKey: "wor_map_reload_delay" },
+        inputChatParseInterval: { storageKey: "wor_chat_parse_interval", defaultValue: "5,30" },
     };
 
-    for (const [inputId, { storageKey }] of Object.entries(inputs)) {
+    for (const [inputId, { storageKey, defaultValue }] of Object.entries(inputs)) {
         const inputElement = document.getElementById(inputId);
         if (!inputElement) continue;
 
@@ -479,6 +480,9 @@ async function processInputs() {
         chrome.storage.local.get(storageKey, (result) => {
             if (result[storageKey] !== undefined) {
                 inputElement.value = result[storageKey];
+            } else if (defaultValue !== undefined) {
+                inputElement.value = defaultValue;
+                chrome.storage.local.set({ [storageKey]: defaultValue });
             }
         });
 
@@ -506,6 +510,22 @@ async function processInputs() {
             if (inputElement.id == 'inputReloadDelay') {
                 if (!inputElement.value) {
                     chrome.storage.local.set({ [storageKey]: "0" });
+                }
+
+                const regex = /^\d+(,\d+)?$/;
+                if (regex.test(inputElement.value)) {
+                    inputElement.style.borderColor = 'green';
+                    chrome.storage.local.set({ [storageKey]: value });
+                } else {
+                    inputElement.style.borderColor = 'red';
+                }
+
+                return;
+            }
+
+            if (inputElement.id == 'inputChatParseInterval') {
+                if (!inputElement.value) {
+                    chrome.storage.local.set({ [storageKey]: "5,30" });
                 }
 
                 const regex = /^\d+(,\d+)?$/;

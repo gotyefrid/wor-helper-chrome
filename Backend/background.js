@@ -4,10 +4,28 @@ import { CommonHelperBackground } from './CommonHelperBackground.js';
 
 const GAME_URL = 'http://185.212.47.8/wap/';
 
+const CHAT_ALARM_MS_FROM_DEFAULT = 5000;
+const CHAT_ALARM_MS_TO_DEFAULT = 30000;
+
+async function scheduleNextChatAlarm() {
+    let msFrom = CHAT_ALARM_MS_FROM_DEFAULT;
+    let msTo = CHAT_ALARM_MS_TO_DEFAULT;
+
+    const stored = await CommonHelperBackground.getExtStorage('wor_chat_parse_interval');
+    if (stored) {
+        const m = stored.match(/^(\d+)(?:,(\d+))?$/);
+        if (m) {
+            msFrom = parseInt(m[1]) * 1000;
+            msTo = m[2] !== undefined ? parseInt(m[2]) * 1000 : msFrom;
+        }
+    }
+
+    const ms = Math.floor(Math.random() * (msTo - msFrom + 1)) + msFrom;
+    chrome.alarms.create('sendMessagesAlarm', { delayInMinutes: ms / 60000 });
+}
+
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.alarms.create('sendMessagesAlarm', {
-        periodInMinutes: 0.25 // 15 секунд (0.25 мин)
-    });
+    scheduleNextChatAlarm();
     chrome.alarms.create('disableChaosBattle', {
         periodInMinutes: 30
     });
@@ -16,6 +34,7 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'sendMessagesAlarm') {
         sendMessagesFromChat();
+        scheduleNextChatAlarm();
     }
     if (alarm.name === 'disableChaosBattle') {
         disableChaosBattle();
