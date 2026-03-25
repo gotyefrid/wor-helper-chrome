@@ -628,45 +628,6 @@ class CommonHelper {
         return 0;
     }
 
-    static async parsingPage(url, textsToFind, type, invert = false) {
-        try {
-            let response = await fetch(url, {
-                method: 'GET',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/html'
-                }
-            });
-
-            if (!response.ok) {
-                CommonHelper.sendTelegramMessage(`Ошибка загрузки страницы (${type}):` + response.status);
-                CommonHelper.log(`Ошибка загрузки страницы (${type}):` + response.status);
-                return;
-            }
-
-            let text = await response.text();
-
-            let parser = new DOMParser();
-            let newDocument = parser.parseFromString(text, 'text/html');
-            let pageText = newDocument.body.innerText;
-
-            let found = textsToFind.some(str => pageText.includes(str));
-
-            // Если ждём что на странице НЕ будет текста 
-            if (invert) {
-                found = !found;
-            }
-
-            if (found) {
-                CommonHelper.sendTelegramMessage(`Успех! Парсинг ${invert ? 'не' : ''} нашёл что-то искомое в: ${url}.`);
-            } else {
-                CommonHelper.log(`Неудача. Не найдено ничего в ${type} (проверка на [${textsToFind.join(', ')}])`, false);
-            }
-        } catch (error) {
-            CommonHelper.log(`Ошибка при проверке ${type}:` + JSON.stringify(error));
-        }
-    }
-
     /**
      * Загружает страницу чата и возвращает распарсенные сообщения.
      * Использует getParsedMessagesNew — возвращает объекты с полями:
