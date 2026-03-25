@@ -284,28 +284,6 @@
     </div>
     <hr class="divider">
 
-    <div class="toggle-wrapper" id="toggleParsingWrapper">
-        <span class="toggle-title toggle-expand">Парсинг ▼</span>
-        <label class="switch">
-            <input type="checkbox" id="toggleParsing"><span class="slider round"></span>
-        </label>
-    </div>
-    <div class="sub-toggle-wrapper" id="toggleParsingOptionsWrapper">
-        <div class="toggle-wrapper">
-            <span class="toggle-title small">Ссылки и цели</span>
-            <label class="">
-                <a id="toggleParsingOptLinksTargets">Редактировать</a>
-            </label>
-        </div>
-        <div class="toggle-wrapper">
-            <span class="toggle-title small">Таймаут, сек</span>
-            <label class="text-input">
-                <input type="number" id="inputParsingOptTimeout" min="0" max="99" maxlength="2">
-            </label>
-        </div>
-    </div>
-    <hr class="divider">
-
     <div class="toggle-wrapper" id="toggleTelegramWrapper">
         <span class="toggle-title toggle-expand">Уведомления ▼</span>
         <label class="switch">
@@ -408,28 +386,6 @@
             <select id="modal-fast-answers-pairs" class="select2" multiple style="width:100%" data-placeholder="Введите пары вида a:1, b:4 и нажмите Enter"></select>
 
             <button id="modal-fast-address-save" class="modal-save">Сохранить</button>
-        </div>
-    </div>
-
-    <div id="modal_parsing" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" id="modal-parsing-close">&times;</span>
-            <h3>Редактировать ссылки и цели</h3>
-
-            <label class="modal-label">Ссылки</label>
-            <select id="modal-parsing-links" class="select2" multiple></select>
-
-            <label class="modal-label">Цели</label>
-            <select id="modal-parsing-targets" class="select2" multiple></select>
-
-            <div class="toggle-wrapper">
-                <span class="toggle-title small">Цели должны отсутствовать</span>
-                <label class="switch">
-                    <input type="checkbox" id="toggleParsingOptInvertSearch"><span class="slider round"></span>
-                </label>
-            </div>
-
-            <button id="modal-parsing-save" class="modal-save">Сохранить</button>
         </div>
     </div>
 

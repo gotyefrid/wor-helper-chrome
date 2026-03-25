@@ -10,12 +10,6 @@
 
     await checkTaktRedirect();
 
-    const isParsingActive = await CommonHelper.getExtStorage('wor_parsing_active');
-
-    if (isParsingActive) {
-        parsing();
-    }
-
     backgroundListener();
 })();
 
@@ -52,67 +46,6 @@ async function checkTrauma() {
 
     await CommonHelper.setExtStorage('wor_fight_last_trauma_minutes', currentTime);
 }
-
-async function parsing() {
-    let isChecking = false;
-
-    async function checkPage() {
-        if (isChecking) {
-            CommonHelper.log('[Parser] Проверка уже запущена, пропуск...', false);
-            return;
-        }
-
-        isChecking = true;
-
-        try {
-            CommonHelper.log('[Parser] Начинаем проверку...');
-            const urls = await CommonHelper.getExtStorage('wor_parsing_links') || [];
-            const targets = await CommonHelper.getExtStorage('wor_parsing_targets') || [];
-            const invert = await CommonHelper.getExtStorage('wor_parsing_invert_search_active') || false;
-            let i = 1;
-
-            const data = urls.map(link => ({
-                type: 'Ссылка ' + i++,
-                textToFind: targets,
-                url: link
-            }));
-
-            for (const item of data) {
-                await CommonHelper.delay(1000, 2000);
-                CommonHelper.log(`[Parser] Проверка ${item.type}...`);
-                await CommonHelper.parsingPage(item.url, item.textToFind, item.type, invert);
-            }
-
-            CommonHelper.log('[Parser] Проверка завершена.', false);
-
-        } catch (error) {
-            CommonHelper.log('[Parser] Ошибка при проверке:' + JSON.stringify(error));
-        } finally {
-            isChecking = false;
-        }
-    }
-
-    async function scheduleNextCheck(baseInterval) {
-        const nextDelay = CommonHelper.getRandomNumber(baseInterval, baseInterval + 10000);
-        await CommonHelper.log(`[Parser] Следующая проверка через ${nextDelay / 1000} секунд...`, false);
-
-        setTimeout(async () => {
-            const stillActive = await CommonHelper.getExtStorage('wor_parsing_active');
-            if (stillActive) {
-                await checkPage();
-                await scheduleNextCheck(baseInterval); // рекурсивно запускаем следующее ожидание
-            } else {
-                await CommonHelper.log('[Parser] Остановлено пользователем.', false);
-            }
-        }, nextDelay);
-    }
-
-    const rawTimeout = await CommonHelper.getExtStorage('wor_parsing_timeout');
-    const baseInterval = rawTimeout ? parseInt(rawTimeout, 10) * 1000 : 30000;
-
-    await checkPage(); // первый запуск
-    await scheduleNextCheck(baseInterval); // дальше уже по таймауту
-};
 
 async function setTitle() {
     let title = document.querySelector('.menu')?.textContent;

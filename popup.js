@@ -4,9 +4,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     processInputs();
     processCharacter();
 
-    // Обработчики парсинга
-    processParsing();
-
     processChat();
     processAutoReply();
     processMap();
@@ -74,12 +71,6 @@ async function processCheckboxes() {
         toggleTaktRandom: { storageKey: "wor_takt_random", defaultValue: true },
 
         toggleBandits: { storageKey: "wor_bandits_active" },
-
-        toggleParsing: {
-            storageKey: "wor_parsing_active",
-            hasSubOptions: true,
-        },
-        toggleParsingOptInvertSearch: { storageKey: "wor_parsing_invert_search_active" },
 
         toggleTelegram: {
             storageKey: "wor_tg_notifications_active",
@@ -182,60 +173,6 @@ async function processMap() {
             icon.setAttribute('aria-label', 'Сбросить');
             icon.title = 'Сбросить';
         }, 1000);
-    });
-}
-
-async function processParsing() {
-    let modalId = 'modal_parsing';
-
-    // Инициализация select2 для модалки
-    $('#modal-parsing-links, #modal-parsing-targets').select2({
-        tags: true,
-        width: '100%',
-        placeholder: 'Введите значение...',
-        tokenSeparators: [',']
-    });
-
-    // Открытие модалки
-    document.getElementById('toggleParsingOptLinksTargets').addEventListener('click', () => {
-        // Очистим и заполним модальные select2 значениями из storage
-        chrome.storage.local.get(['wor_parsing_links', 'wor_parsing_targets'], (data) => {
-            const links = data.wor_parsing_links || [];
-            const targets = data.wor_parsing_targets || [];
-
-            const $links = $('#modal-parsing-links').empty();
-            links.forEach(item => {
-                const option = new Option(item, item, true, true);
-                $links.append(option);
-            });
-            $links.trigger('change');
-
-            const $targets = $('#modal-parsing-targets').empty();
-            targets.forEach(item => {
-                const option = new Option(item, item, true, true);
-                $targets.append(option);
-            });
-            $targets.trigger('change');
-            openModal(modalId);
-        });
-    });
-
-    // Сохранение
-    document.getElementById('modal-parsing-save').addEventListener('click', () => {
-        const links = $('#modal-parsing-links').val();
-        const targets = $('#modal-parsing-targets').val();
-
-        chrome.storage.local.set({
-            wor_parsing_links: links,
-            wor_parsing_targets: targets
-        });
-
-        closeModal(modalId);
-    });
-
-    // Закрытие модалки (крестик)
-    document.querySelector('#modal-parsing-close').addEventListener('click', () => {
-        closeModal(modalId);
     });
 }
 
@@ -462,7 +399,6 @@ async function processInputs() {
         inputFightingLowDamageThreshold: { storageKey: "wor_fight_low_damage_threshold" },
         inputFightingPotHPThreshold: { storageKey: "wor_fight_pot_hp_threshold" },
         inputFightingPotMPThreshold: { storageKey: "wor_fight_pot_mp_threshold" },
-        inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
         inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
         inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },
         inputTelegramOptChatID: { storageKey: "wor_tg_chat_id" },
