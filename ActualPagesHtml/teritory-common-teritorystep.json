@@ -1,0 +1,595 @@
+{
+    "ok": 1,
+    "location": 3,
+    "room": 232,
+    "rowCount": 31,
+    "pageTitle": "World of Rest: Подземелье",
+    "pollMs": 2500,
+    "headerHtml": "<div class=\"menu\" align=\"center\">WoR: Подземелье</div>        <div class=\"chat\">\r\n            <div class=\"header\">\r\n                <div class=\"level-block\">\r\n                    <div style=\"display:flex; align-items:center;\">\r\n                        <img src=\"img/st_upgrade.gif\" style=\"height: 8px;\" alt=\"Уровень\" title=\"Уровень\">\r\n                        <span style=\"margin-left: 3px; font-size: 10px\" class=\"svet\"><strong>26</strong></span>\r\n                    </div>\r\n                    <div class=\"progress-bar\">\r\n                        <div class=\"progress-fill\" style=\"width: 78%\"></div>\r\n                    </div>\r\n                </div>\r\n                <div class=\"hp-mp-circle\">\r\n                    <div class=\"circle-bar\">\r\n                        <div class=\"circle-fill hp-fill\" style=\"height: 100%\"></div>\r\n                    </div>\r\n                    <div class=\"circle-bar\">\r\n                        <div class=\"circle-fill mp-fill\" style=\"height: 100%\"></div>\r\n                    </div>\r\n                </div>\r\n                <div class=\"status-item\">\r\n                    <img src=\"img/rubin.gif\" alt=\"Рубины\" title=\"Рубины\">\r\n                    <span>171.33</span>\r\n                </div>\r\n                <div class=\"status-item\">\r\n                    <img src=\"img/money.gif\" alt=\"WR\" title=\"WR\">\r\n                    <span>28799</span>\r\n                </div>\r\n\t\t\t\t\t\t\t\t\t\t\t\t                    <div class=\"status-item\"> <img src=\"img/x3.gif\" border=\"0\" alt=\"x\" /> <span class=\"svet\">11:00</span></div>\r\n\t\t\t\t            </div>\r\n        </div>\r\n\t\t        <div class=\"chat\">\r\n            <span class=\"chat_txt\">Чат:</span> <a href=\"chat2.php?uni=1772373158&amp;hash=f55d71c\">общий</a>,\r\n            <a href=\"teritory.php?l=3&amp;crd=232&amp;chatmode=my&amp;uni=1772373158&amp;hash=a247cf8\">мой</a>,\r\n            <a href=\"teritory.php?l=3&amp;crd=232&amp;chatmode=add&amp;uni=1772373158&amp;hash=88e6af3\">написать</a>\r\n        </div>\r\n\t\t",
+    "belowHtml": "<div class=\"contur\" style=\"font-size:11px\">Стражник у ворот: Групп монстров - <strong>14</strong> шт.</div><div class=\"contur\" style=\"font-size:11px\"><img style=\"margin:3px;vertical-align:middle\" src=\"img/user_m4_w0.png\" border=\"0\" alt=\"\" /> -SaNeK- [34],  26ru [30],  apolon war [33],  Владлес [27]<br />[ <a href=\"napad.php?uni=1772373158&amp;hash=f277805\"><span style=\"color:#00FFFF\">попытаться затеять драку</span></a> ]</div><div class=\"cont\"><div class=\"menu_div\" align=\"left\"><ul><li><a   href=\"main.php?uni=1772373158&amp;hash=683835d\"><img src=\"icons/glavnoe_menyu_128.png\" border=\"0\" style=\"vertical-align:middle; margin-right:3px; width:32px; height:32px\" alt=\"\" />  Главное меню</a></li><li><a   href=\"poisktrav.php?uni=1772373158&amp;hash=7641843\"><img src=\"icons/osmotretsya_128.png\" border=\"0\" style=\"vertical-align:middle; margin-right:3px; width:32px; height:32px\" alt=\"\" />  Осмотреться</a></li><li><a   href=\"game.php?uni=1772373158&amp;hash=5ebc135\"><img src=\"icons/vash_personazh_m1_128.png\" border=\"0\" style=\"vertical-align:middle; margin-right:3px; width:32px; height:32px\" alt=\"\" />  Ваш персонаж</a></li><li><a   href=\"inventar.php?uni=1772373158&amp;hash=3cbba57\"><img src=\"icons/inventar_128.png\" border=\"0\" style=\"vertical-align:middle; margin-right:3px; width:32px; height:32px\" alt=\"\" />  Инвентарь</a></li><li><a   href=\"terview.php?uni=1772373158&amp;hash=8a875c0\"><img src=\"icons/mini_karta_128.png\" border=\"0\" style=\"vertical-align:middle; margin-right:3px; width:32px; height:32px\" alt=\"\" />  Мини-карта</a></li><li><a   href=\"journal.php?uni=1772373158&amp;hash=25ccb1c\"><img src=\"icons/journal_128.png\" border=\"0\" style=\"vertical-align:middle; margin-right:3px; width:32px; height:32px\" alt=\"\" />  Журнал событий</a></li><li><a   href=\"teleport.php?uni=1772373158&amp;hash=3459ba4\"><img src=\"icons/teleport_v_gorod_128.png\" border=\"0\" style=\"vertical-align:middle; margin-right:3px; width:32px; height:32px\" alt=\"\" />  Телепорт в город</a></li></ul></div></div>",
+    "topbarJs": "",
+    "barsJs": "",
+    "grid": [
+        {
+            "room": 135,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/135_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 136,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/136_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 137,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/137_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 138,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/138_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 139,
+            "stepRoom": 201,
+            "img": "../images/l3/l3s1/139_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=201&amp;uni=1772373158&amp;hash=f5068b0",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=201&amp;uni=1772373158&amp;hash=1cc5aec",
+            "overlay": null
+        },
+        {
+            "room": 140,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/140_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 141,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/141_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 142,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/142_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 143,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/143_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 166,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/166_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 167,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/167_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 168,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/168_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 169,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/169_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 170,
+            "stepRoom": 201,
+            "img": "../images/l3/l3s1/170_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=201&amp;uni=1772373158&amp;hash=f5068b0",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=201&amp;uni=1772373158&amp;hash=1cc5aec",
+            "overlay": null
+        },
+        {
+            "room": 171,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/171_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 172,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/172_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 173,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/173_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 174,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/174_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 197,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/197_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 198,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/198_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 199,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/199_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 200,
+            "stepRoom": 200,
+            "img": "../images/l3/l3s1/200_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=71ce965",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=200&amp;uni=1772373158&amp;hash=04fc907",
+            "overlay": null
+        },
+        {
+            "room": 201,
+            "stepRoom": 201,
+            "img": "../images/l3/l3s1/201_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=201&amp;uni=1772373158&amp;hash=f5068b0",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=201&amp;uni=1772373158&amp;hash=1cc5aec",
+            "overlay": null
+        },
+        {
+            "room": 202,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/202_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 203,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/203_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 204,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/204_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 205,
+            "stepRoom": 202,
+            "img": "../images/l3/l3s1/205_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=fd37b1b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=202&amp;uni=1772373158&amp;hash=357f6a9",
+            "overlay": null
+        },
+        {
+            "room": 228,
+            "stepRoom": 231,
+            "img": "../images/l3/l3s1/228_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=b7465bb",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=796218f",
+            "overlay": null
+        },
+        {
+            "room": 229,
+            "stepRoom": 231,
+            "img": "../images/l3/l3s1/229_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=b7465bb",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=796218f",
+            "overlay": null
+        },
+        {
+            "room": 230,
+            "stepRoom": 231,
+            "img": "../images/l3/l3s1/230_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=b7465bb",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=796218f",
+            "overlay": null
+        },
+        {
+            "room": 231,
+            "stepRoom": 231,
+            "img": "../images/l3/l3s1/231_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=b7465bb",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=231&amp;uni=1772373158&amp;hash=796218f",
+            "overlay": null
+        },
+        {
+            "room": 232,
+            "stepRoom": 232,
+            "img": "../images/l3/l3s1/232_l3s3.jpg",
+            "isCenter": true,
+            "href": "teritory.php?l=3&amp;crd=232&amp;uni=1772373158&amp;hash=17b347b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=232&amp;uni=1772373158&amp;hash=fd8521c",
+            "overlay": null
+        },
+        {
+            "room": 233,
+            "stepRoom": 233,
+            "img": "../images/l3/l3s1/233_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1c5612b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1b992d6",
+            "overlay": null
+        },
+        {
+            "room": 234,
+            "stepRoom": 233,
+            "img": "../images/l3/l3s1/234_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1c5612b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1b992d6",
+            "overlay": null
+        },
+        {
+            "room": 235,
+            "stepRoom": 233,
+            "img": "../images/l3/l3s1/235_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1c5612b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1b992d6",
+            "overlay": null
+        },
+        {
+            "room": 236,
+            "stepRoom": 233,
+            "img": "../images/l3/l3s1/236_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1c5612b",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=233&amp;uni=1772373158&amp;hash=1b992d6",
+            "overlay": null
+        },
+        {
+            "room": 259,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/259_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 260,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/260_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 261,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/261_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 262,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/262_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 263,
+            "stepRoom": 263,
+            "img": "../images/l3/l3s1/263_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=263&amp;uni=1772373158&amp;hash=72ee344",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=263&amp;uni=1772373158&amp;hash=a343c0a",
+            "overlay": null
+        },
+        {
+            "room": 264,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/264_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 265,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/265_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 266,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/266_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 267,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/267_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 290,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/290_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 291,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/291_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 292,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/292_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 293,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/293_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 294,
+            "stepRoom": 263,
+            "img": "../images/l3/l3s1/294_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=263&amp;uni=1772373158&amp;hash=72ee344",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=263&amp;uni=1772373158&amp;hash=a343c0a",
+            "overlay": null
+        },
+        {
+            "room": 295,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/295_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 296,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/296_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 297,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/297_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 298,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/298_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 321,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/321_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 322,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/322_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 323,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/323_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 324,
+            "stepRoom": 262,
+            "img": "../images/l3/l3s1/324_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=ad044cc",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=262&amp;uni=1772373158&amp;hash=70bf47e",
+            "overlay": null
+        },
+        {
+            "room": 325,
+            "stepRoom": 263,
+            "img": "../images/l3/l3s1/325_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=263&amp;uni=1772373158&amp;hash=72ee344",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=263&amp;uni=1772373158&amp;hash=a343c0a",
+            "overlay": null
+        },
+        {
+            "room": 326,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/326_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 327,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/327_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 328,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/328_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        },
+        {
+            "room": 329,
+            "stepRoom": 264,
+            "img": "../images/l3/l3s1/329_l3s3.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=ca52fab",
+            "stepUrl": "teritorystep.php?l=3&amp;crd=264&amp;uni=1772373158&amp;hash=9ffde09",
+            "overlay": null
+        }
+    ],
+    "players": {
+        "232": {
+            "room": "232",
+            "kilk_player": "5",
+            "man": "5",
+            "woman": "0",
+            "names": "-SaNeK- [34], 26ru [30], apolon war [33], WheeL [26], Владлес [27]"
+        }
+    },
+    "anim": {
+        "enabled": 0,
+        "ms": 50
+    },
+    "realUrl": "teritory.php?l=3&amp;crd=232&amp;uni=1772373158&amp;hash=17b347b"
+}

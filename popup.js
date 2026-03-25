@@ -2,18 +2,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Обработчик чекбоксов
     processCheckboxes();
     processInputs();
-
-    // Обработчики парсинга
-    processParsing();
+    processCharacter();
 
     processChat();
+    processAutoReply();
     processMap();
 
     // Обработчик рыбалки
     processFishing();
 
+    // Тип удара в бою
+    processFightingAttackType();
+
     // Обработчик выбора боссов
     processFightingBossesModal();
+
+    processQuests();
 });
 
 async function processCheckboxes() {
@@ -57,14 +61,16 @@ async function processCheckboxes() {
         toggleFightingCheckTrauma: { storageKey: "wor_fight_check_trauma", },
         toggleFightingActivatePrimanka: { storageKey: "wor_fight_activate_primanka", },
         toggleFightingOptActiveButton: { storageKey: "wor_fight_opt_active_button" },
+        toggleFightingOnlyMobs: { storageKey: "wor_fight_only_mobs", defaultValue: true },
 
-        toggleBandits: { storageKey: "wor_bandits_active" },
-
-        toggleParsing: {
-            storageKey: "wor_parsing_active",
+        toggleTakt: {
+            storageKey: "wor_takt_active",
             hasSubOptions: true,
         },
-        toggleParsingOptInvertSearch: { storageKey: "wor_parsing_invert_search_active" },
+        toggleTaktOptActiveButton: { storageKey: "wor_takt_opt_active_button" },
+        toggleTaktRandom: { storageKey: "wor_takt_random", defaultValue: true },
+
+        toggleBandits: { storageKey: "wor_bandits_active" },
 
         toggleTelegram: {
             storageKey: "wor_tg_notifications_active",
@@ -75,21 +81,22 @@ async function processCheckboxes() {
             storageKey: "wor_chat_active",
             hasSubOptions: true,
         },
+        toggleChatParseActive: { storageKey: "wor_chat_parse_active" },
         toggleChatOptFastAddressActive: { storageKey: "wor_chat_fast_answers_active" },
     };
 
     for (let id in toggles) {
-        addCheckboxEvents(id, toggles[id].storageKey, toggles[id].hasSubOptions);
+        addCheckboxEvents(id, toggles[id].storageKey, toggles[id].hasSubOptions, toggles[id].defaultValue);
     }
 
     // Функция добавления прослушки
-    function addCheckboxEvents(id, storageKey, hasSubOptions) {
+    function addCheckboxEvents(id, storageKey, hasSubOptions, defaultValue = false) {
         let input = document.querySelector('#' + id);
         if (!input) return;
 
         // Загружаем сохранённое состояние из storage
         chrome.storage.local.get(storageKey, function (data) {
-            input.checked = data[storageKey] || false;
+            input.checked = data[storageKey] !== undefined ? data[storageKey] : defaultValue;
         });
 
         // Добавляем обработчик события
@@ -169,60 +176,6 @@ async function processMap() {
     });
 }
 
-async function processParsing() {
-    let modalId = 'modal_parsing';
-
-    // Инициализация select2 для модалки
-    $('#modal-parsing-links, #modal-parsing-targets').select2({
-        tags: true,
-        width: '100%',
-        placeholder: 'Введите значение...',
-        tokenSeparators: [',']
-    });
-
-    // Открытие модалки
-    document.getElementById('toggleParsingOptLinksTargets').addEventListener('click', () => {
-        // Очистим и заполним модальные select2 значениями из storage
-        chrome.storage.local.get(['wor_parsing_links', 'wor_parsing_targets'], (data) => {
-            const links = data.wor_parsing_links || [];
-            const targets = data.wor_parsing_targets || [];
-
-            const $links = $('#modal-parsing-links').empty();
-            links.forEach(item => {
-                const option = new Option(item, item, true, true);
-                $links.append(option);
-            });
-            $links.trigger('change');
-
-            const $targets = $('#modal-parsing-targets').empty();
-            targets.forEach(item => {
-                const option = new Option(item, item, true, true);
-                $targets.append(option);
-            });
-            $targets.trigger('change');
-            openModal(modalId);
-        });
-    });
-
-    // Сохранение
-    document.getElementById('modal-parsing-save').addEventListener('click', () => {
-        const links = $('#modal-parsing-links').val();
-        const targets = $('#modal-parsing-targets').val();
-
-        chrome.storage.local.set({
-            wor_parsing_links: links,
-            wor_parsing_targets: targets
-        });
-
-        closeModal(modalId);
-    });
-
-    // Закрытие модалки (крестик)
-    document.querySelector('#modal-parsing-close').addEventListener('click', () => {
-        closeModal(modalId);
-    });
-}
-
 async function processChat() {
     let modalId = 'modal_fast_address';
 
@@ -286,6 +239,116 @@ async function processChat() {
     });
 }
 
+async function processAutoReply() {
+    const modalId = 'modal_auto_reply';
+
+    const SENDER_PRESETS = ['Модераторы', 'Все'];
+
+    const DEFAULT_PATTERNS = [
+        'тут:да|тут|неа|пока да',
+        'живой:да, живой|всё ок|на связи',
+        'кто:я тут|здесь|слушаю',
+        'проверка:всё работает|проверяет|без проблем',
+        'бот:разумеется)|ничего подобного|.восадок.',
+        'клик:клик-клак|.восадок.|.гг.',
+    ];
+
+    // Инициализация select2 для отправителей (пресеты + произвольные ники)
+    $('#modal-auto-reply-senders').select2({
+        tags: true,
+        width: '100%',
+        placeholder: 'Выберите или введите ник...',
+        tokenSeparators: [','],
+        data: SENDER_PRESETS.map(s => ({ id: s, text: s }))
+    });
+
+    // Инициализация select2 для паттернов ответов
+    $('#modal-auto-reply-patterns').select2({
+        tags: true,
+        width: '100%',
+        placeholder: 'слово:ответ1|ответ2 и Enter',
+        tokenSeparators: ['\n'],
+        createTag: function (params) {
+            const term = params.term.trim();
+            const colonIdx = term.indexOf(':');
+            if (colonIdx > 0 && colonIdx < term.length - 1) {
+                return { id: term, text: term };
+            }
+            return null;
+        }
+    });
+
+    // Загрузка состояния чекбокса и кулдауна
+    chrome.storage.local.get(['wor_chat_auto_reply_active', 'wor_chat_auto_reply_cooldown'], (data) => {
+        document.getElementById('toggleAutoReplyActive').checked = !!data.wor_chat_auto_reply_active;
+        document.getElementById('inputAutoReplyCooldown').value = data.wor_chat_auto_reply_cooldown ?? 5;
+    });
+
+    document.getElementById('toggleAutoReplyActive').addEventListener('change', function () {
+        if (this.checked) {
+            chrome.storage.local.get('wor_chat_parse_active', (data) => {
+                if (!data.wor_chat_parse_active) {
+                    this.checked = false;
+                    alert('Сначала включите "Парсить сообщения" в разделе Чат.');
+                } else {
+                    chrome.storage.local.set({ wor_chat_auto_reply_active: true });
+                }
+            });
+        } else {
+            chrome.storage.local.set({ wor_chat_auto_reply_active: false });
+        }
+    });
+
+    document.getElementById('inputAutoReplyCooldown').addEventListener('input', function () {
+        const val = parseInt(this.value);
+        if (val > 0) chrome.storage.local.set({ wor_chat_auto_reply_cooldown: val });
+    });
+
+    // Открытие модалки
+    document.getElementById('toggleChatOptAutoReply').addEventListener('click', () => {
+        chrome.storage.local.get(['wor_chat_auto_reply_senders', 'wor_chat_auto_reply_patterns'], (data) => {
+            const senders = data.wor_chat_auto_reply_senders || ['Модераторы'];
+            const patterns = data.wor_chat_auto_reply_patterns || DEFAULT_PATTERNS;
+
+            const $senders = $('#modal-auto-reply-senders').empty();
+            SENDER_PRESETS.forEach(s => {
+                $senders.append(new Option(s, s, false, senders.includes(s)));
+            });
+            // Кастомные ники (не из пресетов)
+            senders.filter(s => !SENDER_PRESETS.includes(s)).forEach(s => {
+                $senders.append(new Option(s, s, true, true));
+            });
+            $senders.trigger('change');
+
+            const $patterns = $('#modal-auto-reply-patterns').empty();
+            patterns.forEach(p => {
+                $patterns.append(new Option(p, p, true, true));
+            });
+            $patterns.trigger('change');
+
+            openModal(modalId);
+        });
+    });
+
+    // Сохранение
+    document.getElementById('modal-auto-reply-save').addEventListener('click', () => {
+        const senders = $('#modal-auto-reply-senders').val() || [];
+        const patterns = $('#modal-auto-reply-patterns').val() || [];
+
+        chrome.storage.local.set({
+            wor_chat_auto_reply_senders: senders,
+            wor_chat_auto_reply_patterns: patterns,
+        });
+
+        closeModal(modalId);
+    });
+
+    // Закрытие модалки (крестик)
+    document.getElementById('modal-auto-reply-close').addEventListener('click', () => {
+        closeModal(modalId);
+    });
+}
+
 function openModal(id) {
     document.getElementById(id).style.display = 'block';
     document.querySelector('body').style.width = '400px';
@@ -314,22 +377,38 @@ async function processFishing() {
     });
 }
 
+async function processFightingAttackType() {
+    const select = document.getElementById('selectFightingAttackType');
+
+    chrome.storage.local.get('wor_fight_attack_type', (data) => {
+        select.value = data.wor_fight_attack_type ?? '2';
+    });
+
+    select.addEventListener('change', () => {
+        chrome.storage.local.set({ wor_fight_attack_type: select.value });
+    });
+}
+
 async function processInputs() {
     // Определяем настройки переключателей
     const inputs = {
         inputPlayerName: { storageKey: "wor_chat_player_name" },
+        inputPlayerPassword: { storageKey: "wor_player_password" },
         inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
         inputFightingMaxTrauma: { storageKey: "wor_fight_max_trauma" },
-        inputParsingOptTimeout: { storageKey: "wor_parsing_timeout" },
+        inputFightingLowDamageThreshold: { storageKey: "wor_fight_low_damage_threshold" },
+        inputFightingPotHPThreshold: { storageKey: "wor_fight_pot_hp_threshold" },
+        inputFightingPotMPThreshold: { storageKey: "wor_fight_pot_mp_threshold" },
         inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
         inputTelegramOptApiKeyChat: { storageKey: "wor_tg_bot_chat_token" },
         inputTelegramOptChatID: { storageKey: "wor_tg_chat_id" },
         inputCaptchaHost: { storageKey: "wor_captcha_host" },
         inputMapDelay: { storageKey: "wor_map_move_delay" },
         inputReloadDelay: { storageKey: "wor_map_reload_delay" },
+        inputChatParseInterval: { storageKey: "wor_chat_parse_interval", defaultValue: "5,30" },
     };
 
-    for (const [inputId, { storageKey }] of Object.entries(inputs)) {
+    for (const [inputId, { storageKey, defaultValue }] of Object.entries(inputs)) {
         const inputElement = document.getElementById(inputId);
         if (!inputElement) continue;
 
@@ -337,6 +416,9 @@ async function processInputs() {
         chrome.storage.local.get(storageKey, (result) => {
             if (result[storageKey] !== undefined) {
                 inputElement.value = result[storageKey];
+            } else if (defaultValue !== undefined) {
+                inputElement.value = defaultValue;
+                chrome.storage.local.set({ [storageKey]: defaultValue });
             }
         });
 
@@ -377,9 +459,76 @@ async function processInputs() {
                 return;
             }
 
+            if (inputElement.id == 'inputChatParseInterval') {
+                if (!inputElement.value) {
+                    chrome.storage.local.set({ [storageKey]: "5,30" });
+                }
+
+                const regex = /^\d+(,\d+)?$/;
+                if (regex.test(inputElement.value)) {
+                    inputElement.style.borderColor = 'green';
+                    chrome.storage.local.set({ [storageKey]: value });
+                } else {
+                    inputElement.style.borderColor = 'red';
+                }
+
+                return;
+            }
+
             chrome.storage.local.set({ [storageKey]: value });
         });
     }
+}
+
+async function processCharacter() {
+    const wrapper = document.getElementById('toggleCharacterWrapper');
+    const optWrapper = document.getElementById('toggleCharacterOptionsWrapper');
+    const expandBtn = wrapper.querySelector('.toggle-title');
+    const btnLabel = expandBtn.textContent;
+
+    optWrapper.style.display = 'none';
+    expandBtn.addEventListener('click', () => {
+        const isHidden = optWrapper.style.display === 'none' || optWrapper.style.display === '';
+        optWrapper.style.display = isHidden ? 'block' : 'none';
+        expandBtn.textContent = isHidden ? btnLabel.slice(0, -1) + '▲' : btnLabel;
+    });
+}
+
+async function processQuests() {
+    const wrapper = document.getElementById('toggleQuestsWrapper');
+    const optWrapper = document.getElementById('toggleQuestsOptionsWrapper');
+    const expandBtn = wrapper.querySelector('.toggle-title');
+    const btnLabel = expandBtn.textContent;
+
+    optWrapper.style.display = 'none';
+    expandBtn.addEventListener('click', () => {
+        const isHidden = optWrapper.style.display === 'none' || optWrapper.style.display === '';
+        optWrapper.style.display = isHidden ? 'block' : 'none';
+        expandBtn.textContent = isHidden ? btnLabel.slice(0, -1) + '▲' : btnLabel;
+    });
+
+    const toggle = document.getElementById('toggleQuestWarlock');
+
+    // Загружаем текущее состояние
+    chrome.storage.local.get('wor_warlock_quest_run', (data) => {
+        toggle.checked = data.wor_warlock_quest_run?.active === true;
+    });
+
+    toggle.addEventListener('change', async () => {
+        if (toggle.checked) {
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            chrome.tabs.sendMessage(tab.id, { action: 'startWarlockQuestRun' });
+        } else {
+            chrome.storage.local.set({
+                wor_warlock_quest_run: { active: false },
+                wor_quest_warlock_active: false,
+                wor_quest_warlock_pos: null,
+                wor_quest_warlock_visited: [],
+                wor_quest_warlock_history: [],
+                wor_global_nav: { active: false },
+            });
+        }
+    });
 }
 
 async function processFightingBossesModal() {

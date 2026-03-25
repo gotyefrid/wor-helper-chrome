@@ -17,10 +17,8 @@ export class CommonHelperBackground {
                 // div.textContent = message;
             }
 
-            if (toConsole) {
-                if (logActive) {
-                    console.log(message);
-                }
+            if (toConsole && logActive) {
+                console.log(message);
             }
 
             if (important) {

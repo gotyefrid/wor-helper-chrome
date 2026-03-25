@@ -10,6 +10,9 @@ class Fight {
     levelSkipCallback = null;
     needPotHP = false;
     needPotMP = false;
+    potHPThreshold = 50;
+    potMPThreshold = 50;
+    attackType = 2; // 1 = физический, 2 = магический
 
     static BOSS_NAMES = Object.freeze([
         'Единорог',
@@ -83,12 +86,17 @@ class Fight {
             await CommonHelper.log('Обычный бой, без вмешательства');
         }
 
+        if (giveUp) {
+            this.handleGiveUp();
+            return;
+        }
+
         let enemyName = this.getEnemyName();
 
         if (enemyName) {
             let skip = false;
-            const threshold = 50;
-            let isLowDamage = await this.isLowDamage(threshold);
+            const threshold = Number(await CommonHelper.getExtStorage('wor_fight_low_damage_threshold')) || 0;
+            let isLowDamage = threshold > 0 && await this.isLowDamage(threshold);
 
             if (isLowDamage) {
                 let message = 'Я бью меньше ' + threshold + ', что-то тут не так, ничего не делаю больше';
@@ -118,12 +126,16 @@ class Fight {
                 skip = true;
             }
 
-            let isMonster = this.isMonster();
+            let onlyMobs = await CommonHelper.getExtStorage('wor_fight_only_mobs');
+            if (onlyMobs === undefined) onlyMobs = true;
 
-            if (!isMonster) {
-                CommonHelper.log('Против меня зашёл в бой игрок ' + enemyName);
-                CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
-                skip = true;
+            if (onlyMobs) {
+                let isMonster = this.isMonster();
+                if (!isMonster) {
+                    CommonHelper.log('Против меня зашёл в бой игрок ' + enemyName);
+                    CommonHelper.sendTelegramMessage('Против меня зашёл в бой игрок ' + enemyName);
+                    skip = true;
+                }
             }
 
             let enemyLevel = parseInt(enemyName.match(/\d+/)[0], 10);
@@ -162,11 +174,6 @@ class Fight {
                 return;
             }
 
-            if (giveUp) {
-                this.handleGiveUp();
-                return;
-            }
-
             if (skip) {
                 CommonHelper.log('Скип');
                 await CommonHelper.delay(15000);
@@ -183,8 +190,14 @@ class Fight {
         // Если мы тут - значит мы на странице боя
         await CommonHelper.log('Атакуем');
 
-        if (this.needPotHP) await this.potHP();
-        if (this.needPotMP) await this.potMP();
+        if (this.needPotHP) await this.potHP(this.potHPThreshold);
+        if (this.needPotMP) await this.potMP(this.potMPThreshold);
+
+        // Устанавливаем тип удара (1 = физический, 2 = магический)
+        const udtypeEl = document.querySelector('#udartype');
+        const toggleUdtypeEl = document.querySelector('#toggle-udartype');
+        if (udtypeEl) udtypeEl.value = this.attackType;
+        if (toggleUdtypeEl) toggleUdtypeEl.checked = (String(this.attackType) === '2');
 
         let hitButton = document.querySelector('input[name=bitvraga]');
 
@@ -227,14 +240,16 @@ class Fight {
             const html = await (await fetch(chatUrl)).text();
             const doc = new DOMParser().parseFromString(html, 'text/html');
             const msgBox = doc.querySelector('#msg_box');
-            const messages = Chat.getParsedMessages(msgBox);      // newest → oldest
+            // getParsedMessagesNew возвращает сообщения от новых к старым (как и старый парсер)
+            const messages = Chat.getParsedMessagesNew(msgBox);
 
             // --- 3. ищем первое релевантное system-сообщение ----------------------
             const endedRe = /Бой №\d+\s+закончен/i;
             let intervened = false;
 
             for (const msg of messages) {
-                if (msg.type !== 'system') continue;
+                // type в верхнем регистре: 'SYSTEM', 'PUBLIC', 'PUBLIC_TO', 'PRIVATE'
+                if (msg.type !== 'SYSTEM') continue;
 
                 if (endedRe.test(msg.text)) {       // бой закончился
                     intervened = false;
@@ -264,12 +279,14 @@ class Fight {
 
 
     async handleGiveUp() {
-        CommonHelper.log('Нажимаем кнопку Сдаться!');
+        CommonHelper.log('Сдаёмся!');
         await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
         let giveUpButton = document.querySelector('a[href*=killme]');
 
         if (giveUpButton) {
-            await CommonHelper.clickAndWait(giveUpButton);
+            // Переходим по href напрямую, минуя onclick confirm()
+            document.location = giveUpButton.href;
+            return;
         }
 
         CommonHelper.log('Не нашлась кнопка Сдаться, ничего не делаем.');
@@ -389,7 +406,7 @@ class Fight {
     }
 
     // Unified potion consumption for HP and МА
-    async consumePotion(selector, resourceLabel) {
+    async consumePotion(selector, resourceLabel, threshold = 50) {
         try {
             const [current, max] = document
                 .querySelector(selector)
@@ -399,26 +416,22 @@ class Fight {
             const percent = (current / max) * 100;
             await CommonHelper.log(`Текущее ${resourceLabel}: ${current}/${max} (${percent.toFixed(2)}%)`);
 
-            // Формируем список приоритетных банок в зависимости от процента ресурса
-            let potionPriority = [];
-            if (percent <= 10) {
-                potionPriority = [`500 ${resourceLabel}`];
-            } else if (percent <= 20) {
-                potionPriority = [`250 ${resourceLabel}`];
-            } else if (percent <= 30) {
-                potionPriority = [`100 ${resourceLabel}`];
-            } else if (percent <= 40) {
-                potionPriority = [`50 ${resourceLabel}`];
-            } else if (percent <= 50) {
-                potionPriority = [`10 ${resourceLabel}`, `20 ${resourceLabel}`]; // пробуем 10, если нет — 20
-            }
-
-            if (potionPriority.length === 0) {
-                await CommonHelper.log(`${resourceLabel} выше 50%, пить ничего не не нужно.`);
+            if (percent > threshold) {
+                await CommonHelper.log(`${resourceLabel} выше ${threshold}%, пить ничего не нужно.`);
                 return;
             }
 
-            await CommonHelper.log(`Выбраны банки: ${potionPriority.join(', ')} в зависимости от ${resourceLabel}%`);
+            // Приоритет от наименьшего к наибольшему — чтобы сначала расходовать мелкие банки
+            const potionPriority = [
+                `10 ${resourceLabel}`,
+                `20 ${resourceLabel}`,
+                `50 ${resourceLabel}`,
+                `100 ${resourceLabel}`,
+                `250 ${resourceLabel}`,
+                `500 ${resourceLabel}`,
+            ];
+
+            await CommonHelper.log(`Ищем наименьшую доступную банку ${resourceLabel}`);
 
             // Ищем первую доступную банку из списка приоритета
             for (const potionName of potionPriority) {
@@ -440,12 +453,12 @@ class Fight {
         }
     }
 
-    async potHP() {
-        await this.consumePotion('#hp_text', 'HP');
+    async potHP(threshold = 50) {
+        await this.consumePotion('#hp_text', 'HP', threshold);
     }
 
-    async potMP() {
-        await this.consumePotion('#mana_text', 'МА');
+    async potMP(threshold = 50) {
+        await this.consumePotion('#mana_text', 'МА', threshold);
     }
 
     async processEnemyNotAllowed(enemyName) {

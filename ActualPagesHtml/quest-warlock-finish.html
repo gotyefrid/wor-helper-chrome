@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="keywords"
+          content="онлайн игра, RPG, WOR, World Of Rest, рпг игра, браузерная мобильная игра, рпг для андроид"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="refresh" content="200"/>
+    <title>World of Rest - мобильная online игра!</title>
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20250023"/>
+    <script type="text/javascript" src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container">
+    <div class="menu" align="center">World of Rest: Диалог</div>
+    <div class="chat">
+        <div class="header">
+            <div class="level-block">
+                <div style="display:flex; align-items:center;">
+                    <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                    <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>26</strong></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 77%"></div>
+                </div>
+            </div>
+            <div class="hp-mp-circle">
+                <div class="circle-bar">
+                    <div class="circle-fill hp-fill" style="height: 100%"></div>
+                </div>
+                <div class="circle-bar">
+                    <div class="circle-fill mp-fill" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+                <span>169.29</span>
+            </div>
+            <div class="status-item">
+                <img src="img/money.gif" alt="WR" title="WR">
+                <span>-164496</span>
+            </div>
+            <div class="status-item"><img src="img/clock.gif" border="0" alt="Время" title="Время"/> 10:52</div>
+        </div>
+    </div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1772268754&amp;hash=8f9432b">общий</a>,
+        <a href="quest.php?sel=2548476&amp;chatmode=my&amp;uni=1772268754&amp;hash=959ba4c">мой</a>,
+        <a href="quest.php?sel=2548476&amp;chatmode=add&amp;uni=1772268754&amp;hash=10de583">написать</a>
+    </div>
+</div>
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+        /*border: 1px solid #888;*/
+        max-width: 260px;
+    }
+
+    .modal-content.game-modal {
+        max-width: 320px;
+    }
+
+    @media screen and (max-width: 360px) {
+        .modal-content.game-modal {
+            max-width: 90%;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 0;
+        right: 5px;
+        color: #aaa;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #loader {
+        display: none;
+        text-align: center;
+    }
+
+    .modal-content.ud-theme-default {
+        color: #FFFFFF;
+        background: rgba(51, 51, 51, 0.75);
+        border: 1px solid rgba(135, 135, 135, 0.5);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(151, 151, 151, 0.35);
+        padding: 0 10px
+    }
+
+    .modal-content.ud-theme-red {
+        color: #FFFFFF;
+        background: rgba(113, 11, 11, 0.58);
+        border: 1px solid rgba(168, 26, 26, 0.58);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(231, 76, 60, 0.35);
+        padding: 0 10px
+    }
+
+    .modal-content.ud-theme-green {
+        color: #FFFFFF;
+        background: rgba(14, 91, 47, 0.78);
+        border: 1px solid #0b7b3a;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(39, 174, 96, 0.35);
+        padding: 0 10px
+    }
+
+    .ud-footer {
+        display: flex;
+        padding: 12px;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .ud-btn {
+        appearance: none;
+        border: none;
+        background: #ddd;
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .ud-btn:hover {
+        filter: brightness(0.97);
+    }
+
+    .ud-btn.ud-primary {
+        border-color: #444;
+        font-weight: 600;
+    }
+
+    .ud-theme-red .ud-btn.ud-primary {
+        background-color: #d93222;
+        color: #ffffff;
+    }
+
+    .ud-theme-green .ud-btn.ud-primary {
+        background-color: #27ae60;
+        color: #ffffff;
+    }
+</style>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="loader"></div>
+        <div id="dataContainer"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var modal = $('#myModal');
+        var modalContent = $('.modal-content');
+        var closeBtn = $('.close');
+        var dataContainer = $('#dataContainer');
+        var loader = $('#loader');
+
+        $(document).on('click', '.openItemModal', function () {
+            var url = $(this).data('url');
+            var isGame = $(this).hasClass('game-modal-btn');
+            modal.show();
+            dataContainer.hide();
+            loader.show();
+
+            if (isGame) {
+                $('.modal-content').addClass('game-modal');
+            } else {
+                $('.modal-content').removeClass('game-modal');
+            }
+
+            $.ajax({
+                url: url,
+                cache: true,
+                success: function (data) {
+                    dataContainer.html(data).show();
+                    loader.hide();
+                }
+            });
+        });
+
+        $(document).on('click', '.openStaticModal', function () {
+            var content = $(this).data('content');
+            var theme = ($(this).data('theme') || '').toLowerCase();
+
+            var $modalContent = $('.modal-content');
+            $modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+            if (theme) $modalContent.addClass('ud-theme-' + theme);
+
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+        });
+
+        closeBtn.click(function () {
+            modal.hide();
+            StopJsInModal();
+            removeUdFooter();
+            removeUdTheme();
+        });
+
+        $(window).click(function (event) {
+            if ($(event.target).is(modal)) {
+                modal.hide();
+                StopJsInModal();
+                removeUdFooter();
+                removeUdTheme();
+            }
+        });
+
+        $(document).on('click', '.openConfirmModal', function () {
+            removeUdTheme();
+            removeUdFooter();
+
+            var content = $(this).data('content') || '';
+            var theme = (($(this).data('theme') || 'default') + '').toLowerCase();
+            var primaryText = $(this).data('primary') || 'Ок';
+            var secondaryText = $(this).data('secondary') || 'Отмена';
+
+            var hrefPrimary = $(this).data('primary-href') || '';
+            var hrefSecondary = $(this).data('secondary-href') || '';
+
+            modalContent.removeClass('game-modal');
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+
+            applyUdTheme(theme);
+
+            var $footer = $('<div class="ud-footer" id="udFooter"></div>');
+            var $btnSecondary = $('<button type="button" class="ud-btn" id="udSecondary"></button>').text(secondaryText);
+            var $btnPrimary = $('<button type="button" class="ud-btn ud-primary" id="udPrimary"></button>').text(primaryText);
+
+            $footer.append($btnPrimary, $btnSecondary);
+            modalContent.append($footer);
+
+            $btnPrimary.on('click.ud', function () {
+                if (hrefPrimary) window.location.href = hrefPrimary;
+                udClose();
+            });
+
+            $btnSecondary.on('click.ud', function () {
+                if (hrefSecondary) window.location.href = hrefSecondary;
+                udClose();
+            });
+        });
+
+        function applyUdTheme(theme) {
+            var map = {'red': 'ud-theme-red', 'green': 'ud-theme-green', 'default': 'ud-theme-default'};
+            modalContent.addClass(map[theme] || 'ud-theme-default');
+        }
+
+        function removeUdTheme() {
+            modalContent.removeClass('ud-theme-default ud-theme-red ud-theme-green');
+        }
+
+        function removeUdFooter() {
+            $('#udFooter').remove();
+        }
+
+        function udClose() {
+            modal.hide();
+            removeUdFooter();
+            removeUdTheme();
+            StopJsInModal();
+        }
+    });
+
+    function StopJsInModal() {
+        if (typeof gameTimer !== 'undefined' && gameTimer) {
+            clearInterval(gameTimer);
+        }
+    }
+
+    window.udModalOpenHtml = function (html, theme) {
+        var modal = $('#myModal');
+        if (!modal.length) return;
+
+        var modalContent = modal.find('.modal-content');
+
+        $('#udFooter').remove();
+        modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+
+        theme = (theme || 'default').toLowerCase();
+        modalContent.addClass('ud-theme-' + theme);
+
+        $('#loader').hide();
+        $('#dataContainer').empty().append(html).show();
+        modal.show();
+    };
+
+</script>
+<div class="cont">
+    <div class="menu_div" align="left">
+        <ul>
+            <li><a href="main.php?uni=1772268754&amp;hash=7bbfa96"><img src="icons/glavnoe_menyu_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""/> Главное меню</a></li>
+            <li><a href="game.php?uni=1772268754&amp;hash=e7d953c"><img src="icons/vash_personazh_m1_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""/> Ваш персонаж</a></li>
+            <li><a href="inventar.php?uni=1772268754&amp;hash=a60e2ae"><img src="icons/inventar_128.png" border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""/> Инвентарь</a></li>
+        </ul>
+    </div>
+</div>
+<div class="contur" style="font-size:12px" align="center"><strong>Чернокнижник</strong></div>
+<div class="news_full">Куда пойти:<br/><img style='vertical-align: top;' src='images/lab_pusto.gif'><img
+        style='vertical-align: top;' src='images/lab_stena.gif'><img style='vertical-align: top;'
+                                                                     src='images/lab_pusto.gif'><br><img
+        style='vertical-align: top;' src='images/lab_pusto.gif'><img style='vertical-align: top;'
+                                                                     src='images/lab_igrok.gif'><img
+        style='vertical-align: top;' src='images/lab_luk.gif'><br><img style='vertical-align: top;'
+                                                                       src='images/lab_stena.gif'><img
+        style='vertical-align: top;' src='images/lab_stena.gif'><img style='vertical-align: top;'
+                                                                     src='images/lab_stena.gif'></div>
+<div class="error" style="font-size:11px">
+    <div class="header_mes" align="left">
+        <div style="margin: 10px 2px; font-size: 12px">&raquo; <a
+                href="quest.php?sel=2548478&amp;uni=1772268754&amp;hash=598745a">Завершить маршрут и получить
+            награду.</a></div>
+    </div>
+</div>
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>

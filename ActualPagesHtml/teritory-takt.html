@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="keywords"
+          content="онлайн игра, RPG, WOR, World Of Rest, рпг игра, браузерная мобильная игра, рпг для андроид"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="refresh" content="200"/>
+    <title>World of Rest - мобильная online игра!</title>
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20250023"/>
+    <script type="text/javascript" src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container">
+    <div class="menu" align="center">WoR: Сражение</div>
+    <div class="chat">
+        <div class="header">
+            <div class="level-block">
+                <div style="display:flex; align-items:center;">
+                    <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                    <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>26</strong></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 77%"></div>
+                </div>
+            </div>
+            <div class="hp-mp-circle">
+                <div class="circle-bar">
+                    <div class="circle-fill hp-fill" style="height: 100%"></div>
+                </div>
+                <div class="circle-bar">
+                    <div class="circle-fill mp-fill" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+                <span>171.29</span>
+            </div>
+            <div class="status-item">
+                <img src="img/money.gif" alt="WR" title="WR">
+                <span>-116706</span>
+            </div>
+            <div class="status-item"><img src="img/aid.gif" alt="Травма" title="Травма" border="0"/> 10:23</div>
+            <div class="status-item"><img src="img/clock.gif" border="0" alt="Время" title="Время"/> 17:27</div>
+        </div>
+    </div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1772292429&amp;hash=9164512">общий</a>,
+        <a href="teritory.php?l=100&amp;crd=431&amp;chatmode=my&amp;uni=1772292429&amp;hash=03192fd">мой</a>,
+        <a href="teritory.php?l=100&amp;crd=431&amp;chatmode=add&amp;uni=1772292429&amp;hash=7068713">написать</a>
+    </div>
+</div>
+<style>
+    .map-wrap {
+        width: 100%;
+        display: flex;
+        justify-content: center
+    }
+
+    .map-viewport {
+        position: relative;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .map-stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        will-change: transform
+    }
+
+    .map-grid {
+        display: grid;
+        gap: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    .map-cell {
+        position: relative;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100% 100%;
+        box-sizing: border-box
+    }
+
+    .map-cell img {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        max-width: 94%;
+        height: auto;
+        pointer-events: none
+    }
+
+    .map-cell > a {
+        display: block;
+        width: 100%;
+        height: 100%
+    }
+
+    .map-cell img.player-icon {
+    }
+
+    .map-cell img.cell-overlay {
+    }
+
+    :root {
+        --cell: 70px;
+    }
+
+    .map-viewport {
+        width: calc(var(--cell) * 7);
+        height: calc(var(--cell) * 5)
+    }
+
+    .map-grid {
+        grid-template-columns:repeat(9, var(--cell));
+        grid-template-rows:repeat(7, var(--cell))
+    }
+
+    #teritoryApp {
+    }
+
+    #teritoryApp.pc-layout {
+        display: flex;
+        justify-content: center;
+        flex-direction: row-reverse;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    #teritoryApp.pc-layout .map-wrap {
+        width: auto;
+    }
+
+    .map-hud {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .map-hud .hud-frame {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: var(--cell);
+        height: var(--cell);
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+
+        clip-path: polygon(
+                14% 0%,
+                86% 0%,
+                100% 14%,
+                100% 86%,
+                86% 100%,
+                14% 100%,
+                0% 86%,
+                0% 14%
+        );
+
+        background: rgba(255, 255, 255, 0.08);
+
+        border: 2px solid rgba(255, 255, 255, 0.60);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35) inset,
+        0 0 14px rgba(255, 255, 255, 0.18);
+    }
+
+    .map-hud .hud-frame::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        clip-path: inherit;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18) inset;
+        opacity: .9;
+    }
+
+
+    .map-hud .hud-icon,
+    .map-hud .hud-overlay {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        max-width: calc(var(--cell) - 6px);
+        max-height: calc(var(--cell) - 6px);
+    }
+
+    .map-hud .hud-icon {
+        z-index: 1;
+    }
+
+    .map-hud .hud-overlay {
+        z-index: 2;
+    }
+
+</style>
+
+<div id="teritoryApp" class="">
+    <div class="map-wrap">
+        <div class="title-border">
+            <div id="mapViewport" class="map-viewport">
+                <div id="mapStage" class="map-stage">
+                    <div id="gridA" class="map-grid"></div>
+                </div>
+
+                <div id="mapHud" class="map-hud">
+                    <div class="hud-frame"></div>
+                    <img id="hudIcon" class="hud-icon" style="display:none" alt="">
+                    <img id="hudOverlay" class="hud-overlay" style="display:none" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="belowWrap">
+        <div class="contur" style="font-size:11px">
+            <span class="svet">Тактическое сражение №110195</span><br/>
+            (Вы в команде №2)<br/>
+            <br/>
+            <span class="svet">Вами нанесено урона:</span> <strong>0</strong><br/>
+            <span class="svet">Вами захвачено баз:</span> <strong>143</strong><br/>
+            <br/>
+            <span class="svet">Сражение выполнено на:</span>
+            <strong>76%</strong><br/>
+            <br/>
+            <span class="svet">Состояние баз:</span><br/>
+            Левая ферма:<span style="color:#CC00FF">№2</span> (LETOV)<br/>
+            Правая ферма:<span style="color:#CC00FF">№2</span> (WheeL)<br/>
+            Левая лесопилка:<span style="color:#00FFFF">№1</span> (_РоМ_)<br/>
+            Правая лесопилка:<span style="color:#CC00FF">№2</span> (White Magician)<br/>
+            Каменоломня:<span style="color:#00FFFF">№1</span> (_РоМ_)<br/>
+            Левая шахта:<span style="color:#00FFFF">№1</span> (_РоМ_)<br/>
+            Правая шахта:<span style="color:#00FFFF">№1</span> (Дональд Дак)<br/>
+            <br/>
+            <span class="svet">Команда №1:</span><br/>
+            <a href="infouser.php?name=_РоМ_&amp;uni=1772292429&amp;hash=7667295">_РоМ_[35]</a>, <a
+                href="infouser.php?name=Kiss Butterfly&amp;uni=1772292429&amp;hash=3ba9a05">Kiss Butterfly[37]</a>, <a
+                href="infouser.php?name=Ната_&amp;uni=1772292429&amp;hash=823147a">Ната_[18]</a>, <a
+                href="infouser.php?name=Дональд Дак&amp;uni=1772292429&amp;hash=b822ed2">Дональд Дак[37]</a>, <a
+                href="infouser.php?name=Gallaxyan&amp;uni=1772292429&amp;hash=87d71b2">Gallaxyan[27]</a>, <a
+                href="infouser.php?name=Sh14ze2&amp;uni=1772292429&amp;hash=b2af297">Sh14ze2[34]</a>, <a
+                href="infouser.php?name=linog1&amp;uni=1772292429&amp;hash=199fcc4">linog1[35]</a>, <a
+                href="infouser.php?name=Гадкий Я&amp;uni=1772292429&amp;hash=9ace16c">Гадкий Я[38]</a> <br/>
+            <span class="svet">Команда №2:</span><br/>
+            <a href="infouser.php?name=ANTEL3000&amp;uni=1772292429&amp;hash=e612442">ANTEL3000[25]</a>, <a
+                href="infouser.php?name=apolon war&amp;uni=1772292429&amp;hash=8e31dc0">apolon war[33]</a>, <a
+                href="infouser.php?name=_BeN_&amp;uni=1772292429&amp;hash=66ec918">_BeN_[36]</a>, <a
+                href="infouser.php?name=Vitrenko&amp;uni=1772292429&amp;hash=4fcd778">Vitrenko[34]</a>, <a
+                href="infouser.php?name=LETOV&amp;uni=1772292429&amp;hash=0e96b7f">LETOV[34]</a>, <a
+                href="infouser.php?name=White Magician&amp;uni=1772292429&amp;hash=21ec4f1">White Magician[36]</a>, <a
+                href="infouser.php?name=WheeL&amp;uni=1772292429&amp;hash=3e54771">WheeL[26]</a>, <a
+                href="infouser.php?name=Gwath&amp;uni=1772292429&amp;hash=71c6737">Gwath[37]</a> <br/>
+        </div>
+        <div class="cont">
+            <div class="menu_div" align="left">
+                <ul>
+                    <li><a href="main.php?uni=1772292429&amp;hash=6f32f82"><img src="icons/glavnoe_menyu_128.png"
+                                                                                border="0"
+                                                                                style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                                alt=""/> Главное меню</a></li>
+                    <li><a href="game.php?uni=1772292429&amp;hash=db639f8"><img src="icons/vash_personazh_m1_128.png"
+                                                                                border="0"
+                                                                                style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                                alt=""/> Ваш персонаж</a></li>
+                    <li><a href="inventar.php?uni=1772292429&amp;hash=5eb1094"><img src="icons/inventar_128.png"
+                                                                                    border="0"
+                                                                                    style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                                    alt=""/> Инвентарь</a></li>
+                    <li><a href="journal.php?uni=1772292429&amp;hash=d957d70"><img src="icons/journal_128.png"
+                                                                                   border="0"
+                                                                                   style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                                   alt=""/> Журнал событий</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const POLL_URL = 'teritoryupd.php';
+
+        let current = {
+            location: 100,
+            room: 431,
+            rowCount: 49,
+            pcMode: 0,
+
+            // overscan grid (+1 радиус)
+            cols: 9,
+            rows: 7,
+
+            // viewport (видимая область)
+            viewCols: 7,
+            viewRows: 5
+        };
+
+        function fixCellVar() {
+            if (current.pcMode) return;
+            const dpr = window.devicePixelRatio || 1;
+
+            const vw = Math.min(window.innerWidth, document.documentElement.clientWidth);
+            let cell = Math.min(70, (vw - 2) / 7);
+
+            const step = 1 / dpr;
+            cell = Math.floor(cell / step) * step;
+
+            document.documentElement.style.setProperty('--cell', cell + 'px');
+        }
+
+        fixCellVar();
+        window.addEventListener('resize', fixCellVar, {passive: true});
+        if (window.visualViewport) {
+            visualViewport.addEventListener('resize', fixCellVar, {passive: true});
+            visualViewport.addEventListener('scroll', fixCellVar, {passive: true});
+        }
+
+        const SELF_ICON = (function () {
+            const prefix = '..';
+            const loc = Number(100);
+            if (loc >= 100 && loc < 200) return prefix + '/images/user_m1_w0.png';
+            if (loc >= 300) return prefix + '/images/user_m1_w0.png';
+            const isW = 0;
+            return prefix + (isW ? '/images/user_m0_w1.png' : '/images/user_m1_w0.png');
+        })();
+
+        const animCfg = {
+            enabled: 0,
+            ms: 0
+        };
+
+        const stage = document.getElementById('mapStage');
+        const viewport = document.getElementById('mapViewport');
+        const activeGrid = document.getElementById('gridA');
+
+        const headerContainer = document.getElementById('headerContainer');
+        const belowWrap = document.getElementById('belowWrap');
+
+        const hudIcon = document.getElementById('hudIcon');
+        const hudOverlay = document.getElementById('hudOverlay');
+
+        (function injectAnimStyle() {
+            const st = document.createElement('style');
+            st.textContent = `#mapViewport.animating #hudOverlay{display:none !important;}`;
+            document.head.appendChild(st);
+        })();
+
+        let stepping = false;
+        let pollTimer = null;
+
+        const useJq = !!window.jQuery;
+
+        function clearPoll() {
+            if (pollTimer) {
+                clearInterval(pollTimer);
+                pollTimer = null;
+            }
+        }
+
+        function startPoll(ms) {
+            clearPoll();
+            const POLL_MS = Math.max(250, Number(ms || 2500));
+
+            if (useJq) {
+                jQuery.ajaxSetup({cache: false});
+                pollTimer = window.setInterval(function () {
+                    jQuery.getJSON(POLL_URL, {}, function (json) {
+                        json = json || {};
+                        if (shouldSkipPollRender()) return;
+                        renderPlayersOnActive(json);
+                        if (!stepping) renderCenterHud(json);
+                    });
+                }, POLL_MS);
+            } else {
+                pollTimer = window.setInterval(pollFetch, POLL_MS);
+            }
+
+            current.pollMs = POLL_MS;
+        }
+
+        async function pollFetch() {
+            try {
+                const res = await fetch(POLL_URL + '?_=' + Date.now(), {credentials: 'same-origin'});
+                const json = await res.json();
+                if (shouldSkipPollRender()) return;
+                renderPlayersOnActive(json || {});
+                if (!stepping) renderCenterHud(json || {});
+            } catch (e) {
+            }
+        }
+
+        const initialGrid = [{
+            "room": 280,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/280_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 281,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/281_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 282,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/282_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 283,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/283_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 284,
+            "stepRoom": 382,
+            "img": "../images/l100/l100w1/284_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=382&amp;uni=1772292429&amp;hash=23d1081",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=382&amp;uni=1772292429&amp;hash=8addfdd",
+            "overlay": null
+        }, {
+            "room": 285,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/285_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 286,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/286_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 287,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/287_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 288,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/288_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 329,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/329_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 330,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/330_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 331,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/331_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 332,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/332_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 333,
+            "stepRoom": 382,
+            "img": "../images/l100/l100w1/333_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=382&amp;uni=1772292429&amp;hash=23d1081",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=382&amp;uni=1772292429&amp;hash=8addfdd",
+            "overlay": null
+        }, {
+            "room": 334,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/334_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 335,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/335_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 336,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/336_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 337,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/337_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 378,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/378_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 379,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/379_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 380,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/380_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 381,
+            "stepRoom": 381,
+            "img": "../images/l100/l100w1/381_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=7576532",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=381&amp;uni=1772292429&amp;hash=81e9252",
+            "overlay": null
+        }, {
+            "room": 382,
+            "stepRoom": 382,
+            "img": "../images/l100/l100w1/382_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=382&amp;uni=1772292429&amp;hash=23d1081",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=382&amp;uni=1772292429&amp;hash=8addfdd",
+            "overlay": null
+        }, {
+            "room": 383,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/383_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 384,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/384_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 385,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/385_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 386,
+            "stepRoom": 383,
+            "img": "../images/l100/l100w1/386_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=ede5349",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=383&amp;uni=1772292429&amp;hash=d0cc0b7",
+            "overlay": null
+        }, {
+            "room": 427,
+            "stepRoom": 430,
+            "img": "../images/l100/l100w1/427_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=bc19eda",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=2bff28a",
+            "overlay": null
+        }, {
+            "room": 428,
+            "stepRoom": 430,
+            "img": "../images/l100/l100w1/428_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=bc19eda",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=2bff28a",
+            "overlay": null
+        }, {
+            "room": 429,
+            "stepRoom": 430,
+            "img": "../images/l100/l100w1/429_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=bc19eda",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=2bff28a",
+            "overlay": null
+        }, {
+            "room": 430,
+            "stepRoom": 430,
+            "img": "../images/l100/l100w1/430_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=bc19eda",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=430&amp;uni=1772292429&amp;hash=2bff28a",
+            "overlay": null
+        }, {
+            "room": 431,
+            "stepRoom": 431,
+            "img": "../images/l100/l100w1/431_l100w1.jpg",
+            "isCenter": true,
+            "href": "teritory.php?l=100&amp;crd=431&amp;uni=1772292429&amp;hash=4a02505",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=431&amp;uni=1772292429&amp;hash=586065d",
+            "overlay": null
+        }, {
+            "room": 432,
+            "stepRoom": 432,
+            "img": "../images/l100/l100w1/432_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=cbd997b",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=3f376b4",
+            "overlay": null
+        }, {
+            "room": 433,
+            "stepRoom": 432,
+            "img": "../images/l100/l100w1/433_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=cbd997b",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=3f376b4",
+            "overlay": null
+        }, {
+            "room": 434,
+            "stepRoom": 432,
+            "img": "../images/l100/l100w1/434_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=cbd997b",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=3f376b4",
+            "overlay": null
+        }, {
+            "room": 435,
+            "stepRoom": 432,
+            "img": "../images/l100/l100w1/435_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=cbd997b",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=432&amp;uni=1772292429&amp;hash=3f376b4",
+            "overlay": null
+        }, {
+            "room": 476,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/476_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 477,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/477_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 478,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/478_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 479,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/479_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 480,
+            "stepRoom": 480,
+            "img": "../images/l100/l100w1/480_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=480&amp;uni=1772292429&amp;hash=409ee0b",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=480&amp;uni=1772292429&amp;hash=5c26976",
+            "overlay": null
+        }, {
+            "room": 481,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/481_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 482,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/482_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 483,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/483_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 484,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/484_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 525,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/525_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 526,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/526_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 527,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/527_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 528,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/528_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 529,
+            "stepRoom": 480,
+            "img": "../images/l100/l100w1/529_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=480&amp;uni=1772292429&amp;hash=409ee0b",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=480&amp;uni=1772292429&amp;hash=5c26976",
+            "overlay": null
+        }, {
+            "room": 530,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/530_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 531,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/531_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 532,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/532_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 533,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/533_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 574,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/574_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 575,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/575_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 576,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/576_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 577,
+            "stepRoom": 479,
+            "img": "../images/l100/l100w1/577_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=a605e62",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=479&amp;uni=1772292429&amp;hash=0fdf09b",
+            "overlay": null
+        }, {
+            "room": 578,
+            "stepRoom": 480,
+            "img": "../images/l100/l100w1/578_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=480&amp;uni=1772292429&amp;hash=409ee0b",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=480&amp;uni=1772292429&amp;hash=5c26976",
+            "overlay": null
+        }, {
+            "room": 579,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/579_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 580,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/580_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 581,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/581_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }, {
+            "room": 582,
+            "stepRoom": 481,
+            "img": "../images/l100/l100w1/582_l100w1.jpg",
+            "isCenter": false,
+            "href": "teritory.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=2b210cb",
+            "stepUrl": "teritorystep.php?l=100&amp;crd=481&amp;uni=1772292429&amp;hash=9457d8f",
+            "overlay": null
+        }];
+        const initialPlayers = {
+            "431": {
+                "room": "431",
+                "kilk_player": "4",
+                "man": "4",
+                "woman": "0",
+                "names": "ANTEL3000 [25], apolon war [33], Vitrenko [34], WheeL [26]"
+            }
+        };
+        let lastGrid = initialGrid;
+
+        function runInlineScripts(container) {
+            if (!container) return;
+            const scripts = Array.from(container.querySelectorAll('script'));
+            for (const oldScript of scripts) {
+                const s = document.createElement('script');
+                for (const attr of oldScript.attributes) s.setAttribute(attr.name, attr.value);
+                if (!oldScript.src) s.text = oldScript.textContent || '';
+                oldScript.parentNode.replaceChild(s, oldScript);
+            }
+        }
+
+        function runJsString(js) {
+            if (!js) return;
+            const s = document.createElement('script');
+            s.text = js;
+            document.body.appendChild(s);
+            s.parentNode.removeChild(s);
+        }
+
+        function getCellSizePx() {
+            const el = activeGrid.querySelector('.map-cell');
+            if (!el) return 70;
+            return Math.max(1, Math.round(el.getBoundingClientRect().width));
+        }
+
+        function baseOffsetPx() {
+            const cellPx = getCellSizePx();
+            // overscan +1
+            return {x: -cellPx, y: -cellPx, cellPx};
+        }
+
+        function setStageBase(noTransition) {
+            const b = baseOffsetPx();
+            if (noTransition) stage.style.transition = 'none';
+            stage.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+        }
+
+        function computeDxDyByRooms(fromRoom, toRoom, rowCount) {
+            const delta = toRoom - fromRoom;
+
+            if (delta === 1) return {dx: 1, dy: 0};
+            if (delta === -1) return {dx: -1, dy: 0};
+            if (delta === rowCount) return {dx: 0, dy: 1};
+            if (delta === -rowCount) return {dx: 0, dy: -1};
+
+            if (delta === rowCount + 1) return {dx: 1, dy: 1};
+            if (delta === rowCount - 1) return {dx: -1, dy: 1};
+            if (delta === -rowCount + 1) return {dx: 1, dy: -1};
+            if (delta === -rowCount - 1) return {dx: -1, dy: -1};
+
+            return {dx: 0, dy: 0};
+        }
+
+        let pendingDir = null;
+
+        function sign01(v) {
+            return v < 0 ? -1 : (v > 0 ? 1 : 0);
+        }
+
+        function getOverscanCenter() {
+            return {
+                cx: Math.floor(current.cols / 2),
+                cy: Math.floor(current.rows / 2)
+            };
+        }
+
+        function dirFromClickedCell(cellEl) {
+            if (!cellEl) return null;
+
+            const cells = Array.from(activeGrid.querySelectorAll('.map-cell'));
+            const idx = cells.indexOf(cellEl);
+            if (idx < 0) return null;
+
+            const x = idx % current.cols;
+            const y = Math.floor(idx / current.cols);
+
+            const {cx, cy} = getOverscanCenter();
+            const dx = sign01(x - cx);
+            const dy = sign01(y - cy);
+
+            if (dx === 0 && dy === 0) return null;
+            return {dx, dy};
+        }
+
+        function stepUrlFromDir(dir) {
+            if (!dir) return '';
+
+            const {cx, cy} = getOverscanCenter();
+            const x = cx + (dir.dx || 0);
+            const y = cy + (dir.dy || 0);
+
+            if (x < 0 || x >= current.cols || y < 0 || y >= current.rows) return '';
+
+            const idx = y * current.cols + x;
+            const cell = activeGrid.children[idx];
+            if (!cell) return '';
+
+            const a = cell.querySelector('a');
+            if (!a) return '';
+
+            return String(a.dataset.stepUrl || '').replace(/&amp;/g, '&');
+        }
+
+        function enqueueDir(dir) {
+            pendingDir = dir;
+        }
+
+        function flushPendingDir() {
+            if (!pendingDir) return false;
+            const d = pendingDir;
+            pendingDir = null;
+
+            const u = stepUrlFromDir(d);
+            if (!u) return false;
+
+            stepToUrl(u, d);
+            return true;
+        }
+
+        function iconSrc(data) {
+            if (!data) return '';
+            const kp = Number(data.kilk_player || 0);
+            const prefix = current.pcMode ? '' : '..';
+
+            if (kp >= 5) return prefix + '/images/users.png';
+
+            if (kp > 0 && kp < 5) {
+                if (current.location >= 100 && current.location < 200) {
+                    return prefix + '/images/user_m' + kp + '_w0.png';
+                }
+                return prefix + '/images/user_m' + Number(data.man || 0) + '_w' + Number(data.woman || 0) + '.png';
+            }
+            return '';
+        }
+
+        function centerOverlayFromData() {
+            const room = Number(current.room);
+            for (let i = 0; i < lastGrid.length; i++) {
+                const c = lastGrid[i];
+                if (Number(c.room) === room) {
+                    if (c && c.overlay && c.overlay.src) {
+                        return {src: c.overlay.src || '', alt: c.overlay.alt || ''};
+                    }
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        function renderCenterHud(players) {
+            if (hudIcon) {
+                const p = players && players[String(current.room)] ? players[String(current.room)] : null;
+                const src = iconSrc(p);
+                if (!src) {
+                    hudIcon.style.display = 'none';
+                    hudIcon.src = '';
+                } else {
+                    hudIcon.src = src;
+                    hudIcon.style.display = '';
+                }
+            }
+
+            if (hudOverlay) {
+                const ov = centerOverlayFromData();
+                if (!ov || !ov.src) {
+                    hudOverlay.style.display = 'none';
+                    hudOverlay.src = '';
+                    hudOverlay.alt = '';
+                } else {
+                    hudOverlay.src = ov.src;
+                    hudOverlay.alt = ov.alt || '';
+                    hudOverlay.style.display = '';
+                }
+            }
+        }
+
+        function renderCenterHudDuringAnim() {
+            if (hudIcon) {
+                hudIcon.src = SELF_ICON;
+                hudIcon.style.display = '';
+            }
+            if (hudOverlay) {
+                hudOverlay.style.display = 'none';
+                hudOverlay.src = '';
+                hudOverlay.alt = '';
+            }
+        }
+
+        function renderGridInto(container, grid, players) {
+            container.innerHTML = '';
+
+            for (let i = 0; i < grid.length; i++) {
+                const c = grid[i];
+
+                const cell = document.createElement('div');
+                cell.className = 'map-cell';
+                cell.dataset.room = c.room;
+                cell.dataset.step = c.stepRoom;
+                cell.style.backgroundImage = "url('" + String(c.img).replace(/'/g, "\\'") + "')";
+
+                if (!c.isCenter && c.href) {
+                    const a = document.createElement('a');
+                    a.href = String(c.href || '').replace(/&amp;/g, '&');
+                    a.dataset.stepUrl = String(c.stepUrl).replace(/&amp;/g, '&');
+                    a.dataset.room = c.room;
+                    a.dataset.step = c.stepRoom;
+                    a.style.display = 'block';
+                    a.style.width = '100%';
+                    a.style.height = '100%';
+                    cell.appendChild(a);
+                }
+
+                const p = players && players[String(c.room)] ? players[String(c.room)] : null;
+                const src = (!c.isCenter) ? iconSrc(p) : '';
+                if (src) {
+                    const img = document.createElement('img');
+                    img.className = 'player-icon';
+                    img.src = src;
+                    img.alt = '';
+                    cell.appendChild(img);
+                }
+
+                if (!c.isCenter && c.overlay && c.overlay.src) {
+                    const o = document.createElement('img');
+                    o.className = 'cell-overlay';
+                    o.src = c.overlay.src;
+                    o.alt = c.overlay.alt || '';
+                    cell.appendChild(o);
+                }
+
+                container.appendChild(cell);
+            }
+        }
+
+        function shouldSkipPollRender() {
+            return stepping || (viewport && viewport.classList.contains('animating'));
+        }
+
+        function renderPlayersOnActive(players) {
+            activeGrid.querySelectorAll('.map-cell').forEach(c => {
+                Array.from(c.querySelectorAll('img.player-icon')).forEach(img => img.remove());
+            });
+
+            for (const roomStr in players) {
+                const roomNum = Number(roomStr);
+                if (roomNum === Number(current.room)) continue;
+
+                const cell = activeGrid.querySelector('.map-cell[data-room="' + roomNum + '"]');
+                if (!cell) continue;
+
+                const src = iconSrc(players[roomStr]);
+                if (!src) continue;
+
+                const img = document.createElement('img');
+                img.className = 'player-icon';
+                img.src = src;
+                img.alt = '';
+
+                const overlay = cell.querySelector('img.cell-overlay');
+                if (overlay) cell.insertBefore(img, overlay);
+                else cell.appendChild(img);
+            }
+        }
+
+        async function stepToUrl(stepUrl, dirIntent) {
+            if (!stepUrl) return;
+
+            if (stepping) {
+                if (dirIntent) enqueueDir(dirIntent);
+                return;
+            }
+            stepping = true;
+
+            let json;
+            try {
+                const url = String(stepUrl).replace(/&amp;/g, '&');
+                const res = await fetch(url, {credentials: 'same-origin'});
+                json = await res.json();
+            } catch (e) {
+                stepping = false;
+                flushPendingDir();
+                return;
+            }
+
+            if (!json || !json.ok) {
+                if (json && json.redirect) window.location.href = String(json.redirect).replace(/&amp;/g, '&');
+                stepping = false;
+                flushPendingDir();
+                return;
+            }
+
+            const applyAfterStep = () => {
+                current.location = Number(json.location);
+                current.room = Number(json.room);
+                current.rowCount = Number(json.rowCount);
+
+                if (json.grid) lastGrid = json.grid;
+
+                if (!current.pcMode && typeof json.realUrl === 'string' && json.realUrl) {
+                    try {
+                        history.replaceState(null, '', String(json.realUrl).replace(/&amp;/g, '&'));
+                    } catch (e) {
+                    }
+                }
+
+                // header html
+                if (headerContainer && typeof json.headerHtml === 'string') {
+                    headerContainer.innerHTML = json.headerHtml;
+                    runInlineScripts(headerContainer);
+                }
+
+                // below html
+                if (typeof json.belowHtml === 'string') {
+                    belowWrap.innerHTML = json.belowHtml;
+                    runInlineScripts(belowWrap);
+                }
+
+                // title
+                if (typeof json.pageTitle === 'string') document.title = json.pageTitle;
+
+                // PC topbar
+                if (typeof json.topbarJs === 'string') runJsString(json.topbarJs);
+
+                // PC bars
+                if (typeof json.barsJs === 'string') runJsString(json.barsJs);
+
+                // polling interval
+                if (json.pollMs && Number(json.pollMs) !== Number(current.pollMs || 0)) startPoll(Number(json.pollMs));
+
+                // anim cfg
+                if (json.anim) {
+                    animCfg.enabled = !!Number(json.anim.enabled);
+                    animCfg.ms = Math.max(0, Number(json.anim.ms || 0));
+                }
+
+                renderCenterHud(json.players || {});
+            };
+
+            const fromRoom = current.room;
+            const toRoom = Number(json.room);
+            const locChanged = Number(json.location) !== Number(current.location);
+
+            // телепорт/переход локации без анимации шага
+            if (locChanged || toRoom === fromRoom) {
+                viewport && viewport.classList.remove('animating');
+                stage.style.transition = 'none';
+
+                renderGridInto(activeGrid, json.grid || [], json.players || {});
+                setStageBase(true);
+
+                applyAfterStep();
+                stepping = false;
+                flushPendingDir();
+                return;
+            }
+
+            const {dx, dy} = computeDxDyByRooms(fromRoom, toRoom, current.rowCount);
+
+            if (dx === 0 && dy === 0) {
+                viewport && viewport.classList.remove('animating');
+                stage.style.transition = 'none';
+
+                renderGridInto(activeGrid, json.grid || [], json.players || {});
+                setStageBase(true);
+
+                applyAfterStep();
+                stepping = false;
+                flushPendingDir();
+                return;
+            }
+
+            const wantAnim = !!animCfg.enabled && Number(animCfg.ms) > 0;
+
+            if (!wantAnim) {
+                viewport && viewport.classList.remove('animating');
+                stage.style.transition = 'none';
+
+                renderGridInto(activeGrid, json.grid || [], json.players || {});
+                setStageBase(true);
+
+                applyAfterStep();
+                stepping = false;
+                flushPendingDir();
+                return;
+            }
+
+            viewport && viewport.classList.add('animating');
+            renderCenterHudDuringAnim();
+
+            const b = baseOffsetPx();
+            const dur = Math.max(1, Number(animCfg.ms) || 180);
+
+            stage.style.transition = 'none';
+            stage.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+            void stage.offsetWidth;
+
+            stage.style.transition = `transform ${dur}ms ease`;
+            stage.style.transform = `translate3d(${b.x + (-dx * b.cellPx)}px, ${b.y + (-dy * b.cellPx)}px, 0)`;
+
+            let finished = false;
+
+            const finalize = () => {
+                if (finished) return;
+                finished = true;
+
+                viewport && viewport.classList.remove('animating');
+
+                stage.style.transition = 'none';
+                renderGridInto(activeGrid, json.grid || [], json.players || {});
+                setStageBase(true);
+
+                applyAfterStep();
+                stepping = false;
+
+                flushPendingDir();
+            };
+
+            const onEnd = () => {
+                stage.removeEventListener('transitionend', onEnd);
+                finalize();
+            };
+
+            stage.addEventListener('transitionend', onEnd);
+
+            setTimeout(() => {
+                stage.removeEventListener('transitionend', onEnd);
+                finalize();
+            }, dur + 120);
+        }
+
+        // init
+        renderGridInto(activeGrid, initialGrid, initialPlayers);
+        renderCenterHud(initialPlayers);
+        setStageBase(true);
+
+
+        stage.addEventListener('click', (ev) => {
+            const a = ev.target.closest('.map-cell a');
+            if (!a) return;
+
+            ev.preventDefault();
+
+            const cell = a.closest('.map-cell');
+            const dir = dirFromClickedCell(cell);
+            if (!dir) return;
+
+            if (stepping || (viewport && viewport.classList.contains('animating'))) {
+                enqueueDir(dir);
+                return;
+            }
+
+            const stepUrl = String(a.dataset.stepUrl || '').replace(/&amp;/g, '&');
+            if (!stepUrl) return;
+
+            stepToUrl(stepUrl, dir);
+        });
+
+        startPoll(750);
+    })();
+</script>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>

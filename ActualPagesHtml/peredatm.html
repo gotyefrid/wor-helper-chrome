@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="keywords"
+          content="онлайн игра, RPG, WOR, World Of Rest, рпг игра, браузерная мобильная игра, рпг для андроид"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="refresh" content="200"/>
+    <title>World of Rest - мобильная online игра!</title>
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20250023"/>
+</head>
+<body>
+<div id="headerContainer" class="header-container">
+    <div class="menu" align="center">WoR: Передать WR</div>
+    <div class="chat">
+        <div class="header">
+            <div class="level-block">
+                <div style="display:flex; align-items:center;">
+                    <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                    <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>26</strong></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 80%"></div>
+                </div>
+            </div>
+            <div class="hp-mp-circle">
+                <div class="circle-bar">
+                    <div class="circle-fill hp-fill" style="height: 100%"></div>
+                </div>
+                <div class="circle-bar">
+                    <div class="circle-fill mp-fill" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+                <span>171.48</span>
+            </div>
+            <div class="status-item">
+                <img src="img/money.gif" alt="WR" title="WR">
+                <span>37176</span>
+            </div>
+            <div class="status-item"><img src="img/clock.gif" border="0" alt="Время" title="Время"/> 13:14</div>
+        </div>
+    </div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1772536464&amp;hash=48d5daf">общий</a>,
+        <a href="peredatm.php?chatmode=my&amp;uni=1772536464&amp;hash=72c0098">мой</a>,
+        <a href="peredatm.php?chatmode=add&amp;uni=1772536464&amp;hash=8f4b556">написать</a>
+    </div>
+</div>
+<div class="cont">
+    <div class="menu_div" align="left">
+        <ul>
+            <li><a href="main.php?uni=1772536465&amp;hash=c1751d8"><img src="icons/glavnoe_menyu_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""/> Главное меню</a></li>
+            <li><a href="rubin.php?uni=1772536465&amp;hash=8714fdc"><img src="icons/rubin_128.png" border="0"
+                                                                         style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                         alt=""/> <span
+                    class="svet">Рубиновая лавка</span></a></li>
+            <li><a style="color:#FF0000;font-weight:bold" href="teritory.php?uni=1772536465&amp;hash=3555a73"><img
+                    src="icons/priroda_128.png" border="0"
+                    style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt=""/> Природа</a></li>
+            <li><a href="game.php?uni=1772536465&amp;hash=7706b56"><img src="icons/vash_personazh_m1_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""/> Ваш персонаж</a></li>
+            <li><a href="inventar.php?uni=1772536465&amp;hash=597e412"><img src="icons/inventar_128.png" border="0"
+                                                                            style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                            alt=""/> Инвентарь</a></li>
+        </ul>
+    </div>
+</div>
+
+<div style="position:relative; width:255px; height:80px; margin:5px; background: url(img/base.png)">
+    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/man10108.png" alt=""/>
+    <span style="position:absolute; top:0; left:70px; font-size:10px; font-weight:bold"><img src='/pic/sind.gif'
+                                                                                             style='vertical-align: middle'
+                                                                                             width='12' height='12'
+                                                                                             alt=''/> WheeL</span>
+    <span style="position:absolute; top:60px; left:52px; font-size:10px; font-weight:bold; color:#FFFF00">26</span>
+    <img id="hp_bar" style="position:absolute; top:17px; left:74px;" src="img/hp.png" width="176" height="25" alt=""/>
+    <img id="mana_bar" style="position:absolute; top:45px; left:74px;" src="img/ma.png" width="157" height="14" alt=""/>
+    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">360/360</span>
+    <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">1822/1822</span>
+    <span style="position:absolute; top:65px; left:80px; font-size:10px; font-weight:bold">
+                <img src="img/rubin.gif" border="0" alt="Рубины"/> 171.48                <img src="img/money.gif"
+                                                                                              alt="WR" title="WR"
+                                                                                              border="0"/> <a
+            href="peredatm.php?uni=1772536465&amp;hash=42c1d99">37176</a>
+                <img src="img/aid.gif" alt="Травма" title="Травма" border="0"/> Нет            </span>
+</div>
+
+
+<div class="zagolovok" align="center"><strong>Передать WR</strong></div>
+<form method="post" action="permoneyact.php">
+    <input type="hidden" name="_csrf" value="3ff9129de2ef4c9e01f633a98e9b5446">
+    <table border="0" class="table_menu">
+        <tr>
+            <td><strong>Игроку:</strong></td>
+            <td><input type="text" name="nameperedat" class="do_button"></td>
+        </tr>
+        <tr>
+            <td><strong>Сумма:</strong></td>
+            <td><input type="text" name="suma" class="do_button" size="10" value="0"> WR</td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2"><input type="submit" value="Передать" class="button"></td>
+        </tr>
+    </table>
+</form>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>

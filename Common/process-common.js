@@ -8,17 +8,20 @@
     checkFlashNotifications();
     checkTrauma();
 
-    const isParsingActive = await CommonHelper.getExtStorage('wor_parsing_active');
-    if (isParsingActive) {
-        parsing();
-    };
-
-    if (document.location.href.includes('forum=12&topic=2289')) {
-        sendRandomFact();
-    }
-
+    await checkTaktRedirect();
     backgroundListener();
 })();
+
+async function checkTaktRedirect() {
+    const taktActive = await CommonHelper.getExtStorage('wor_takt_active');
+    if (!taktActive) return;
+
+    const path = location.pathname;
+
+    if (path.includes('game') || path.includes('main')) {
+        window.location.href = '/wap/teritory.php';
+    };
+}
 
 async function checkTrauma() {
     const currentTime = CommonHelper.getTraumaTime(true);
@@ -38,70 +41,10 @@ async function checkTrauma() {
             'Травма увеличилась! Теперь травма: ' + CommonHelper.getTraumaTime(),
             'common'
         );
-        await CommonHelper.setExtStorage('wor_fight_last_trauma_minutes', currentTime);
     }
+
+    await CommonHelper.setExtStorage('wor_fight_last_trauma_minutes', currentTime);
 }
-
-async function parsing() {
-    let isChecking = false;
-
-    async function checkPage() {
-        if (isChecking) {
-            CommonHelper.log('[Parser] Проверка уже запущена, пропуск...', false);
-            return;
-        }
-
-        isChecking = true;
-
-        try {
-            CommonHelper.log('[Parser] Начинаем проверку...');
-            const urls = await CommonHelper.getExtStorage('wor_parsing_links') || [];
-            const targets = await CommonHelper.getExtStorage('wor_parsing_targets') || [];
-            const invert = await CommonHelper.getExtStorage('wor_parsing_invert_search_active') || false;
-            let i = 1;
-
-            const data = urls.map(link => ({
-                type: 'Ссылка ' + i++,
-                textToFind: targets,
-                url: link
-            }));
-
-            for (const item of data) {
-                await CommonHelper.delay(1000, 2000);
-                CommonHelper.log(`[Parser] Проверка ${item.type}...`);
-                await CommonHelper.parsingPage(item.url, item.textToFind, item.type, invert);
-            }
-
-            CommonHelper.log('[Parser] Проверка завершена.', false);
-
-        } catch (error) {
-            CommonHelper.log('[Parser] Ошибка при проверке:' + JSON.stringify(error));
-        } finally {
-            isChecking = false;
-        }
-    }
-
-    async function scheduleNextCheck(baseInterval) {
-        const nextDelay = CommonHelper.getRandomNumber(baseInterval, baseInterval + 10000);
-        await CommonHelper.log(`[Parser] Следующая проверка через ${nextDelay / 1000} секунд...`, false);
-
-        setTimeout(async () => {
-            const stillActive = await CommonHelper.getExtStorage('wor_parsing_active');
-            if (stillActive) {
-                await checkPage();
-                await scheduleNextCheck(baseInterval); // рекурсивно запускаем следующее ожидание
-            } else {
-                await CommonHelper.log('[Parser] Остановлено пользователем.', false);
-            }
-        }, nextDelay);
-    }
-
-    const rawTimeout = await CommonHelper.getExtStorage('wor_parsing_timeout');
-    const baseInterval = rawTimeout ? parseInt(rawTimeout, 10) * 1000 : 30000;
-
-    await checkPage(); // первый запуск
-    await scheduleNextCheck(baseInterval); // дальше уже по таймауту
-};
 
 async function setTitle() {
     let title = document.querySelector('.menu')?.textContent;
@@ -119,17 +62,30 @@ async function checkFlashNotifications() {
         return;
     }
 
-    if (html.innerText.includes('Скрыть сообщение')) {
-        CommonHelper.sendTelegramMessage(html.innerText, 'common', true, 'html', 300);
-    }
+    const text = html.innerText;
 
-    if (html.innerText.includes('Для того, чтобы ловить рыбу, Вам необходима удочка!')) {
+    if (text.includes('Для того, чтобы ловить рыбу, Вам необходима удочка!')) {
         await CommonHelper.turnFishing(false);
         await CommonHelper.turnFighting(false);
         CommonHelper.sendTelegramMessage('Для того, чтобы ловить рыбу, Вам необходима удочка!', 'common', true, 'html', 60);
     }
 
-    let messages = Chat.getParsedMessages(html);
+    let needNotify = false;
+
+    if (text.includes('Скрыть сообщение')) {
+        const isBattle = text.includes('Тактическое сражение') || text.includes('Боевое сражение');
+        const hasReward = text.includes('колеса фортуны') || text.includes('1 рубину') || text.includes('5000');
+
+        if (isBattle && hasReward) {
+            needNotify = true;
+        }
+
+        CommonHelper.sendTelegramMessage(html.innerText, 'common', needNotify, 'html', 1200);
+    }
+
+
+    // Парсим flash-уведомления новым парсером (результат сохраняется в storage для возможного будущего использования)
+    let messages = Chat.getParsedMessagesNew(html);
 
     await CommonHelper.setExtStorage('wor_chat_flash_notifications', messages);
 }
@@ -155,7 +111,10 @@ function backgroundListener() {
                     let parser = new DOMParser();
                     let htmlPage = parser.parseFromString(html, 'text/html');
                     let msgBox = htmlPage.querySelector('#msg_box');
-                    let formattedMessages = Chat.getParsedMessages(msgBox);
+
+                    // Получаем ник игрока для корректного определения поля isForMe в каждом сообщении
+                    const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+                    let formattedMessages = Chat.getParsedMessagesNew(msgBox, playerName);
 
                     processActualMessages(formattedMessages);
 
@@ -166,6 +125,43 @@ function backgroundListener() {
                 }
             })();
 
+            return true;
+        }
+
+        if (message.type === 'fetchModeratorsList') {
+            (async () => {
+                try {
+                    const response = await fetch(message.url);
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const links = doc.querySelectorAll('.table_modern tr td a');
+                    const names = Array.from(links).map(a => a.textContent.trim());
+                    sendResponse({ names });
+                } catch (err) {
+                    sendResponse({ error: err.toString() });
+                }
+            })();
+            return true;
+        }
+
+        if (message.type === 'sendDirectMessage') {
+            (async () => {
+                try {
+                    const response = await fetch('/wap/otpravit.php?js=1', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                            privat: message.isPrivate ? 'true' : 'false',
+                            komy: message.to,
+                            message: message.answer
+                        })
+                    });
+                    sendResponse({ status: response.status });
+                } catch (err) {
+                    sendResponse({ error: err.toString() });
+                }
+            })();
             return true;
         }
 
@@ -247,7 +243,8 @@ async function processPrimanka(messages) {
         }
 
         for (const msg of messages) {
-            if (msg.type !== 'system') continue;
+            // getParsedMessagesNew возвращает type в верхнем регистре: 'SYSTEM', 'PUBLIC', 'PUBLIC_TO', 'PRIVATE'
+            if (msg.type !== 'SYSTEM') continue;
 
             if (msg.text.includes('Приманка активирована!')) {
                 CommonHelper.log('Приманка ещё активна');
@@ -316,71 +313,5 @@ async function processPrimanka(messages) {
     } catch (e) {
         CommonHelper.log('Ошибка в processPrimanka: ' + e.message);
         await CommonHelper.sendTelegramMessage('Ошибка при обработке приманки: ' + e.stack);
-    }
-}
-
-async function sendRandomFact() {
-    try {
-        CommonHelper.log("Запрашиваем случайный факт...");
-
-        // Запрашиваем случайный факт
-        let res = await fetch("http://numbersapi.com/random/trivia");
-
-        if (res.status !== 200) {
-            // Если статус ответа не 200, прекращаем выполнение
-            CommonHelper.log("Ошибка: не удалось получить данные");
-            return;
-        }
-
-        let factText = await res.text();
-        // Переводим факт
-        let translateUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(factText)}&langpair=en|ru`;
-        let translatedText = await fetch(translateUrl).then(res => res.json()).then(data => data.responseData.translatedText);
-
-        CommonHelper.log("Получен факт: " + translatedText);
-
-        if (translatedText.includes('MYMEMORY WARNING')) {
-            CommonHelper.log("Получена ошибка, выходим");
-            return;
-        }
-
-        let waitTime = CommonHelper.getRandomNumber(120000, 300000); // Генерируем случайное время ожидания (60-90 сек)
-        CommonHelper.log(`Ожидание ${Math.floor(waitTime / 1000)} секунд перед публикацией...`);
-
-        // Таймер обратного отсчёта
-        let remainingTime = Math.floor(waitTime / 1000);
-        let timer = setInterval(() => {
-            remainingTime--;
-            CommonHelper.log(`Осталось ${remainingTime} секунд...`, true, 0, false);
-            if (remainingTime <= 0) clearInterval(timer);
-        }, 1000);
-
-        // Ждём перед отправкой
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-
-        CommonHelper.log("Готовимся к отправке сообщения...");
-
-        // Поиск формы
-        let form = document.querySelector('form');
-        if (!form) return CommonHelper.log("Форма не найдена!");
-
-        // Поиск текстового поля
-        let inputField = form.querySelector('textarea[name="textmes"]');
-        if (!inputField) return CommonHelper.log("Поле ввода не найдено!");
-
-        // Вставляем сообщение
-        inputField.value = translatedText;
-
-        // Отправляем форму
-        let submitButton = form.querySelector('input[type="submit"]');
-        if (submitButton) {
-            CommonHelper.log("Сообщение отправлено!");
-            submitButton.click();
-        } else {
-            CommonHelper.log("Кнопка отправки не найдена!");
-        }
-
-    } catch (error) {
-        CommonHelper.log("Ошибка:" + JSON.stringify(error));
     }
 }

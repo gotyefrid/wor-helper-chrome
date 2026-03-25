@@ -260,7 +260,7 @@ class Territory {
     };
 
     isTerritoryPage = false;
-    currentLocation = null;
+    currentLocation = null;Не
     currentMap = null;
     currentPointId = null;
     mapNumRows = null;
@@ -299,7 +299,7 @@ class Territory {
     }
 
     static getCurrentLocation() {
-        const link = document.querySelector('tbody a[href*="l="]');
+        const link = document.querySelector('.map-cell a[href*="l="]');
         if (!link) return null;
 
         const params = new URLSearchParams(link.href.split("?")[1]);
@@ -307,11 +307,16 @@ class Territory {
     }
 
     getCurrentPointId() {
-        let playerCell = document.querySelector("td[align=center]").querySelector('div');
-        let currentId = parseInt(playerCell.id.substring(1), 10);
+        // Ищем элемент .map-cell, у которого нет дочерних узлов (даже текстовых)
+        const emptyCell = document.querySelector('.map-cell:empty');
 
-        return currentId;
+        if (emptyCell) {
+            return parseInt(emptyCell.getAttribute('data-room'), 10);
+        }
+
+        return null;
     }
+
     // Метод для поиска координат по заданному id
     findCoordinatesById(id) {
         for (let row = 0; row < this.mapNumRows; row++) {
@@ -322,10 +327,42 @@ class Territory {
         return null;
     }
 
-    // Метод для поиска кратчайшего пути от startId до targetId
-    findPath(startId, targetId) {
+    /**
+     * Извлекает множество ID комнат, занятых игроками, из ответа teritorystep.php.
+     *
+     * @param {Object|null} playersJson - Объект `players` из JSON-ответа сервера.
+     *   Структура: { "205": { room: "205", kilk_player: "2", names: "..." }, ... }
+     *   Передайте null или undefined, если данных нет — вернётся пустое множество.
+     * @returns {Set<number>} Множество числовых ID комнат, где стоят другие игроки.
+     */
+    static extractOccupiedRooms(playersJson) {
+        if (!playersJson) return new Set();
+        return new Set(Object.values(playersJson).map(p => Number(p.room)));
+    }
+
+    /**
+     * Ищет кратчайший путь между двумя точками карты методом BFS (обход в ширину).
+     * Поддерживает 8 направлений движения (включая диагонали).
+     *
+     * @param {number} startId  - ID стартовой клетки карты.
+     * @param {number} targetId - ID целевой клетки карты.
+     * @param {Set<number>} [blockedIds=new Set()] - Множество ID клеток, которые нужно
+     *   обходить стороной (например, клетки с игроками). Клетки со значением 0
+     *   в матрице карты всегда непроходимы независимо от этого параметра.
+     *   Финальная клетка (targetId) никогда не блокируется — на неё всегда можно зайти.
+     * @returns {number[]} Массив ID клеток от startId до targetId включительно.
+     *   Возвращает пустой массив, если путь не найден.
+     */
+    findPath(startId, targetId, blockedIds = new Set()) {
         const start = this.findCoordinatesById(startId);
         const target = this.findCoordinatesById(targetId);
+
+        // Финальная точка никогда не должна блокироваться: на неё нужно зайти в любом случае.
+        // Копируем Set, чтобы не мутировать аргумент вызывающего кода.
+        if (blockedIds.has(targetId)) {
+            blockedIds = new Set(blockedIds);
+            blockedIds.delete(targetId);
+        }
 
         if (!start || !target) {
             CommonHelper.log("Начальная или конечная точка не найдена в сетке. Начальная: " + JSON.stringify(start) + " , конечная: " + JSON.stringify(target));
@@ -375,12 +412,14 @@ class Territory {
             for (const { dr, dc } of directions) {
                 const newRow = current.row + dr;
                 const newCol = current.col + dc;
+                const cellId = this.currentMap[newRow]?.[newCol];
 
                 if (
                     newRow >= 0 && newRow < this.mapNumRows &&
                     newCol >= 0 && newCol < this.mapNumCols &&
                     !visited[newRow][newCol] &&
-                    this.currentMap[newRow][newCol] !== 0
+                    cellId !== 0 &&
+                    !blockedIds.has(cellId)
                 ) {
                     visited[newRow][newCol] = true;
                     parent[newRow][newCol] = current;
@@ -393,15 +432,75 @@ class Territory {
         return [];
     }
 
-    async toPoint(pointId, delay = [50, 100], eachCallback = null, endCallback = null) {
-        const path = this.findPath(this.currentPointId, pointId);
+    /**
+     * Строит путь от текущей позиции игрока до указанной точки и начинает движение.
+     *
+     * @param {number} pointId - ID целевой клетки карты.
+     * @param {Object} [options={}]
+     * @param {number[]} [options.delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
+     * @param {Set<number>} [options.blockedIds=new Set()] - Клетки, которые нужно обойти
+     *   при первоначальном построении пути (например, известные заранее позиции врагов).
+     * @param {Function|null} [options.eachCallback=null] - Вызывается после каждого шага
+     *   с JSON-ответом сервера. Сигнатура: async (json) => void.
+     *   Используется для обновления UI (например, рендер мини-карты).
+     * @param {Function|null} [options.endCallback=null] - Вызывается вместо навигации по
+     *   realUrl при достижении финальной точки. Сигнатура: async (json) => void.
+     *   Если не задан — происходит автоматический переход по json.realUrl.
+     * @param {Function|null} [options.getBlockedIds=null] - Динамическая перестройка пути.
+     *   Вызывается после каждого шага. Сигнатура: (json) => Set<number>.
+     *   Если хоть одна клетка оставшегося пути оказалась в возвращённом множестве —
+     *   путь перестраивается в обход. Если обхода нет — идём напрямую игнорируя блокировку.
+     * @param {Function|null} [options.shouldAbort=null] - Досрочное прерывание движения.
+     *   Вызывается после каждого шага до проверки пути. Сигнатура: (json) => boolean.
+     *   Если вернула true — движение немедленно останавливается,
+     *   toPoint возвращает строку 'aborted'.
+     * @returns {Promise<'aborted'|undefined>} Возвращает 'aborted' если сработал shouldAbort.
+     */
+    async toPoint(pointId, options = {}) {
+        const {
+            delay = [50, 100],
+            blockedIds = new Set(),
+            eachCallback = null,
+            endCallback = null,
+            getBlockedIds = null,
+            shouldAbort = null,
+        } = options;
+
+        const path = this.findPath(this.currentPointId, pointId, blockedIds);
         path.shift();
         CommonHelper.log('Путь:' + JSON.stringify(path));
 
-        await this.moveByPath(path, delay, eachCallback, endCallback);
+        return await this.moveByPath(path, { delay, eachCallback, endCallback, getBlockedIds, shouldAbort });
     }
 
-    async moveByPath(path, delay = [50, 100], eachCallback = null, endCallback = null) {
+    /**
+     * Выполняет движение по заранее построенному маршруту, шаг за шагом отправляя
+     * запросы к teritorystep.php.
+     *
+     * @param {number[]} path - Массив ID клеток маршрута (без стартовой точки).
+     *   Модифицируется на месте при перестройке пути.
+     * @param {Object} [options={}]
+     * @param {number[]} [options.delay=[50,100]] - Диапазон задержки в мс между шагами: [min, max].
+     * @param {Function|null} [options.eachCallback=null] - Вызывается после каждого шага
+     *   с JSON-ответом сервера. Сигнатура: async (json) => void.
+     * @param {Function|null} [options.endCallback=null] - Вызывается вместо навигации по
+     *   realUrl при достижении финальной точки. Сигнатура: async (json) => void.
+     * @param {Function|null} [options.getBlockedIds=null] - Динамическая перестройка пути.
+     *   Сигнатура: (json) => Set<number>. Если возвращённое множество пересекается с
+     *   оставшимся маршрутом — путь перестраивается. При отсутствии обхода идём напрямую.
+     * @param {Function|null} [options.shouldAbort=null] - Досрочное прерывание.
+     *   Сигнатура: (json) => boolean. При true — возвращает 'aborted'.
+     * @returns {Promise<'aborted'|undefined>}
+     */
+    async moveByPath(path, options = {}) {
+        const {
+            delay = [50, 100],
+            eachCallback = null,
+            endCallback = null,
+            getBlockedIds = null,
+            shouldAbort = null,
+        } = options;
+
         // Для первой итерации будем использовать текущий document
         let currentDocument = document;
 
@@ -411,59 +510,100 @@ class Territory {
             }
         }
 
-        // Проходим по всем точкам пути
-        for (const id of path) {
+        // Проходим по всем точкам пути через индекс, чтобы иметь возможность
+        // перестраивать хвост массива при динамическом изменении маршрута
+        for (let i = 0; i < path.length; i++) {
+            const id = path[i];
             CommonHelper.log('Переходим на точку ' + id);
 
             // Формируем селектор для ячейки и ищем её в текущем документе (полученном на предыдущем шаге или изначальном)
-            let cellId = 'r' + id.toString();
-            let cellElement = currentDocument.querySelector('a[id=' + cellId + ']');
+            let cellId = id.toString();
+            let cellElement = currentDocument.querySelector('a[data-room="' + cellId + '"]');
+
             if (!cellElement) {
                 CommonHelper.log('Элемент с селектором ' + cellId + ' не найден в текущем документе');
+                CommonHelper.reloadPage();
                 break;
             }
 
             // Получаем URL из атрибута href найденного элемента
-            let url = cellElement.getAttribute('href');
+            let url = cellElement.getAttribute('data-step-url');
             CommonHelper.log('Отправляем fetch запрос по URL: ' + url);
 
+            let json;
             try {
                 // Отправляем запрос и получаем HTML-страницу
                 let response = await fetch(url);
-                let html = await response.text();
+                json = await response.json();
 
-                if (!response.url.includes('teritory')) {
+                if (typeof eachCallback === "function") {
+                    await eachCallback(json);
+                }
+            } catch (error) {
+                CommonHelper.log('Ошибка при fetch запросе:' + JSON.stringify(error));
+                CommonHelper.reloadPage();
+                break;
+            }
+
+            // Проверка досрочного прерывания: цель могла стать неактуальной (например,
+            // базу захватил союзник). Проверяем до перестройки пути, чтобы не тратить
+            // время на пересчёт маршрута к цели, к которой уже не нужно идти.
+            if (typeof shouldAbort === "function" && await shouldAbort(json)) {
+                return 'aborted';
+            }
+
+            // Динамическая перестройка пути: проверяем, не занял ли игрок клетку на маршруте
+            if (typeof getBlockedIds === "function") {
+                const newBlocked = getBlockedIds(json);
+
+                if (newBlocked.size > 0) {
+                    const remainingPath = path.slice(i + 1);
+                    const hasBlockedOnPath = remainingPath.some(cellId => newBlocked.has(cellId));
+
+                    if (hasBlockedOnPath) {
+                        const targetId = path[path.length - 1];
+                        const newRemainingPath = this.findPath(id, targetId, newBlocked);
+                        newRemainingPath.shift(); // убираем текущую позицию
+
+                        if (newRemainingPath.length > 0) {
+                            path.splice(i + 1, remainingPath.length, ...newRemainingPath);
+                            CommonHelper.log('Перестройка пути из-за игроков на маршруте: ' + JSON.stringify(path));
+                        } else {
+                            // Обходного пути нет (например, узкий мост и там стоит игрок).
+                            // Пересчитываем маршрут полностью игнорируя игроков — лучше
+                            // наступить на занятую клетку, чем вообще не двигаться.
+                            const targetId = path[path.length - 1];
+                            const fallbackPath = this.findPath(id, targetId, new Set());
+                            fallbackPath.shift(); // убираем текущую позицию
+
+                            if (fallbackPath.length > 0) {
+                                path.splice(i + 1, remainingPath.length, ...fallbackPath);
+                                CommonHelper.log('Перестройка пути: обхода нет, идём напрямую игнорируя игроков: ' + JSON.stringify(path));
+                            } else {
+                                CommonHelper.log('Перестройка пути: путь не найден даже без ограничений, продолжаем по исходному');
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Если достигнута финальная точка, перезагружаем страницу
+            if (i === path.length - 1) {
+                CommonHelper.log('Достигнута финальная точка, перезагружаем страницу...');
+
+                if (typeof endCallback === "function") {
+                    await endCallback(json);
+                    return;
+                }
+                if (!json.realUrl) {
+                    CommonHelper.log('realUrl отсутствует в ответе, перезагружаем страницу');
                     CommonHelper.reloadPage();
                     return;
                 }
 
-                // Парсим полученный HTML и создаём новый DOM
-                let parser = new DOMParser();
-                let newDocument = parser.parseFromString(html, 'text/html');
+                const normalizedLink = json.realUrl.replace(/&amp;/g, '&');
 
-                if (typeof eachCallback === "function") {
-                    await eachCallback(newDocument);
-                } else {
-                    document.querySelector('body').innerHTML = newDocument.querySelector('body').innerHTML;
-                }
-
-                // Обновляем currentDocument для следующей итерации
-                currentDocument = newDocument;
-            } catch (error) {
-                CommonHelper.log('Ошибка при fetch запросе:' + JSON.stringify(error));
-                break;
-            }
-
-            // Если достигнута финальная точка, перезагружаем страницу
-            if (id === path[path.length - 1]) {
-                CommonHelper.log('Достигнута финальная точка, перезагружаем страницу...');
-
-                if (typeof endCallback === "function") {
-                    await endCallback(currentDocument);
-                    return;
-                }
-
-                document.location = url;
+                document.location = normalizedLink;
             }
 
             await CommonHelper.delay(delay[0], delay[1]); // задержка между запросами

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="keywords"
+          content="онлайн игра, RPG, WOR, World Of Rest, рпг игра, браузерная мобильная игра, рпг для андроид"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="refresh" content="1200"/>
+    <title>World of Rest - мобильная online игра!</title>
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20250023"/>
+</head>
+<body>
+<div id="headerContainer" class="header-container">
+    <div class="menu" align="center">WoR: Почтовый ящик</div>
+    <div class="chat">
+        <div class="header">
+            <div class="level-block">
+                <div style="display:flex; align-items:center;">
+                    <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                    <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>26</strong></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 80%"></div>
+                </div>
+            </div>
+            <div class="hp-mp-circle">
+                <div class="circle-bar">
+                    <div class="circle-fill hp-fill" style="height: 100%"></div>
+                </div>
+                <div class="circle-bar">
+                    <div class="circle-fill mp-fill" style="height: 100%"></div>
+                </div>
+            </div>
+            <div class="status-item">
+                <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+                <span>171.48</span>
+            </div>
+            <div class="status-item">
+                <img src="img/money.gif" alt="WR" title="WR">
+                <span>37042</span>
+            </div>
+            <div class="status-item"><img src="img/clock.gif" border="0" alt="Время" title="Время"/> 12:38</div>
+        </div>
+    </div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1772534339&amp;hash=c7c117d">общий</a>,
+        <a href="mail.php?act=newmail&amp;chatmode=my&amp;uni=1772534339&amp;hash=cef11ec">мой</a>,
+        <a href="mail.php?act=newmail&amp;chatmode=add&amp;uni=1772534339&amp;hash=1fba743">написать</a>
+    </div>
+    <div class="contur_mes">
+        <div class="header_mes" align="left"><span class="svet"><strong><span
+                style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:38:33</span> <img
+                src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для WheeL:"
+                title="[[[ Система ]]] для WheeL:"/> </strong> Найдено Корни горечи!</span><br/></div>
+    </div>
+</div>
+<style>
+    .mail-list {
+        margin: 8px 0;
+    }
+
+    .mail-item {
+        padding: 8px 10px;
+        border-radius: 8px;
+        margin: 6px 0;
+        background: rgba(0, 0, 0, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .mail-item:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .mail-top {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        line-height: 1.1;
+    }
+
+    .mail-icon {
+        width: 14px;
+        height: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mail-del {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+
+    .mail-del:hover {
+        background: rgba(255, 0, 0, 0.12);
+    }
+
+    .mail-del span {
+        color: #ff3b3b;
+        font-weight: 700;
+        font-size: 14px;
+        transform: translateY(-1px);
+    }
+
+    .mail-time {
+        white-space: nowrap;
+        font-size: 11px;
+    }
+
+    .mail-bottom {
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .mail-from {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        opacity: 0.95;
+    }
+
+    .mail-subject a {
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .mail-subject a:hover {
+        text-decoration: underline;
+    }
+
+    .mail-sep {
+        opacity: 0.35;
+    }
+
+    .mail-empty {
+        padding: 10px 8px;
+        opacity: 0.85;
+    }
+
+    .mail-pagination {
+        margin: 10px 0;
+    }
+
+    .mail-card {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .mail-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding-bottom: 8px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .mail-meta .meta-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        font-size: 12px;
+        opacity: 0.95;
+    }
+
+    .mail-row {
+        margin-top: 6px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .mail-label {
+        color: #FFFFFF;
+        opacity: 0.85;
+        min-width: 72px;
+    }
+
+    .mail-subject-view {
+        font-weight: 800;
+    }
+
+    .mail-body {
+        margin: 12px 0 4px;
+        padding: 10px 10px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        line-height: 1.45;
+        word-break: break-word;
+        min-height: 100px;
+    }
+
+    .mail-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .mail-form {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .mail-form-grid {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: 6px 8px;
+        align-items: center;
+    }
+
+    .mail-input {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        padding: 4px 6px;
+        border-radius: 3px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(0, 0, 0, 0.18);
+        color: inherit;
+        outline: none;
+        font-size: 12px;
+    }
+
+    .mail-textarea {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        min-height: 120px;
+        resize: vertical;
+        padding: 6px 7px;
+        border-radius: 3px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(0, 0, 0, 0.18);
+        color: inherit;
+        outline: none;
+        font-size: 12px;
+    }
+
+    .mail-input:focus,
+    .mail-textarea:focus {
+        border-color: rgba(192, 255, 192, 0.85);
+        box-shadow: 0 0 0 2px rgba(192, 255, 192, 0.10);
+    }
+
+    .mail-form-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 480px) {
+        .mail-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .mail-label {
+            min-width: 0;
+        }
+    }
+</style>
+
+<div class="cont">
+    <div class="menu_div" align="left">
+        <ul>
+            <li><a href="main.php?uni=1772534339&amp;hash=7fcd47c"><img src="icons/glavnoe_menyu_128.png" border="0"
+                                                                        style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
+                                                                        alt=""/> Главное меню</a></li>
+            <li><a href="mail.php?act=delallsystem&amp;uni=1772534339&amp;hash=0a9d887"><img
+                    src="icons/ochistka_podarkov_128.png" border="0"
+                    style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt=""/> Очистить системные
+                письма</a></li>
+        </ul>
+    </div>
+</div>
+
+<br/>
+
+<table border="0" cellpadding="0" cellspacing="0" class="table_modern" style="border:0">
+    <tr>
+        <td><a class="" style="" href="mail.php?act=inbox&amp;uni=1772534339&amp;hash=555d184">Входящие</a></td>
+        <td><a class="" style="" href="mail.php?act=outbox&amp;uni=1772534339&amp;hash=a109f20">Отправленные</a></td>
+        <td><a class="" style="" href="mail.php?act=newmail&amp;uni=1772534339&amp;hash=0c7e1dc"><span class="svet">Написать</span></a>
+        </td>
+    </tr>
+</table>
+
+<div class="header_mes" style="padding:5px">
+    <form method="post" action="mail.php?act=mailadd&amp;uni=1772534339&amp;hash=5597d96" class="mail-form">
+        <input type="hidden" name="_csrf" value="3ff9129de2ef4c9e01f633a98e9b5446">
+        <div class="mail-form-grid">
+            <div class="mail-label">Кому:</div>
+            <div>
+                <input type="text" name="mail_name" class="mail-input" value=""/>
+            </div>
+
+            <div class="mail-label">Тема:</div>
+            <div>
+                <input type="text" name="mail_tema" class="mail-input" value=""/>
+            </div>
+
+            <div class="mail-label">Текст:</div>
+            <div>
+                <textarea name="mail_message" class="mail-textarea" maxlength="10000"></textarea>
+            </div>
+        </div>
+
+        <div class="mail-form-actions">
+            <input type="submit" name="button" id="button" value="Отправить" class="button"/>
+        </div>
+    </form>
+    <br/>
+</div>
+
+<br/>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>

@@ -337,6 +337,10 @@ class CommonHelper {
         await CommonHelper.setExtStorage('wor_captcha_active', active);
     }
 
+    static async turnWarlockQuest(active = true) {
+        await CommonHelper.setExtStorage('wor_quest_warlock_active', active);
+    }
+
     static async createDisableButton(name, toDo) {
         (function () {
             // Определяем количество уже существующих кнопок
@@ -624,45 +628,13 @@ class CommonHelper {
         return 0;
     }
 
-    static async parsingPage(url, textsToFind, type, invert = false) {
-        try {
-            let response = await fetch(url, {
-                method: 'GET',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/html'
-                }
-            });
-
-            if (!response.ok) {
-                CommonHelper.sendTelegramMessage(`Ошибка загрузки страницы (${type}):` + response.status);
-                CommonHelper.log(`Ошибка загрузки страницы (${type}):` + response.status);
-                return;
-            }
-
-            let text = await response.text();
-
-            let parser = new DOMParser();
-            let newDocument = parser.parseFromString(text, 'text/html');
-            let pageText = newDocument.body.innerText;
-
-            let found = textsToFind.some(str => pageText.includes(str));
-
-            // Если ждём что на странице НЕ будет текста 
-            if (invert) {
-                found = !found;
-            }
-
-            if (found) {
-                CommonHelper.sendTelegramMessage(`Успех! Парсинг ${invert ? 'не' : ''} нашёл что-то искомое в: ${url}.`);
-            } else {
-                CommonHelper.log(`Неудача. Не найдено ничего в ${type} (проверка на [${textsToFind.join(', ')}])`, false);
-            }
-        } catch (error) {
-            CommonHelper.log(`Ошибка при проверке ${type}:` + JSON.stringify(error));
-        }
-    }
-
+    /**
+     * Загружает страницу чата и возвращает распарсенные сообщения.
+     * Использует getParsedMessagesNew — возвращает объекты с полями:
+     * type (SYSTEM/PUBLIC/PUBLIC_TO/PRIVATE), from, to, time, text, isPrivate, isForMe, date, id.
+     *
+     * @returns {Array|null} массив сообщений или null при ошибке
+     */
     static async fetchChat() {
         try {
             let chatUrl = document.querySelector('a[href*=chat2]')?.href;
@@ -678,7 +650,10 @@ class CommonHelper {
             let parser = new DOMParser();
             let htmlPage = parser.parseFromString(html, 'text/html');
             let msgBox = htmlPage.querySelector('#msg_box');
-            let formattedMessages = Chat.getParsedMessages(msgBox);
+
+            // Получаем ник игрока для корректного определения поля isForMe в сообщениях
+            const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+            let formattedMessages = Chat.getParsedMessagesNew(msgBox, playerName);
 
             return formattedMessages;
         } catch (err) {
@@ -696,5 +671,100 @@ class CommonHelper {
         const url = new URL(window.location.href);
         // Используем встроенный интерфейс URLSearchParams
         return url.searchParams.get(name);
+    }
+
+    static renderGridInto(container, grid) {
+        container.innerHTML = '';
+
+        for (let i = 0; i < grid.length; i++) {
+            const c = grid[i];
+
+            const cell = document.createElement('div');
+            cell.className = 'map-cell';
+            cell.dataset.room = c.room;
+            cell.dataset.step = c.stepRoom;
+            cell.style.backgroundImage = "url('" + String(c.img).replace(/'/g, "\\'") + "')";
+
+            if (!c.isCenter && c.href) {
+                const a = document.createElement('a');
+                a.href = String(c.href || '').replace(/&amp;/g, '&');
+                a.dataset.stepUrl = String(c.stepUrl).replace(/&amp;/g, '&');
+                a.dataset.room = c.room;
+                a.dataset.step = c.stepRoom;
+                a.style.display = 'block';
+                a.style.width = '100%';
+                a.style.height = '100%';
+                cell.appendChild(a);
+            }
+
+            if (!c.isCenter && c.overlay && c.overlay.src) {
+                const o = document.createElement('img');
+                o.className = 'cell-overlay';
+                o.src = c.overlay.src;
+                o.alt = c.overlay.alt || '';
+                cell.appendChild(o);
+            }
+
+            container.appendChild(cell);
+        }
+    }
+
+    static renderMiniGridInto(container, grid, cols = 9) {
+        const centerIdx = grid.findIndex(c => c.isCenter);
+        if (centerIdx === -1) {
+            return CommonHelper.renderGridInto(container, grid);
+        }
+
+        const centerRow = Math.floor(centerIdx / cols);
+        const centerCol = centerIdx % cols;
+        const rows = Math.ceil(grid.length / cols);
+
+        const miniCells = [];
+        for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+                const r = centerRow + dr;
+                const c = centerCol + dc;
+                if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                    miniCells.push(grid[r * cols + c]);
+                }
+            }
+        }
+
+        container.innerHTML = '';
+        container.style.gridTemplateColumns = 'repeat(3, var(--cell))';
+        container.style.gridTemplateRows = 'repeat(3, var(--cell))';
+
+        const stage = container.parentElement;
+        if (stage) stage.style.transform = 'translate3d(calc(2 * var(--cell)), calc(1 * var(--cell)), 0px)';
+
+        for (const c of miniCells) {
+            const cell = document.createElement('div');
+            cell.className = 'map-cell';
+            cell.dataset.room = c.room;
+            cell.dataset.step = c.stepRoom;
+            cell.style.backgroundImage = "url('" + String(c.img).replace(/'/g, "\\'") + "')";
+
+            if (!c.isCenter && c.href) {
+                const a = document.createElement('a');
+                a.href = String(c.href || '').replace(/&amp;/g, '&');
+                a.dataset.stepUrl = String(c.stepUrl).replace(/&amp;/g, '&');
+                a.dataset.room = c.room;
+                a.dataset.step = c.stepRoom;
+                a.style.display = 'block';
+                a.style.width = '100%';
+                a.style.height = '100%';
+                cell.appendChild(a);
+            }
+
+            if (!c.isCenter && c.overlay && c.overlay.src) {
+                const o = document.createElement('img');
+                o.className = 'cell-overlay';
+                o.src = c.overlay.src;
+                o.alt = c.overlay.alt || '';
+                cell.appendChild(o);
+            }
+
+            container.appendChild(cell);
+        }
     }
 }

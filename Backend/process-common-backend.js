@@ -7,7 +7,7 @@ export async function disableChaosBattle() {
         const targetTab = tabs.find(tab => tab.url && tab.url.includes("/wap/"));
 
         if (!targetTab || !targetTab.id) {
-            console.log('Вкладка с "/wap/" в URL не найдена');
+            await CommonHelperBackground.log('Вкладка с "/wap/" в URL не найдена');
             return;
         }
 

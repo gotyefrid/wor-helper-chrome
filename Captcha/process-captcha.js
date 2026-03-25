@@ -20,16 +20,11 @@ window.addEventListener("load", async function () {
     }
 
     let urlType = document.location.href.includes('cap') ? 'cap' : 'primanka';
-    let canResolve = await checkTimeout(urlType);
-
-    if (!canResolve) {
-        CommonHelper.sendTelegramMessage(`Капча "${urlType}" вылезла раньше чем 8 минут`);
-        return;
-    }
 
     let captcha = new Captcha();
 
     if (captcha.lastTryWasWrong()) {
+        await CommonHelper.setExtStorage('wor_captcha_last_solve_time', 0);
         await CommonHelper.delay(CommonHelper.MEDIUM_RANDOM);
         let currentErrorCount = await CommonHelper.getExtStorage('wor_captcha_error_count') || 0; // либо получить значение - либо 0
 
@@ -44,6 +39,13 @@ window.addEventListener("load", async function () {
         // Обновляем картинку
         document.querySelector('a[href*=shuffle]').click();
 
+        return;
+    }
+
+    let canResolve = await checkTimeout(urlType);
+
+    if (!canResolve) {
+        CommonHelper.sendTelegramMessage(`Капча "${urlType}" вылезла раньше чем 8 минут`);
         return;
     }
 
@@ -80,7 +82,6 @@ window.addEventListener("load", async function () {
     }
 
     let cleanedHtml = captcha.cleanDocumentHTML();
-    // console.log(cleanedHtml);
     let actualHtmlHash = captcha.fnv1aHash(cleanedHtml);
     CommonHelper.log('Актуал хэш страницы:' + actualHtmlHash);
     CommonHelper.log('Актуал хэш ресурсов:' + actualCacheAllResourses);
@@ -98,7 +99,7 @@ window.addEventListener("load", async function () {
         return;
     }
 
-    CommonHelper.log('Хэш одинаковый - можно проходить капчу, ничгео не изменилось');
+    CommonHelper.log('Хэш одинаковый - можно проходить капчу, ничего не изменилось');
 
     let imgElement = this.document.querySelector('img[src*=captcha_main]');
 

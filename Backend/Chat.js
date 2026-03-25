@@ -123,6 +123,16 @@ export class Chat {
     }
 
 
+    /**
+     * Форматирует одно сообщение чата и отправляет его в Telegram.
+     *
+     * Логика отправки:
+     *   1. Если сообщение адресовано игроку (isToMe) — шлём в бот 'common' с 🔔.
+     *   2. Если системное и касается игрока (травма, штраф, письмо и т.д.) — тоже в 'common'.
+     *   3. Все сообщения всегда идут в бот 'chat' для полного архива.
+     *
+     * @param {Object} msg - объект сообщения из getParsedMessagesNew
+     */
     async sendMessagesToTelegram(msg) {
         let isToMe = false;
         let playerName = await CommonHelperBackground.getExtStorage('wor_chat_player_name');
@@ -140,11 +150,14 @@ export class Chat {
         let text = `[${time}] `;
         text += isToMe ? `🔔 ` : '';
 
-        if (msg.type === 'chat') {
+        const isChat = msg.type === 'PUBLIC' || msg.type === 'PUBLIC_TO' || msg.type === 'PRIVATE';
+        const isSystem = msg.type === 'SYSTEM';
+
+        if (isChat) {
             text += `\`${escape(msg.from)}\``;
             if (msg.to) text += ` → \`${escape(msg.to)}\``;
             text += `: ${escape(msg.text)}`;
-        } else if (msg.type === 'system') {
+        } else if (isSystem) {
             text += `*Система*: ${escape(msg.text)}`;
         } else {
             text += escape(msg.text);
@@ -152,10 +165,12 @@ export class Chat {
 
         if (isToMe) {
             await CommonHelperBackground.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
+            await this.processDirectMessage(msg);
         }
 
+        // Системные сообщения, которые касаются игрока — дополнительно шлём в 'common'
         if (
-            msg.type === 'system' &&
+            isSystem &&
             (
                 msg.text.includes('изъята и возвращена') ||
                 msg.text.includes('получена и будет доступна') ||
@@ -168,7 +183,133 @@ export class Chat {
             await CommonHelperBackground.sendTelegramMessage(text, 'common', isToMe, 'MarkdownV2');
         }
 
+        // Все сообщения идут в чат-бот для полного архива
         await CommonHelperBackground.sendTelegramMessage(text, 'chat', isToMe, 'MarkdownV2');
         await CommonHelperBackground.delay(200);
+    }
+
+    async _getGameTabId() {
+        const tabs = await chrome.tabs.query({});
+        const targetTab = tabs.find(tab => tab.url && tab.url.includes('/wap/'));
+        return targetTab?.id ?? null;
+    }
+
+    async processDirectMessage(msg) {
+        const isActive = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_active');
+        if (!isActive) return;
+
+        const senders = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_senders') || ['Модераторы'];
+        const isAllowed = await this._isSenderAllowed(msg.from, senders);
+        if (!isAllowed) return;
+
+        const lastSent = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_last_sent');
+        const cooldownMin = (await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_cooldown')) ?? 5;
+        const couldownPassed = !lastSent || (Date.now() - lastSent) > cooldownMin * 60 * 1000;
+
+        if (couldownPassed) {
+            let answer = await CommonHelperBackground.getExtStorage('wor_chat_auto_answer_text');
+
+            if (!answer) {
+                const patterns = await CommonHelperBackground.getExtStorage('wor_chat_auto_reply_patterns') || [];
+                answer = this.getAutoReply(msg.text, patterns);
+            }
+
+            await this.sendDirectMessage(msg.from, answer, msg.isPrivate);
+        }
+    }
+
+    async _isSenderAllowed(name, senders) {
+        if (senders.includes('Все')) return true;
+        if (senders.includes('Модераторы') && await this.isPlayerModerator(name)) return true;
+        return senders.includes(name);
+    }
+
+    getAutoReply(message, storedPatterns = []) {
+        const defaults = ['.гг.', '.гыы.', '.гы.', '.еду.', '.фотограф.', '.куку.'];
+        const defaultText = () => defaults[Math.floor(Math.random() * defaults.length)];
+
+        if (!message) return defaultText();
+
+        const text = message.toLowerCase().trim();
+
+        // Формат паттерна: "ключевое_слово:ответ1|ответ2|ответ3"
+        for (const patternStr of storedPatterns) {
+            const colonIdx = patternStr.indexOf(':');
+            if (colonIdx === -1) continue;
+            const keyword = patternStr.slice(0, colonIdx).trim().toLowerCase();
+            const replies = patternStr.slice(colonIdx + 1).split('|').map(r => r.trim()).filter(Boolean);
+            if (!keyword || !replies.length) continue;
+            if (text.includes(keyword)) {
+                return replies[Math.floor(Math.random() * replies.length)];
+            }
+        }
+
+        return defaultText();
+    }
+
+    async isPlayerModerator(name) {
+        const CACHE_TTL = 48 * 60 * 60 * 1000;
+        const cached = await CommonHelperBackground.getExtStorage('wor_chat_moderators_list');
+
+        if (cached && cached.timestamp && (Date.now() - cached.timestamp) < CACHE_TTL) {
+            return cached.list.includes(name);
+            // return true;
+        }
+
+        const tabId = await this._getGameTabId();
+        if (!tabId) {
+            CommonHelperBackground.log('Вкладка игры не найдена для получения списка модераторов');
+            return false;
+        }
+
+        return new Promise((resolve) => {
+            chrome.tabs.sendMessage(tabId, { type: 'fetchModeratorsList', url: '/wap/infoklan.php?name=Misha' }, async (response) => {
+                if (chrome.runtime.lastError || !response || response.error) {
+                    CommonHelperBackground.log('Ошибка получения списка модераторов: ' + (chrome.runtime.lastError?.message || response?.error));
+                    resolve(false);
+                    return;
+                }
+
+                const list = response.names || [];
+
+                if (!list.includes('Misha')) {
+                    list.push('Misha');
+                }
+                
+                await CommonHelperBackground.setExtStorage('wor_chat_moderators_list', {
+                    list,
+                    timestamp: Date.now()
+                });
+                resolve(list.includes(name));
+                // resolve(true);
+            });
+        });
+    }
+
+    async sendDirectMessage(to, answer, isPrivate = true) {
+        const tabId = await this._getGameTabId();
+        if (!tabId) {
+            CommonHelperBackground.log('Вкладка игры не найдена для отправки сообщения');
+            return;
+        }
+
+        return new Promise((resolve) => {
+            chrome.tabs.sendMessage(tabId, { type: 'sendDirectMessage', to, answer, isPrivate }, async (response) => {
+                if (chrome.runtime.lastError || !response) {
+                    CommonHelperBackground.log('Ошибка отправки личного сообщения: ' + chrome.runtime.lastError?.message);
+                    resolve(false);
+                    return;
+                }
+
+                if (response.status === 200) {
+                    await CommonHelperBackground.setExtStorage('wor_chat_auto_reply_last_sent', Date.now());
+                    CommonHelperBackground.log(`Ответ отправлен игроку ${to}`);
+                    resolve(true);
+                } else {
+                    CommonHelperBackground.log(`Ошибка при отправке сообщения, статус: ${response.status}`);
+                    resolve(false);
+                }
+            });
+        });
     }
 }
