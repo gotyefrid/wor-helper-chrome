@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "WOR Helper",
     "version": "1.1",
-    "description": "Automation helper for the browser game World of Rest (wor.com.ua). Automates fishing, mining, combat, alchemy, map navigation, quests, and chat.",
+    "description": "Automation helper for the browser game World of Rest. Automates fishing, mining, combat, alchemy, map navigation, quests, and chat.",
     "permissions": [
         "storage",
         "scripting",
@@ -33,9 +33,7 @@
                 "Icons/*"
             ],
             "matches": [
-                "*://wor.com.ua/wap/*",
-                "*://worldofrest.com/wap/*",
-                "http://185.212.47.8/wap/*"
+                "<all_urls>"
             ]
         }
     ],
