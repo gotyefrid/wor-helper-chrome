@@ -9,7 +9,6 @@
     checkTrauma();
 
     await checkTaktRedirect();
-
     backgroundListener();
 })();
 
@@ -314,71 +313,5 @@ async function processPrimanka(messages) {
     } catch (e) {
         CommonHelper.log('Ошибка в processPrimanka: ' + e.message);
         await CommonHelper.sendTelegramMessage('Ошибка при обработке приманки: ' + e.stack);
-    }
-}
-
-async function sendRandomFact() {
-    try {
-        CommonHelper.log("Запрашиваем случайный факт...");
-
-        // Запрашиваем случайный факт
-        let res = await fetch("http://numbersapi.com/random/trivia");
-
-        if (res.status !== 200) {
-            // Если статус ответа не 200, прекращаем выполнение
-            CommonHelper.log("Ошибка: не удалось получить данные");
-            return;
-        }
-
-        let factText = await res.text();
-        // Переводим факт
-        let translateUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(factText)}&langpair=en|ru`;
-        let translatedText = await fetch(translateUrl).then(res => res.json()).then(data => data.responseData.translatedText);
-
-        CommonHelper.log("Получен факт: " + translatedText);
-
-        if (translatedText.includes('MYMEMORY WARNING')) {
-            CommonHelper.log("Получена ошибка, выходим");
-            return;
-        }
-
-        let waitTime = CommonHelper.getRandomNumber(120000, 300000); // Генерируем случайное время ожидания (60-90 сек)
-        CommonHelper.log(`Ожидание ${Math.floor(waitTime / 1000)} секунд перед публикацией...`);
-
-        // Таймер обратного отсчёта
-        let remainingTime = Math.floor(waitTime / 1000);
-        let timer = setInterval(() => {
-            remainingTime--;
-            CommonHelper.log(`Осталось ${remainingTime} секунд...`, true, 0, false);
-            if (remainingTime <= 0) clearInterval(timer);
-        }, 1000);
-
-        // Ждём перед отправкой
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-
-        CommonHelper.log("Готовимся к отправке сообщения...");
-
-        // Поиск формы
-        let form = document.querySelector('form');
-        if (!form) return CommonHelper.log("Форма не найдена!");
-
-        // Поиск текстового поля
-        let inputField = form.querySelector('textarea[name="textmes"]');
-        if (!inputField) return CommonHelper.log("Поле ввода не найдено!");
-
-        // Вставляем сообщение
-        inputField.value = translatedText;
-
-        // Отправляем форму
-        let submitButton = form.querySelector('input[type="submit"]');
-        if (submitButton) {
-            CommonHelper.log("Сообщение отправлено!");
-            submitButton.click();
-        } else {
-            CommonHelper.log("Кнопка отправки не найдена!");
-        }
-
-    } catch (error) {
-        CommonHelper.log("Ошибка:" + JSON.stringify(error));
     }
 }
