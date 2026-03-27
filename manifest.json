@@ -5,7 +5,6 @@
     "description": "Automation helper for the browser game World of Rest. Automates fishing, mining, combat, alchemy, map navigation, quests, and chat.",
     "permissions": [
         "storage",
-        "scripting",
         "activeTab",
         "tabs",
         "alarms"
