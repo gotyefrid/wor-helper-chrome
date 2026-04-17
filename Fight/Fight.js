@@ -39,7 +39,7 @@ class Fight {
 
         // Определяем, является ли текущая страница страницей боя
         this.isFightPage = fightPaths.some(path => window.location.pathname.includes(path)) ||
-            document.querySelector('input[name="bitvraga"]') !== null;
+            Fight.getHitButton() !== null;
 
         if (this.isFightPage) {
             this.isAttackPage = window.location.href.includes('boj');
@@ -199,7 +199,7 @@ class Fight {
         if (udtypeEl) udtypeEl.value = this.attackType;
         if (toggleUdtypeEl) toggleUdtypeEl.checked = (String(this.attackType) === '2');
 
-        let hitButton = document.querySelector('input[name=bitvraga]');
+        let hitButton = Fight.getHitButton();
 
         await CommonHelper.delay(CommonHelper.SMALL_RANDOM);
 
@@ -208,6 +208,10 @@ class Fight {
         } else {
             await CommonHelper.sendTelegramMessage('Нет кнопки ударить врага.')
         }
+    }
+
+    static getHitButton() {
+        return document.querySelector('input[type=submit][value="Ударить!"]');
     }
 
     isMonster() {

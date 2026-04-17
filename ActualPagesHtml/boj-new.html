@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="World of Rest — мобильная браузерная RPG-игра.">
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="refresh" content="200">
+    <title>World of Rest — мобильная онлайн-игра!</title>
+
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20260001">
+
+    <script src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Бой №87330673</div>        <div class="chat">
+    <div class="header">
+        <div class="level-block">
+            <div style="display:flex; align-items:center;">
+                <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 6%"></div>
+            </div>
+        </div>
+        <div class="hp-mp-circle">
+            <div class="circle-bar">
+                <div class="circle-fill hp-fill" style="height: 100%"></div>
+            </div>
+            <div class="circle-bar">
+                <div class="circle-fill mp-fill" style="height: 100%"></div>
+            </div>
+        </div>
+        <div class="status-item">
+            <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+            <span>0.01</span>
+        </div>
+        <div class="status-item">
+            <img src="img/money.gif" alt="WR" title="WR">
+            <span>1024</span>
+        </div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время" /> 17:03</div>
+    </div>
+</div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1776434627&amp;hash=c0805da">общий</a>,
+        <a href="boj.php?textviewsave=turnir&amp;chatmode=my&amp;uni=1776434627&amp;hash=46d6ac7">мой</a>,
+        <a href="boj.php?textviewsave=turnir&amp;chatmode=add&amp;uni=1776434627&amp;hash=199b15e">написать</a>
+    </div>
+</div>    <style>
+    .custom-radio {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        margin: 5px;
+    }
+
+    .custom-radio input[type="radio"] {
+        display: none;
+    }
+
+    .custom-radio .radio-btn {
+        width: 12px;
+        height: 12px;
+        background-color: rgba(255, 255, 255, 0.45);
+        border-radius: 50%;
+        margin-right: 5px;
+        position: relative;
+        cursor: pointer;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .custom-radio input[type="radio"]:checked + .radio-btn {
+        background-color: #ef9655;
+        border-color: #ef9655;
+        box-shadow: 0 0 0 4px rgba(255, 153, 0, 0.2);
+    }
+
+    .custom-radio .radio-btn::after {
+        content: "✔";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 14px;
+        color: #ffffff;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.3s;
+    }
+
+    .custom-radio input[type="radio"]:checked + .radio-btn::after {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .custom-radio span {
+        font-size: 12px;
+        user-select: none;
+        cursor: pointer;
+    }
+
+    /* UdarType */
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 24px;
+        vertical-align: middle;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        transition: .4s;
+        border-radius: 12px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 1px;
+        bottom: 1px;
+
+        background-color: rgba(255, 255, 255, 0.3);
+        background-image: url('images/32x32/sila.png');
+        background-size: 20px 20px;
+        background-repeat: no-repeat;
+        filter: opacity(70%);
+
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(24px);
+        background-image: url('images/32x32/mag.png');
+        filter: opacity(70%);
+    }
+
+    /* sumka */
+
+    .slider-container {
+        display: block;
+        overflow-x: scroll;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        width: 220px;
+    }
+
+    .slider-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .slider-container {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .item-slider {
+        display: inline-block;
+    }
+
+    .item-image-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-right: 4px;
+    }
+
+    .item-count {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        color: white;
+        padding: 2px 5px;
+        font-size: 9px;
+        pointer-events: none;
+    }
+
+    .item-image {
+        display: inline-block;
+        width: 36px;
+        margin-right: 4px;
+        touch-action: pan-x;
+        opacity: 0.35;
+        transition: opacity 0.3s;
+    }
+
+    .item-image.selected {
+        opacity: 1;
+    }
+
+    .scroll-btn {
+        opacity: 0.35;
+    }
+
+    .udar-btn {
+        font-size: 14px;
+        padding: 5px 10px;
+        margin-top: 8px;
+        border-radius: 10px;
+    }
+</style>
+<div style="position:relative; width:255px; height:80px; margin:5px; background: url(img/base.png)">
+    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/woman10001.png" alt=""/>
+    <span style="position:absolute; top:0; left:70px; font-size:10px; font-weight:bold"><img src='/pic/nb7.gif' style='vertical-align: middle' width='12' height='12' alt='' /> Тринитя</span>
+    <span style="position:absolute; top:60px; left:52px; font-size:10px; font-weight:bold; color:#FFFF00">10</span>
+    <img id="hp_bar" style="position:absolute; top:17px; left:74px;" src="img/hp.png" width="176" height="25" alt=""/>
+    <img id="mana_bar" style="position:absolute; top:45px; left:74px;" src="img/ma.png" width="157" height="14" alt=""/>
+    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">100/100</span>
+    <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">5/5</span>
+</div>
+<div style="font-size:12px">Травматичность боя: <span style="color:#FF0000"><strong>90%</strong></span></div>
+
+<form method="post" action="udar.php?uni=1776434627&amp;hash=977a703">
+    <input name="uid" type="hidden" value="54dcd"/>
+    <input name="block" type="hidden" value="0"/>
+    <input name="udar" type="hidden" value="0"/>
+
+    <table border="0" class="table_menu">
+        <tr>
+            <td class="zagolovok" style="width: 50%; text-align: center; border-radius: 6px;"><strong>Удар:</strong></td>
+            <td class="zagolovok" style="width: 50%; text-align: center; border-radius: 6px;"><strong>Блок:</strong></td>
+        </tr>
+        <tr>
+            <td>
+                <label class="custom-radio">
+                    <input name="udar" type="radio" value="1" checked="checked" />
+                    <span class="radio-btn"></span>
+                    <span>Голова</span>
+                </label>
+                <br/>
+                <label class="custom-radio">
+                    <input name="udar" type="radio" value="2"  />
+                    <span class="radio-btn"></span>
+                    <span>Грудь</span>
+                </label>
+                <br/>
+                <label class="custom-radio">
+                    <input name="udar" type="radio" value="3"  />
+                    <span class="radio-btn"></span>
+                    <span>Пах</span>
+                </label>
+                <br/>
+                <label class="custom-radio">
+                    <input name="udar" type="radio" value="4"  />
+                    <span class="radio-btn"></span>
+                    <span>Ноги</span>
+                </label>
+            </td>
+            <td>
+                <label class="custom-radio">
+                    <input name="block" type="radio" value="1" checked="checked" />
+                    <span class="radio-btn"></span>
+                    <span>Голова и грудь</span>
+                </label>
+                <br/>
+                <label class="custom-radio">
+                    <input name="block" type="radio" value="2"  />
+                    <span class="radio-btn"></span>
+                    <span>Грудь и пах</span>
+                </label>
+                <br/>
+                <label class="custom-radio">
+                    <input name="block" type="radio" value="3"  />
+                    <span class="radio-btn"></span>
+                    <span>Пах и ноги</span>
+                </label>
+                <br/>
+                <label class="custom-radio">
+                    <input name="block" type="radio" value="4"  />
+                    <span class="radio-btn"></span>
+                    <span>Ноги и голова</span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2">
+                <div style="display: flex">
+                    <img class="scroll-btn left" src="images/left.png" height="36" alt=""/>                            <div class="slider-container">
+                    <div class="item-slider">
+                        <div class="item-image-wrapper">
+                            <img src="/images/pot1.png" class="item-image" data-id="37876899" alt="" draggable="false">
+                            <span class="item-count" data-id="37876899">10 HP</span>
+                        </div>                                        <div class="item-image-wrapper">
+                        <img src="/images/pot5.png" class="item-image" data-id="37876841" alt="" draggable="false">
+                        <span class="item-count" data-id="37876841">100 HP</span>
+                    </div>                                        <div class="item-image-wrapper">
+                        <img src="/images/pot1.png" class="item-image" data-id="37877862" alt="" draggable="false">
+                        <span class="item-count" data-id="37877862">20 HP</span>
+                    </div>                                        <div class="item-image-wrapper">
+                        <img src="/images/pot7.png" class="item-image" data-id="37876831" alt="" draggable="false">
+                        <span class="item-count" data-id="37876831">250 HP</span>
+                    </div>                                        <div class="item-image-wrapper">
+                        <img src="/images/pot3.png" class="item-image" data-id="37876820" alt="" draggable="false">
+                        <span class="item-count" data-id="37876820">50 HP</span>
+                    </div>                                        <div class="item-image-wrapper">
+                        <img src="/images/pot9.png" class="item-image" data-id="37876857" alt="" draggable="false">
+                        <span class="item-count" data-id="37876857">500 HP</span>
+                    </div>                                        <div class="item-image-wrapper">
+                        <img src="/images/pot2.png" class="item-image" data-id="37876825" alt="" draggable="false">
+                        <span class="item-count" data-id="37876825">10 МА</span>
+                    </div>                                        <div class="item-image-wrapper">
+                        <img src="/images/pot8.png" class="item-image" data-id="37876871" alt="" draggable="false">
+                        <span class="item-count" data-id="37876871">250 МА</span>
+                    </div>                                    <input type="hidden" id="selectedItemId" name="sumka" value="0">
+                    </div>
+                </div>
+                    <img class="scroll-btn right" src="images/right.png" height="36" alt=""/>                        </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2">
+                <input name="udartype" type="hidden" value="1" />					                    <input name="beatenemy" type="submit" value="Ударить!" class="button udar-btn"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<div style="position:relative; width:255px; height:80px; margin:7px; background: url(img/base.png)">
+    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/monster101.png" alt=""/>
+    <span style="position:absolute; top:0px; left:70px; font-size:10px; font-weight:bold"><img src='/images/white2x2px.gif' width='1' alt='' /> Гоблин [8]</span>
+    <span style="position:absolute; top:60px; left:55px; font-size:10px; font-weight:bold; color:#FFFF00">8</span>
+    <img id="hp_bar" style="position:absolute; top:17px; left:74px;" src="img/hp.png" width="176" height="25" alt=""/>
+    <img id="mana_bar" style="position:absolute; top:45px; left:74px;" src="img/ma.png" width="157" height="14" alt=""/>
+    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">172/172</span>
+    <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">5/5</span>
+</div>
+
+<div>Лог боя        <a href="tochat.php?tag=log&amp;text=87330673&amp;uni=1776434627&amp;hash=dc172db"><span style="color:#FFFFFF">[<span style="color:#FF00FF">в чат</span>]</span></a>:
+</div>
+
+<table border="0" class="table_menu">
+    <tr>
+        <td style="font-size:11px" align="justify"></td>
+    </tr>
+    <tr>
+        <td>...</td>
+    </tr>
+</table>
+<div align="center">
+    <div class="menu_div" align="left"><ul><li><a  onclick="return confirm('Сдаться в бою?')" href="killme.php?uni=1776434627&amp;hash=f3c129f"><img src="icons/surrender_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Сдаться</a></li><li><a  onclick="return confirm('Сдаться в бою?')" href="killme.php?teleport=1&amp;uni=1776434627&amp;hash=43a6dee"><img src="icons/surrender_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Сдаться и в город</a></li></ul></div>    </div>
+<script>
+    $(document).ready(function () {
+        $('#toggle-udartype').change(function () {
+            $('#udartype').val(this.checked ? 2 : 1);
+        });
+
+        // sumka
+        var $items = $('.item-image');
+        var $slider = $('.slider-container');
+        var $leftButton = $('.scroll-btn.left');
+        var $rightButton = $('.scroll-btn.right');
+
+        $items.on('click', function () {
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                $('#selectedItemId').val(0);
+            } else {
+                $items.removeClass('selected');
+                $(this).addClass('selected');
+                $('#selectedItemId').val($(this).data('id'));
+            }
+        });
+
+        $leftButton.on('click', function () {
+            $slider.animate({scrollLeft: '-=220'}, 150);
+        });
+
+        $rightButton.on('click', function () {
+            $slider.animate({scrollLeft: '+=220'}, 150);
+        });
+    });
+</script>
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>
