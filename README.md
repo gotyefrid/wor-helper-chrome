@@ -1,4 +1,4 @@
-# WOR Extension
+# WOR Extension WOR Helper
 
 Chrome-расширение для автоматизации браузерной игры **World of Rest** (WOR).
 
