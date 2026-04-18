@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="World of Rest — мобильная браузерная RPG-игра.">
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="refresh" content="200">
+    <title>World of Rest — мобильная онлайн-игра!</title>
+
+    <link rel="stylesheet" type="text/css" href="style56.css?v=20260001">
+
+    <script src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Ловля рыбы</div>        <div class="chat">
+    <div class="header">
+        <div class="level-block">
+            <div style="display:flex; align-items:center;">
+                <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 19%"></div>
+            </div>
+        </div>
+        <div class="hp-mp-circle">
+            <div class="circle-bar">
+                <div class="circle-fill hp-fill" style="height: 100%"></div>
+            </div>
+            <div class="circle-bar">
+                <div class="circle-fill mp-fill" style="height: 100%"></div>
+            </div>
+        </div>
+        <div class="status-item">
+            <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+            <span>1.01</span>
+        </div>
+        <div class="status-item">
+            <img src="img/money.gif" alt="WR" title="WR">
+            <span>1495</span>
+        </div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время" /> 13:29</div>
+    </div>
+</div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1776508170&amp;hash=71b1f38">общий</a>,
+        <a href="lovit.php?sector=2&amp;chatmode=my&amp;uni=1776508170&amp;hash=8699c6b">мой</a>,
+        <a href="lovit.php?sector=2&amp;chatmode=add&amp;uni=1776508170&amp;hash=df0137a">написать</a>
+    </div>
+</div>    <style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+        /*border: 1px solid #888;*/
+        max-width: 260px;
+    }
+
+    .modal-content.game-modal {
+        max-width: 320px;
+    }
+
+    @media screen and (max-width: 360px) {
+        .modal-content.game-modal {
+            max-width: 90%;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 0;
+        right: 5px;
+        color: #aaa;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #loader {
+        display: none;
+        text-align: center;
+    }
+
+    .modal-content.ud-theme-default {
+        color: #FFFFFF;
+        background: rgba(51, 51, 51, 0.75);
+        border: 1px solid rgba(135, 135, 135, 0.5);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(151, 151, 151, 0.35);
+        padding: 0 10px        }
+
+    .modal-content.ud-theme-red {
+        color: #FFFFFF;
+        background: rgba(113, 11, 11, 0.58);
+        border: 1px solid rgba(168, 26, 26, 0.58);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(231, 76, 60, 0.35);
+        padding: 0 10px        }
+
+    .modal-content.ud-theme-green {
+        color: #FFFFFF;
+        background: rgba(14, 91, 47, 0.78);
+        border: 1px solid #0b7b3a;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(39, 174, 96, 0.35);
+        padding: 0 10px        }
+
+    .ud-footer {
+        display: flex;
+        padding: 12px;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .ud-btn {
+        appearance: none;
+        border: none;
+        background: #ddd;
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .ud-btn:hover {
+        filter: brightness(0.97);
+    }
+
+    .ud-btn.ud-primary {
+        border-color: #444;
+        font-weight: 600;
+    }
+
+    .ud-theme-red .ud-btn.ud-primary {
+        background-color: #d93222;
+        color: #ffffff;
+    }
+
+    .ud-theme-green .ud-btn.ud-primary {
+        background-color: #27ae60;
+        color: #ffffff;
+    }
+</style>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="loader"></div>
+        <div id="dataContainer"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var modal = $('#myModal');
+        var modalContent = $('.modal-content');
+        var closeBtn = $('.close');
+        var dataContainer = $('#dataContainer');
+        var loader = $('#loader');
+
+        $(document).on('click', '.openItemModal', function () {
+            var url = $(this).data('url');
+            var isGame = $(this).hasClass('game-modal-btn');
+            modal.show();
+            dataContainer.hide();
+            loader.show();
+
+            if (isGame) {
+                $('.modal-content').addClass('game-modal');
+            } else {
+                $('.modal-content').removeClass('game-modal');
+            }
+
+            $.ajax({
+                url: url,
+                cache: true,
+                success: function (data) {
+                    dataContainer.html(data).show();
+                    loader.hide();
+                }
+            });
+        });
+
+        $(document).on('click', '.openStaticModal', function () {
+            var content = $(this).data('content');
+            var theme = ($(this).data('theme') || '').toLowerCase();
+
+            var $modalContent = $('.modal-content');
+            $modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+            if (theme) $modalContent.addClass('ud-theme-' + theme);
+
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+        });
+
+        closeBtn.click(function () {
+            modal.hide();
+            StopJsInModal();
+            removeUdFooter();
+            removeUdTheme();
+        });
+
+        $(window).click(function (event) {
+            if ($(event.target).is(modal)) {
+                modal.hide();
+                StopJsInModal();
+                removeUdFooter();
+                removeUdTheme();
+            }
+        });
+
+        $(document).on('click', '.openConfirmModal', function () {
+            removeUdTheme();
+            removeUdFooter();
+
+            var content = $(this).data('content') || '';
+            var theme = (($(this).data('theme') || 'default') + '').toLowerCase();
+            var primaryText = $(this).data('primary') || 'Ок';
+            var secondaryText = $(this).data('secondary') || 'Отмена';
+
+            var hrefPrimary = $(this).data('primary-href') || '';
+            var hrefSecondary = $(this).data('secondary-href') || '';
+
+            modalContent.removeClass('game-modal');
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+
+            applyUdTheme(theme);
+
+            var $footer = $('<div class="ud-footer" id="udFooter"></div>');
+            var $btnSecondary = $('<button type="button" class="ud-btn" id="udSecondary"></button>').text(secondaryText);
+            var $btnPrimary = $('<button type="button" class="ud-btn ud-primary" id="udPrimary"></button>').text(primaryText);
+
+            $footer.append($btnPrimary, $btnSecondary);
+            modalContent.append($footer);
+
+            $btnPrimary.on('click.ud', function () {
+                if (hrefPrimary) window.location.href = hrefPrimary;
+                udClose();
+            });
+
+            $btnSecondary.on('click.ud', function () {
+                if (hrefSecondary) window.location.href = hrefSecondary;
+                udClose();
+            });
+        });
+
+        function applyUdTheme(theme) {
+            var map = {'red': 'ud-theme-red', 'green': 'ud-theme-green', 'default': 'ud-theme-default'};
+            modalContent.addClass(map[theme] || 'ud-theme-default');
+        }
+
+        function removeUdTheme() {
+            modalContent.removeClass('ud-theme-default ud-theme-red ud-theme-green');
+        }
+
+        function removeUdFooter() {
+            $('#udFooter').remove();
+        }
+
+        function udClose() {
+            modal.hide();
+            removeUdFooter();
+            removeUdTheme();
+            StopJsInModal();
+        }
+    });
+
+    function StopJsInModal() {
+        if (typeof gameTimer !== 'undefined' && gameTimer) {
+            clearInterval(gameTimer);
+        }
+    }
+
+    window.udModalOpenHtml = function (html, theme) {
+        var modal = $('#myModal');
+        if (!modal.length) return;
+
+        var modalContent = modal.find('.modal-content');
+
+        $('#udFooter').remove();
+        modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+
+        theme = (theme || 'default').toLowerCase();
+        modalContent.addClass('ud-theme-' + theme);
+
+        $('#loader').hide();
+        $('#dataContainer').empty().append(html).show();
+        modal.show();
+    };
+
+</script>
+<div class="cont">
+    <div class="menu_div" align="left"><ul><li><a   href="main.php?uni=1776508170&amp;hash=d0afcc3"><img src="icons/glavnoe_menyu_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Главное меню</a></li><li><a   href="teritory.php?uni=1776508170&amp;hash=a8d83bc"><img src="icons/priroda_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Природа</a></li><li><a   href="lovit.php?uni=1776508170&amp;hash=d6d0491"><img src="icons/obnovit_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Обновить</a></li></ul></div>    </div>
+<div class="zagolovok" align="center">
+    <strong>
+        Удочка закинута в центре водоема        </strong>
+</div>
+
+<img src="/images/ozero_l1r468.jpg" border="0"/>
+<br/>
+<script>var sec = 0;</script>
+Время ожидания: <span id="mf">0</span> секунд...<br/>
+Прикормив, вы начали проводить приманку:<br/>
+<span class="svet" id="fishbox">Рыба игнорирует ваши старания.</span>
+<br/>
+<br/>
+<div class="zagolovok" align="center">
+    <a href="lovit.php?uni=1776508170&amp;hash=d6d0491">
+        <span style="color:#BBBBBB"><strong>Обновить</strong></span>
+    </a>
+
+    [ <a href="lovit.php?tochat=1&amp;uni=1776508170&amp;hash=f0e295a">Чат</a> |
+    <a href="lovit.php?tochat=2&amp;uni=1776508170&amp;hash=2956232">Анекдоты</a> ]
+</div>
+
+<script>
+    <!--
+    var is_redirected = 0;
+
+    function startTIME() {
+        sec = sec + 1;
+        document.getElementById('mf').innerHTML = sec;
+
+        if (sec == 37) {
+            document.getElementById('fishbox').innerHTML = 'Рыба клюёт! <a href="lovit.php?tyahnu=1&amp;uni=1776508170&amp;hash=b5f0f7d"><span class="btninv"><strong>Подсечь!</strong></span></a>';
+        }
+
+        if (sec > 57) {
+            if (is_redirected == 0) {
+                is_redirected = 1;
+                location.replace('lovit.php?uni=1776508170&hash=d6d0491');
+            }
+        }
+    }
+
+    setInterval("startTIME()", 1000);
+    -->
+</script>
+
+<div align="center" style="margin-top:10px">
+    <form name="chatline" id="chatline" method="post">
+        <input type="hidden" name="url" value="chat2.php?uni=1776508170&amp;hash=71b1f38"/>
+        <input id="postprivat" name="privat" type="checkbox"/>
+        <input id="postuser" type="text" name="komy" class="do_button" style="width:25%; max-width:120px" value=""/>
+        <input id="postmessage" type="text" name="message" class="do_button" style="width:50%; max-width:300px" value=""/>
+        <input type="submit" name="button" onsubmit="return false;" value="Сказать всем" class="button"/>
+    </form>
+</div>
+
+<div id="msg_box" class="contur_mes" style="margin: 10px 0 0; padding: 2px" align="left">
+    <strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:29:17</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Mostik';">Mostik</a>:</strong> Да <img src="../smiles/plaksa.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .plaksa. ';" alt=".плакса."/><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:29:06</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> Вы подсекли и выловили трофейного Карася!</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:28:59</span>  <img src='../pic/bas.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Mostik';">Mostik</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a>:</strong> забил нажать?<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:27:48</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a>:</strong> Написать 115 сообщений в общем чате 575 WR0% Собрать 150 трав, корней 375 WR0% <img src="../smiles/mat.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .mat. ';" alt=".мат."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:26:10</span>  <img src='../pic/xr.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='HannaMontana';">HannaMontana</a>:</strong> <img src="../smiles/druzhba.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .druzhba. ';" alt=".druzhba."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:26:06</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='HannaMontana';">HannaMontana</a>:</strong> <img src="../smiles/alkawi.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .alkawi. ';" alt=".alkawi."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:26:01</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='HannaMontana';">HannaMontana</a>:</strong> <img src="../smiles/druzhba.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .druzhba. ';" alt=".дружба."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:26:00</span>  <img src='../pic/xr.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='HannaMontana';">HannaMontana</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Mostik';">Mostik</a>:</strong> <img src="../smiles/romawki.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .romawki. ';" alt=".romawki."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:25:49</span>  <img src='../pic/bas.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Mostik';">Mostik</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='HannaMontana';">HannaMontana</a>:</strong> кукуся <img src="../smiles/preved.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .preved. ';" alt=".превед."/> <img src="../smiles/romawki.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .romawki. ';" alt=".ромавки."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:25:36</span>  <img src='../pic/xr.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='HannaMontana';">HannaMontana</a>:</strong> <a target="_blank" href="log.php?boj=87340258">Бой №87340258</a><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:16:53</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a>:</strong> Купите мне 300 рубов, я в понедельник отдам <img src="../smiles/yy.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .yy. ';" alt=".ыы."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:16:07</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a>:</strong> Побед в боях с монстрами125 Получено опыта в боях с монстрами89121431 4ч<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:09:12</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> Да завтра даивинг<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:07:53</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> На 7 дней?<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:05:41</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> Сигареты дешевые<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:02:44</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> В вацап<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:02:28</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> Так я пишу<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:02:07</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> Напиши мне<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:01:28</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/> <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:01:07</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> Фотки?<br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:00:58</span>  <img src='../pic/nb7.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';">Misha</a>:</strong> ну так, король потерял корону( обидно же.</span><br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">13:00:13</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';"><span style="color:#55FF55">Misha</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a>:</strong> да, он чет очень психовал насчет неё<img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/></span><br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:59:29</span>  <img src='../pic/nb7.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';">Misha</a>:</strong> он первый мне написал после обновы ) мол каким браузером пользуешься? <img src="../smiles/gg.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .gg. ';" alt=".гг."/> говорит опера его старая (видимо его лайфхак) перестала работать)</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:58:48</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> <img src="../smiles/prelest.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .prelest. ';" alt=".prelest."/> <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:58:44</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';"><span style="color:#55FF55">Misha</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a>:</strong> *тебя</span><br /><div class="navigation" align="center"> <a href="chat2.php?str=1&amp;uni=1776508170&amp;hash=cfa9ba5">&laquo;</a>  <a href="chat2.php?str=1&amp;uni=1776508170&amp;hash=cfa9ba5"><span class="svet">1</span></a>  <a href="chat2.php?str=2&amp;uni=1776508170&amp;hash=a582a48">2</a>  <a href="chat2.php?str=3&amp;uni=1776508170&amp;hash=3c0a4a1">3</a>  ...  <a href="chat2.php?str=96&amp;uni=1776508170&amp;hash=38b3f63">96</a>  <a href="chat2.php?str=2&amp;uni=1776508170&amp;hash=a582a48">&raquo;</a> </div>        </div>
+
+<script>
+    $(document).ready(function () {
+
+        function loadXMLDoc() {
+            $.ajax({
+                url: 'chat2txt.php?hide_paging=1&uni=1776508170&hash=a357be4',
+                type: 'GET',
+                success: function (data) {
+                    $('#msg_box').html(data);
+                }
+            });
+        }
+
+        $('#chatline').on('submit', function (e) {
+            e.preventDefault();
+
+            var dataToSend = {
+                komy: $('#postuser').val(),
+                message: $('#postmessage').val(),
+                privat: $('#postprivat').is(':checked')
+            };
+
+
+            $.ajax({
+                url: 'otpravit.php?js=1',
+                type: 'POST',
+                data: dataToSend,
+                success: function (response) {
+                    $('#postprivat').prop('checked', false);
+                    $('#postuser').val('');
+                    $('#postmessage').val('');
+                    loadXMLDoc();
+                }
+            });
+        });
+
+        setInterval(function () {
+            loadXMLDoc();
+        }, 10000);
+    });
+</script>
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>

@@ -18,18 +18,19 @@
         // Настройка рыбалки
         let fishing = new Fishing();
 
-        if (fishing.isTerritoryPage) {
-            await fishing.processTerritoryPage();
-            return;
-        }
-
-        if (fishing.isGamePage || fishing.isMainPage) {
-            await fishing.processMainAndGamePages();
-            return;
-        }
-
         if (fishing.isFishingPage) {
+            if (fishing.isTerritoryPage) {
+                await fishing.processTerritoryPage();
+                return;
+            }
+
+            if (fishing.isGamePage || fishing.isMainPage) {
+                await fishing.processMainAndGamePages();
+                return;
+            }
+
             if (fishing.isWaitingFishPage) {
+                CommonHelper.log('Мы на странице ожидания поклёвки');
                 CommonHelper.setFightExitUrl(document.location.href);
 
                 // Cколько времени нужно ждать всего
@@ -52,6 +53,7 @@
             }
 
             if (fishing.isSetLocationPage) {
+                CommonHelper.log('Мы на странице выбора локации рыбалки');
                 await CommonHelper.delay(CommonHelper.SMALL_MID_RANDOM);
                 CommonHelper.setFightExitUrl(document.location.href);
                 fishing.processSetLocationPage();

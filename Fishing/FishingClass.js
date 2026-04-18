@@ -15,9 +15,12 @@ class Fishing {
         this.isFishingPage = fishingPaths.some(path => location.pathname.includes(path));
 
         if (this.isFishingPage) {
-            const zag = [...document.querySelectorAll('.zagolovok')];
-            this.isWaitingFishPage = zag.some(div => div.textContent.toLowerCase().includes('удочка закинута'));
-            this.isSetLocationPage = zag.some(div => div.textContent.toLowerCase().includes('куда закинуть удочку'));
+            const links = [...document.querySelectorAll('a')].map(a => a.getAttribute('href') || '');
+            this.isWaitingFishPage = document.location.href.includes('lovit') &&
+                links.some(href => href.includes('lovit')) &&
+                document.body.textContent.includes('Удочка закинута');
+            this.isSetLocationPage = document.location.href.includes('lovit') &&
+                links.some(href => href.includes('lovit') && href.includes('sector'));
             this.isTerritoryPage = document.location.pathname.includes("/wap/teritory");
             this.isMainPage = document.location.pathname.includes("/wap/main");;
             this.isGamePage = document.location.pathname.includes("/wap/game");;
@@ -26,25 +29,20 @@ class Fishing {
 
     /** Ожидает появления ссылки «Подсечь» и кликает по ней */
     #waitForPodsech() {
-        const bp = document.getElementById('bp');
-        if (!bp) return Promise.reject(new Error('#bp not found'));
-
         const isLinkOk = el => el.matches('a[href*="tjanu="]') || el.textContent.toLowerCase().includes('подсечь');
 
-        const ready = [...bp.querySelectorAll('a')].find(isLinkOk);
+        const ready = [...document.querySelectorAll('a')].find(isLinkOk);
         if (ready) return Promise.resolve(ready);
 
         return new Promise(resolve => {
-            const observer = new MutationObserver(([{ addedNodes }], obs) => {
-                for (const node of addedNodes) {
-                    if (node.nodeType === 1 && isLinkOk(node)) {
-                        obs.disconnect();
-                        resolve(node);
-                        break;
-                    }
+            const observer = new MutationObserver((mutations, obs) => {
+                const link = [...document.querySelectorAll('a')].find(isLinkOk);
+                if (link) {
+                    obs.disconnect();
+                    resolve(link);
                 }
             });
-            observer.observe(bp, { childList: true });
+            observer.observe(document.body, { childList: true, subtree: true });
         });
     }
 
@@ -78,12 +76,7 @@ class Fishing {
     }
 
     async processWaitingFishPage() {
-        const bp = document.getElementById('bp');
-        if (!bp) return;
-
-        const isWaiting = bp.textContent
-            .toLowerCase()
-            .includes('рыба игнорирует ваши старания');
+        const isWaiting = document.body.textContent.toLowerCase().includes('рыба игнорирует ваши старания');
 
         if (isWaiting) {
             CommonHelper.log('Ждём подсечки...');
@@ -106,7 +99,7 @@ class Fishing {
         } else {
             // Кликаем Подсечь
             await CommonHelper.delay(2000, 2500);
-            await CommonHelper.clickAndWait(bp.querySelector('a'));
+            await CommonHelper.clickAndWait(document.querySelector('a[href*="tjanu="]'));
         }
     }
 

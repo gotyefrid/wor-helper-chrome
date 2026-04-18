@@ -27,7 +27,8 @@ class Mining {
         if (this.isMiningPage) {
             this.isBuyMiningPassPage = [...document.querySelectorAll('div')].find(div => div.innerText.includes('Купить пропуск')) ? true : false;
             this.isStartPage = [...document.querySelectorAll('.button')].find(a => a.innerText.includes('Добывать ресурсы')) ? true : false;
-            this.isWaitingPage = document.querySelector('#progressBar') ? true : false;
+            this.isWaitingPage = document.location.href.includes('kopat') &&
+                [...document.querySelectorAll('a')].some(a => (a.getAttribute('href') || '').includes('kopat'));
             this.isGetLootPage = [...document.querySelectorAll('a')].find(a => a.innerText.includes('Продолжить поиски')) ? true : false;
             this.isTerritoryPage = document.location.href.includes('teritory');
             this.isMainPage = document.location.href.includes('main');
@@ -57,13 +58,6 @@ class Mining {
     async processWaitPage() {
         CommonHelper.log('Ждем кнопки Собрать');
         CommonHelper.log('Паралельно ждём кнопки "В бой"', false);
-
-        const progressBar = document.querySelector('#progressBar');
-
-        if (!progressBar) {
-            CommonHelper.log('Элемент progressBar не найден');
-            return;
-        }
 
         // Ожидаем появления "В бой:"
         await CommonHelper.waitForElement('#msg_box', true, box => {
