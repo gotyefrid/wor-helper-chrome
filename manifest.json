@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "WOR Helper",
-    "version": "1.1",
+    "version": "1.2",
     "description": "Automation helper for the browser game World of Rest. Automates fishing, mining, combat, alchemy, map navigation, quests, and chat.",
     "permissions": [
         "storage",
