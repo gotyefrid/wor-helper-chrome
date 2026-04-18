@@ -1,6 +1,6 @@
 class Captcha {
     // плавающий скрипт хэш 2931440912
-    RESOURCES_HASH = 408120367;
+    RESOURCES_HASH = 4103931139;
     CAPTCHA_SCRIPT_HASH = 577988740;
 
     constructor() {
@@ -94,11 +94,8 @@ class Captcha {
     async hashAllResources() {
         const urls = [];
 
-        // Собираем все <script src="">
+        // Собираем все <script src=""> (стили намеренно не включаем — зависят от выбранной темы)
         document.querySelectorAll('script[src]').forEach(el => urls.push(el.src));
-
-        // Собираем все <link rel="stylesheet" href="">
-        document.querySelectorAll('link[rel="stylesheet"][href]').forEach(el => urls.push(el.href));
 
         const partialHashes = [];
 
@@ -119,9 +116,6 @@ class Captcha {
     }
 
     validatePageStructure() {
-        if (!document.querySelector('#captcha-container'))
-            return { ok: false, reason: 'нет #captcha-container' };
-
         if (!document.querySelector('img[src*="captcha_main.php"]'))
             return { ok: false, reason: 'нет captcha_main img' };
 
@@ -131,19 +125,26 @@ class Captcha {
         const form = document.querySelector('form[action*="cap.php"]');
         if (!form) return { ok: false, reason: 'нет формы' };
 
-        const expectedNames = ['piece_x', 'piece_y'];
-        for (const name of expectedNames) {
-            if (!form.querySelector(`input[name="${name}"]`))
-                return { ok: false, reason: `нет поля ${name}` };
+        const expectedInputs = [
+            { type: 'hidden', name: 'piece_x' },
+            { type: 'hidden', name: 'piece_y' },
+            { type: 'submit', name: '' },
+        ];
+
+        const actualInputs = [...form.querySelectorAll('input')]
+            .map(i => ({ type: i.type, name: i.name }))
+            .sort((a, b) => (a.type + a.name).localeCompare(b.type + b.name));
+
+        const expected = [...expectedInputs]
+            .sort((a, b) => (a.type + a.name).localeCompare(b.type + b.name));
+
+        const match = actualInputs.length === expected.length &&
+            expected.every((e, i) => actualInputs[i].type === e.type && actualInputs[i].name === e.name);
+
+        if (!match) {
+            const actual = actualInputs.map(i => `${i.type}[${i.name}]`).join(', ');
+            return { ok: false, reason: 'неожиданный состав инпутов: ' + actual };
         }
-
-        const extraHidden = [...form.querySelectorAll('input[type="hidden"]')]
-            .filter(i => !expectedNames.includes(i.name));
-        if (extraHidden.length > 0)
-            return { ok: false, reason: 'лишние hidden поля: ' + extraHidden.map(i => i.name).join(',') };
-
-        if (!form.querySelector('input[type="submit"]'))
-            return { ok: false, reason: 'нет submit кнопки' };
 
         if (!document.querySelector('a[href*="shuffle"]'))
             return { ok: false, reason: 'нет ссылки shuffle' };
