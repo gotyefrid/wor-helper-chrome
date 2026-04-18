@@ -57,7 +57,7 @@ async function handleTelegramCommands(command) {
             }
 
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
-            document.location = '/wap/teritory.php';
+            CommonHelper.navigateToTerritory();
             break;
         case '/mining':
             await CommonHelper.log('Пришла команда переключить рудокопа');
@@ -72,7 +72,7 @@ async function handleTelegramCommands(command) {
             }
 
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
-            document.location = '/wap/teritory.php';
+            CommonHelper.navigateToTerritory();
             break;
         case '/captcha':
             await CommonHelper.log('Пришла команда переключить капчу');
@@ -99,7 +99,7 @@ async function handleTelegramCommands(command) {
                 await CommonHelper.turnFighting(true);
             }
             await CommonHelper.sendTelegramMessage(await getStatuses(), 'common');
-            document.location = '/wap/teritory.php';
+            CommonHelper.navigateToTerritory();
             break;
         case '/fighting':
             await CommonHelper.log('Пришла команда переключить сражение');

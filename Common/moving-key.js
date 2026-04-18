@@ -83,7 +83,7 @@ async function start() {
                     } catch {
                     }
 
-                    document.location = '/wap/teritory.php';
+                    CommonHelper.navigateToTerritory();
                     break;
                 case 'Space': // Ударить
                     try {
@@ -92,7 +92,7 @@ async function start() {
                     } catch {
                     }
 
-                    document.location = '/wap/teritory.php';
+                    CommonHelper.navigateToTerritory();
                     break;
                 case 'KeyF': // Ударить физой
                     try {
@@ -103,7 +103,7 @@ async function start() {
                     } catch {
                     }
 
-                    document.location = '/wap/teritory.php';
+                    CommonHelper.navigateToTerritory();
                     break;
                 case 'KeyM': // Остановить проход карты
                     try {
@@ -114,7 +114,7 @@ async function start() {
                     } catch {
                     }
 
-                    document.location = '/wap/teritory.php';
+                    CommonHelper.navigateToTerritory();
                     break;
             }
         } catch (error) {

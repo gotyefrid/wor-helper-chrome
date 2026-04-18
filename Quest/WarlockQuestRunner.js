@@ -11,7 +11,7 @@ class WarlockQuestRunner {
 
         if (!window.location.pathname.includes('/wap/teritory')) {
             // Не на карте — редиректим, IIFE подхватит при загрузке
-            document.location = '/wap/teritory.php';
+            CommonHelper.navigateToTerritory();
             return;
         }
 
@@ -48,7 +48,7 @@ class WarlockQuestRunner {
             await CommonHelper.log('WarlockQuestRunner: квест уже пройден сегодня, возвращаемся');
             await CommonHelper.setExtStorage(WarlockQuestRunner.STORAGE_KEY, { active: false });
             await CommonHelper.delay(400, 700);
-            document.location = '/wap/teritory.php';
+            CommonHelper.navigateToTerritory();
             return true;
         }
 

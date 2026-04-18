@@ -28,6 +28,18 @@ class CommonHelper {
         await CommonHelper.delay(100000);
     }
 
+    static navigateToTerritory(html = null) {
+        let link;
+        if (html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            link = tmp.querySelector('a[href*="teritory.php"]:not([href*="crd="]):not([href*="chatmode="])');
+        } else {
+            link = document.querySelector('a[href*="teritory.php"]:not([href*="crd="]):not([href*="chatmode="])');
+        }
+        document.location = link ? link.href : '/wap/teritory.php';
+    }
+
     static async getAutoMoveDelay(defaultValue = [50, 100]) {
         // получаем строку из хранилища
         const delay = await CommonHelper.getExtStorage('wor_map_move_delay');

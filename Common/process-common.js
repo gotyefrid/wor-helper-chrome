@@ -19,7 +19,7 @@ async function checkTaktRedirect() {
     const path = location.pathname;
 
     if (path.includes('game') || path.includes('main')) {
-        window.location.href = '/wap/teritory.php';
+        CommonHelper.navigateToTerritory();
     };
 }
 

@@ -584,13 +584,14 @@ class Fight {
 
         const exitLink = [...document.querySelectorAll('a')].find(a => a.textContent.includes('Выход из боя'));
         if (exitLink) {
-            await CommonHelper.log('Ссылка выхода не назначена. Кликаем по ссылке "Выход из боя"');
-            exitLink.click();
+            await CommonHelper.log('Ссылка выхода не назначена. Фетчим ссылку "Выход из боя"');
+            const html = await fetch(exitLink.href).then(r => r.text());
+            CommonHelper.navigateToTerritory(html);
             return;
         }
 
-        await CommonHelper.log('Ссылка выхода не назначена. Переходим по ссылке /wap/teritory.php');
-        document.location = '/wap/teritory.php';
+        await CommonHelper.log('Ссылка выхода не назначена. Переходим на природу');
+        CommonHelper.navigateToTerritory();
     }
 
     prepareHelpMessage(fightNumber) {
