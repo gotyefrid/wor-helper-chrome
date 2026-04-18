@@ -62,6 +62,7 @@ async function processCheckboxes() {
         toggleFightingActivatePrimanka: { storageKey: "wor_fight_activate_primanka", },
         toggleFightingOptActiveButton: { storageKey: "wor_fight_opt_active_button" },
         toggleFightingOnlyMobs: { storageKey: "wor_fight_only_mobs", defaultValue: true },
+        toggleFightingExitToNature: { storageKey: "wor_fight_exit_to_teritory", },
 
         toggleTakt: {
             storageKey: "wor_takt_active",

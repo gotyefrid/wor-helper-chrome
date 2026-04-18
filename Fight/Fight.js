@@ -583,15 +583,25 @@ class Fight {
         }
 
         const exitLink = [...document.querySelectorAll('a')].find(a => a.textContent.includes('Выход из боя'));
+
         if (exitLink) {
-            await CommonHelper.log('Ссылка выхода не назначена. Фетчим ссылку "Выход из боя"');
-            const html = await fetch(exitLink.href).then(r => r.text());
-            CommonHelper.navigateToTerritory(html);
+            const exitToNature = await CommonHelper.getExtStorage('wor_fight_exit_to_teritory');
+
+            if (exitToNature) {
+                await CommonHelper.log('Выходим на природу');
+                const html = await fetch(exitLink.href).then(r => r.text());
+                CommonHelper.navigateToTerritory(html);
+
+                return;
+            }
+
+            CommonHelper.clickAndWait(exitLink);
             return;
         }
 
-        await CommonHelper.log('Ссылка выхода не назначена. Переходим на природу');
+        await CommonHelper.log('Нету ссылки выхода из боя, выходим на /wap/teritory.php');
         CommonHelper.navigateToTerritory();
+
     }
 
     prepareHelpMessage(fightNumber) {
