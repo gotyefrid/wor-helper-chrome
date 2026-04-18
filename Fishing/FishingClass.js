@@ -79,27 +79,19 @@ class Fishing {
         const isWaiting = document.body.textContent.toLowerCase().includes('рыба игнорирует ваши старания');
 
         if (isWaiting) {
-            CommonHelper.log('Ждём подсечки...');
-            // «Подсечь» — кликаем, когда появится
-            this.#waitForPodsech()
-                .then(async (link) => {
+            CommonHelper.log('Рыба ещё не клюнула, ждём...');
+            await Promise.race([
+                this.#waitForPodsech().then(async (link) => {
                     await CommonHelper.delay(CommonHelper.MEDIUM_RANDOM);
                     await CommonHelper.clickAndWait(link);
-                })
-                .catch(CommonHelper.log);
-
-
-            CommonHelper.log('Ждём кнопки "В бой"');
-            // «В бой:» — перезагружаем, когда появится
-            this.#waitForBattleMsg()
-                .then(async () => {
-                    await CommonHelper.reloadPage();
-                })
-                .catch(CommonHelper.log);
+                }),
+                this.#waitForBattleMsg().then(() => CommonHelper.reloadPage()),
+            ]);
         } else {
-            // Кликаем Подсечь
+            CommonHelper.log('Рыба клюнула, подсекаем...');
             await CommonHelper.delay(2000, 2500);
-            await CommonHelper.clickAndWait(document.querySelector('a[href*="tjanu="]'));
+            const link = await this.#waitForPodsech();
+            await CommonHelper.clickAndWait(link);
         }
     }
 
