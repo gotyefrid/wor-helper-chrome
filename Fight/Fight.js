@@ -95,7 +95,7 @@ class Fight {
 
         if (enemyName) {
             let skip = false;
-            const threshold = Number(await CommonHelper.getExtStorage('wor_fight_low_damage_threshold')) || 0;
+            const threshold = Number(await CommonHelper.getExtStorage('wor_fight_low_damage_threshold')) || 1;
             let isLowDamage = threshold > 0 && await this.isLowDamage(threshold);
 
             if (isLowDamage) {
@@ -318,15 +318,23 @@ class Fight {
             return false;
         }
 
-        const playerName = await CommonHelper.getExtStorage('wor_chat_player_name');
+        const playerName = this.getPlayerName();
 
-        // убираем [число] после имени (ваш хак) и берём последние строки с нашим игроком
+        if (!playerName) {
+            CommonHelper.log('Не нашли имя игрока в HTML');
+            return false;
+        }
+
+        // убираем [число] после имени и берём строки с нашим игроком
         const cleanText = logText.replace(/\[\d+\]/g, '[]');
         const lastLines = cleanText
             .split('\n')
             .filter(line => line.includes(`Игрок ${playerName}[]`));
 
-        if (lastLines.length === 0) return false;
+        if (lastLines.length === 0) {
+            await CommonHelper.log('Не нашли строку с нанесением урона (лог урона)');
+            return false;
+        }
 
         // чаще всего нужная — самая последняя запись:
         const lastLine = lastLines[0];
@@ -338,7 +346,7 @@ class Fight {
         //  - потом что угодно (например "в голову", "игроку ...", "и пробил блок!")
         //  - квадратные скобки с HP вида [текущий/макс]
         const regex = new RegExp(
-            `Игрок ${playerName}\\[\\] нан(?:е|ё)с(?: критический)?(?: магический)? удар (-?\\d+)[\\s\\S]*?\\[(\\d+)\\/(\\d+)\\]`,
+            `Игрок ${playerName}\\[\\] нан(?:е|ё)с(?: критический)?(?: магический)?\\s+удар (-?\\d+)[\\s\\S]*?\\[(\\d+)\\/(\\d+)\\]`,
             'g'
         );
 
@@ -542,6 +550,11 @@ class Fight {
         CommonHelper.log('Имя противника не найдено. Не найден name.');
 
         return null;
+    }
+
+    getPlayerName() {
+        return document.querySelectorAll('div[style*="url(img/base.png)"] span[style*="left:70px"]')[0]
+            ?.textContent?.trim() ?? null;
     }
 
     enemiesSkipListHas(enemyName) {

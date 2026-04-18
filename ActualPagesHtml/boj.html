@@ -14,7 +14,7 @@
     <script src="/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Бой №87330673</div>        <div class="chat">
+<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Бой №87340509</div>        <div class="chat">
     <div class="header">
         <div class="level-block">
             <div style="display:flex; align-items:center;">
@@ -22,7 +22,7 @@
                 <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
             </div>
             <div class="progress-bar">
-                <div class="progress-fill" style="width: 6%"></div>
+                <div class="progress-fill" style="width: 1%"></div>
             </div>
         </div>
         <div class="hp-mp-circle">
@@ -35,19 +35,19 @@
         </div>
         <div class="status-item">
             <img src="img/rubin.gif" alt="Рубины" title="Рубины">
-            <span>0.01</span>
+            <span>1.00</span>
         </div>
         <div class="status-item">
             <img src="img/money.gif" alt="WR" title="WR">
-            <span>1024</span>
+            <span>2743</span>
         </div>
-        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время" /> 17:03</div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время" /> 13:57</div>
     </div>
 </div>
     <div class="chat">
-        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1776434627&amp;hash=c0805da">общий</a>,
-        <a href="boj.php?textviewsave=turnir&amp;chatmode=my&amp;uni=1776434627&amp;hash=46d6ac7">мой</a>,
-        <a href="boj.php?textviewsave=turnir&amp;chatmode=add&amp;uni=1776434627&amp;hash=199b15e">написать</a>
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1776509871&amp;hash=cadcc28">общий</a>,
+        <a href="boj.php?chatmode=my&amp;uni=1776509871&amp;hash=0f416b6">мой</a>,
+        <a href="boj.php?chatmode=add&amp;uni=1776509871&amp;hash=f5762d7">написать</a>
     </div>
 </div>    <style>
     .custom-radio {
@@ -212,18 +212,18 @@
     }
 </style>
 <div style="position:relative; width:255px; height:80px; margin:5px; background: url(img/base.png)">
-    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/woman10001.png" alt=""/>
-    <span style="position:absolute; top:0; left:70px; font-size:10px; font-weight:bold"><img src='/pic/nb7.gif' style='vertical-align: middle' width='12' height='12' alt='' /> Тринитя</span>
+    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/man10105.png" alt=""/>
+    <span style="position:absolute; top:0; left:70px; font-size:10px; font-weight:bold"><img src='/pic/nb7.gif' style='vertical-align: middle' width='12' height='12' alt='' /> Торопыжка</span>
     <span style="position:absolute; top:60px; left:52px; font-size:10px; font-weight:bold; color:#FFFF00">10</span>
     <img id="hp_bar" style="position:absolute; top:17px; left:74px;" src="img/hp.png" width="176" height="25" alt=""/>
     <img id="mana_bar" style="position:absolute; top:45px; left:74px;" src="img/ma.png" width="157" height="14" alt=""/>
-    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">100/100</span>
-    <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">5/5</span>
+    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">88/88</span>
+    <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">190/190</span>
 </div>
-<div style="font-size:12px">Травматичность боя: <span style="color:#FF0000"><strong>90%</strong></span></div>
+<div style="font-size:12px">Травматичность боя: <span style="color:#FF0000"><strong>70%</strong></span></div>
 
-<form method="post" action="udar.php?uni=1776434627&amp;hash=977a703">
-    <input name="uid" type="hidden" value="54dcd"/>
+<form method="post" action="udar.php?uni=1776509871&amp;hash=7c3bf7e">
+    <input name="uid" type="hidden" value="4b3cd"/>
     <input name="block" type="hidden" value="0"/>
     <input name="udar" type="hidden" value="0"/>
 
@@ -286,70 +286,65 @@
         </tr>
         <tr>
             <td align="center" colspan="2">
+                <div class="switch-wrapper" style="display:inline-block; margin-top:5px;">
+                    <span style="font-size:12px; margin-right:3px;">физический</span>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-udartype" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span style="font-size:12px; margin-left:3px;">магический</span>
+                </div>
+                <input type="hidden" name="udartype" id="udartype" value="2">
+            </td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2">
                 <div style="display: flex">
-                    <img class="scroll-btn left" src="images/left.png" height="36" alt=""/>                            <div class="slider-container">
-                    <div class="item-slider">
-                        <div class="item-image-wrapper">
-                            <img src="/images/pot1.png" class="item-image" data-id="37876899" alt="" draggable="false">
-                            <span class="item-count" data-id="37876899">10 HP</span>
-                        </div>                                        <div class="item-image-wrapper">
-                        <img src="/images/pot5.png" class="item-image" data-id="37876841" alt="" draggable="false">
-                        <span class="item-count" data-id="37876841">100 HP</span>
-                    </div>                                        <div class="item-image-wrapper">
-                        <img src="/images/pot1.png" class="item-image" data-id="37877862" alt="" draggable="false">
-                        <span class="item-count" data-id="37877862">20 HP</span>
-                    </div>                                        <div class="item-image-wrapper">
-                        <img src="/images/pot7.png" class="item-image" data-id="37876831" alt="" draggable="false">
-                        <span class="item-count" data-id="37876831">250 HP</span>
-                    </div>                                        <div class="item-image-wrapper">
-                        <img src="/images/pot3.png" class="item-image" data-id="37876820" alt="" draggable="false">
-                        <span class="item-count" data-id="37876820">50 HP</span>
-                    </div>                                        <div class="item-image-wrapper">
-                        <img src="/images/pot9.png" class="item-image" data-id="37876857" alt="" draggable="false">
-                        <span class="item-count" data-id="37876857">500 HP</span>
-                    </div>                                        <div class="item-image-wrapper">
-                        <img src="/images/pot2.png" class="item-image" data-id="37876825" alt="" draggable="false">
-                        <span class="item-count" data-id="37876825">10 МА</span>
-                    </div>                                        <div class="item-image-wrapper">
-                        <img src="/images/pot8.png" class="item-image" data-id="37876871" alt="" draggable="false">
-                        <span class="item-count" data-id="37876871">250 МА</span>
-                    </div>                                    <input type="hidden" id="selectedItemId" name="sumka" value="0">
+                    <div class="slider-container">
+                        <div class="item-slider">
+                            <div class="item-image-wrapper">
+                                <img src="/images/pot9.png" class="item-image" data-id="37881647" alt="" draggable="false">
+                                <span class="item-count" data-id="37881647">500 HP</span>
+                            </div>                                        <div class="item-image-wrapper">
+                            <img src="/images/pot10.png" class="item-image" data-id="37922825" alt="" draggable="false">
+                            <span class="item-count" data-id="37922825">500 МА</span>
+                        </div>                                    <input type="hidden" id="selectedItemId" name="sumka" value="0">
+                        </div>
                     </div>
                 </div>
-                    <img class="scroll-btn right" src="images/right.png" height="36" alt=""/>                        </div>
 
             </td>
         </tr>
         <tr>
             <td align="center" colspan="2">
-                <input name="udartype" type="hidden" value="1" />					                    <input name="beatenemy" type="submit" value="Ударить!" class="button udar-btn"/>
+                <input name="beatenemy" type="submit" value="Ударить!" class="button udar-btn"/>
             </td>
         </tr>
     </table>
 </form>
 <div style="position:relative; width:255px; height:80px; margin:7px; background: url(img/base.png)">
-    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/monster101.png" alt=""/>
-    <span style="position:absolute; top:0px; left:70px; font-size:10px; font-weight:bold"><img src='/images/white2x2px.gif' width='1' alt='' /> Гоблин [8]</span>
-    <span style="position:absolute; top:60px; left:55px; font-size:10px; font-weight:bold; color:#FFFF00">8</span>
+    <img style="position:absolute; top:4px; left:5px;" src="thumbs2/monster51.png" alt=""/>
+    <span style="position:absolute; top:0px; left:70px; font-size:10px; font-weight:bold"><img src='/images/white2x2px.gif' width='1' alt='' /> Ортоз [9]</span>
+    <span style="position:absolute; top:60px; left:55px; font-size:10px; font-weight:bold; color:#FFFF00">9</span>
     <img id="hp_bar" style="position:absolute; top:17px; left:74px;" src="img/hp.png" width="176" height="25" alt=""/>
     <img id="mana_bar" style="position:absolute; top:45px; left:74px;" src="img/ma.png" width="157" height="14" alt=""/>
-    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">172/172</span>
+    <span id="hp_text" style="position:absolute; top:24px; left:82px; font-size:10px; font-weight:bold; color:#E8E8E8">219/219</span>
     <span id="mana_text" style="position:absolute; top:46px; left:82px; font-size:9px; font-weight:bold; color:#E8E8E8">5/5</span>
 </div>
 
-<div>Лог боя        <a href="tochat.php?tag=log&amp;text=87330673&amp;uni=1776434627&amp;hash=dc172db"><span style="color:#FFFFFF">[<span style="color:#FF00FF">в чат</span>]</span></a>:
+<div>Лог боя        <a href="tochat.php?tag=log&amp;text=87340509&amp;uni=1776509871&amp;hash=1282188"><span style="color:#FFFFFF">[<span style="color:#FF00FF">в чат</span>]</span></a>:
 </div>
 
 <table border="0" class="table_menu">
     <tr>
-        <td style="font-size:11px" align="justify"></td>
+        <td style="font-size:11px" align="justify"><span style="color:#88AA00;font-weight:bold">18 апреля 2026, 13:57:51</span> Игрок <span style="color:#1D9CF1;font-weight:bold">Торопыжка[10]</span> нанес <span style="color:#FF0000;font-weight:bold">критический</span>  удар <span style="color:#FF0000;font-weight:bold">0</span> в голову <span style="color:#CC00CC;font-weight:bold">[219/219]</span> игроку <span style="color:#1D9CF1;font-weight:bold">Ортоз[9]</span> тот же пропустил удар!<br /><span style="color:#88AA00;font-weight:bold">18 апреля 2026, 13:57:51</span> Игрок <span style="color:#1D9CF1;font-weight:bold">Ортоз[9]</span> нанес  удар <span style="color:#00EAEA;font-weight:bold">0</span> в пах <span style="color:#CC00CC;font-weight:bold">[88/88]</span> игроку <span style="color:#1D9CF1;font-weight:bold">Торопыжка[10]</span> тот же пропустил удар.<br /><span style="color:#88AA00;font-weight:bold">18 апреля 2026, 13:57:50</span> Игрок <span style="color:#1D9CF1;font-weight:bold">Торопыжка[10]</span> нанес <span style="color:#FF0000;font-weight:bold">критический</span>  удар <span style="color:#FF0000;font-weight:bold">0</span> в голову <span style="color:#CC00CC;font-weight:bold">[219/219]</span> игроку <span style="color:#1D9CF1;font-weight:bold">Ортоз[9]</span> и пробил блок!<br /><span style="color:#88AA00;font-weight:bold">18 апреля 2026, 13:57:50</span> Игрок <span style="color:#1D9CF1;font-weight:bold">Ортоз[9]</span> нанес  удар <span style="color:#00EAEA;font-weight:bold">0</span> в ноги <span style="color:#CC00CC;font-weight:bold">[88/88]</span> игроку <span style="color:#1D9CF1;font-weight:bold">Торопыжка[10]</span> тот же пропустил удар.<br /></td>
     </tr>
     <tr>
         <td>...</td>
     </tr>
 </table>
 <div align="center">
-    <div class="menu_div" align="left"><ul><li><a  onclick="return confirm('Сдаться в бою?')" href="killme.php?uni=1776434627&amp;hash=f3c129f"><img src="icons/surrender_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Сдаться</a></li><li><a  onclick="return confirm('Сдаться в бою?')" href="killme.php?teleport=1&amp;uni=1776434627&amp;hash=43a6dee"><img src="icons/surrender_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Сдаться и в город</a></li></ul></div>    </div>
+    <div class="menu_div" align="left"><ul><li><a  onclick="return confirm('Сдаться в бою?')" href="killme.php?uni=1776509871&amp;hash=ed7a691"><img src="icons/surrender_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Сдаться</a></li><li><a  onclick="return confirm('Сдаться в бою?')" href="killme.php?teleport=1&amp;uni=1776509871&amp;hash=e6dbd6f"><img src="icons/surrender_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Сдаться и в город</a></li></ul></div>    </div>
 <script>
     $(document).ready(function () {
         $('#toggle-udartype').change(function () {
