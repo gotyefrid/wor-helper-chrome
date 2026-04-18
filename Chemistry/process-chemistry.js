@@ -46,6 +46,7 @@
                 await chemistry.processTerritoryPage(inspectButton);
                 return;
             } else {
+                CommonHelper.log('На странице почему то нету кнопки Осмотреться. Ничего не делаем.');
                 CommonHelper.sendTelegramMessage('На странице почему то нету кнопки Осмотреться. Ничего не делаем.');
             }
         } else {

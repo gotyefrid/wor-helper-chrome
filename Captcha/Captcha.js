@@ -1,7 +1,7 @@
 class Captcha {
     // плавающий скрипт хэш 2931440912
-    HTML_HASH = 2251357741;
     RESOURCES_HASH = 408120367;
+    CAPTCHA_SCRIPT_HASH = 577988740;
 
     constructor() {
         this.#checkCurrentPage();
@@ -116,6 +116,56 @@ class Captcha {
 
         const combined = partialHashes.join("|");
         return this.fnv1aHash(combined);
+    }
+
+    validatePageStructure() {
+        if (!document.querySelector('#captcha-container'))
+            return { ok: false, reason: 'нет #captcha-container' };
+
+        if (!document.querySelector('img[src*="captcha_main.php"]'))
+            return { ok: false, reason: 'нет captcha_main img' };
+
+        if (!document.querySelector('img[src*="cap_puzzle.png"]'))
+            return { ok: false, reason: 'нет puzzle img' };
+
+        const form = document.querySelector('form[action*="cap.php"]');
+        if (!form) return { ok: false, reason: 'нет формы' };
+
+        const expectedNames = ['piece_x', 'piece_y'];
+        for (const name of expectedNames) {
+            if (!form.querySelector(`input[name="${name}"]`))
+                return { ok: false, reason: `нет поля ${name}` };
+        }
+
+        const extraHidden = [...form.querySelectorAll('input[type="hidden"]')]
+            .filter(i => !expectedNames.includes(i.name));
+        if (extraHidden.length > 0)
+            return { ok: false, reason: 'лишние hidden поля: ' + extraHidden.map(i => i.name).join(',') };
+
+        if (!form.querySelector('input[type="submit"]'))
+            return { ok: false, reason: 'нет submit кнопки' };
+
+        if (!document.querySelector('a[href*="shuffle"]'))
+            return { ok: false, reason: 'нет ссылки shuffle' };
+
+        return { ok: true };
+    }
+
+    getCaptchaInlineScriptHash() {
+        const script = [...document.querySelectorAll('script')]
+            .find(el => el.innerText.includes('draggable') && el.innerText.includes('captcha-form'));
+
+        if (!script) return null;
+
+        let text = script.innerText.replace(/\s+/g, '');
+        // Нормализуем динамический id пазла (вида #p[0-9a-f]+)
+        text = text.replace(/#p[0-9a-f]+/g, '#PUZZLE_ID');
+
+        return this.fnv1aHash(text);
+    }
+
+    findPuzzlePiece() {
+        return document.querySelector('img[src*="cap_puzzle.png"]');
     }
 
     cleanDocumentHTML() {

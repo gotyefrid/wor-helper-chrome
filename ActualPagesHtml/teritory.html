@@ -1,54 +1,75 @@
-<html style="--cell: 70px;">
+
+<!DOCTYPE html>
+<html>
 <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords"
-          content="онлайн игра, RPG, WOR, World Of Rest, рпг игра, браузерная мобильная игра, рпг для андроид">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="description" content="World of Rest — мобильная браузерная RPG-игра.">
+    <meta name="theme-color" content="#000000">
     <meta http-equiv="refresh" content="200">
-    <title>World of Rest - мобильная online игра!</title>
-    <link rel="stylesheet" type="text/css" href="style54.css?v=20250023">
-    <script type="text/javascript" src="/jquery-3.7.1.min.js"></script>
-    <style>#mapViewport.animating #hudOverlay {
-        display: none !important;
-    }</style>
+    <title>World of Rest — мобильная онлайн-игра!</title>
+
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20260001">
+
+    <script src="/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-<div id="headerContainer" class="header-container">
-    <div class="menu" align="center">World of Rest: Природа</div>
-    <div class="chat">
-        <div class="header">
-            <div class="level-block">
-                <div style="display:flex; align-items:center;">
-                    <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
-                    <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>26</strong></span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 77%"></div>
-                </div>
+<div id="headerContainer" class="header-container"><div class="menu" align="center">World of Rest: Природа</div>        <div class="chat">
+    <div class="header">
+        <div class="level-block">
+            <div style="display:flex; align-items:center;">
+                <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
             </div>
-            <div class="hp-mp-circle">
-                <div class="circle-bar">
-                    <div class="circle-fill hp-fill" style="height: 100%"></div>
-                </div>
-                <div class="circle-bar">
-                    <div class="circle-fill mp-fill" style="height: 100%"></div>
-                </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 6%"></div>
             </div>
-            <div class="status-item">
-                <img src="img/rubin.gif" alt="Рубины" title="Рубины">
-                <span>168.29</span>
-            </div>
-            <div class="status-item">
-                <img src="img/money.gif" alt="WR" title="WR">
-                <span>-164496</span>
-            </div>
-            <div class="status-item"><img src="img/clock.gif" border="0" alt="Время" title="Время"> 18:34</div>
         </div>
+        <div class="hp-mp-circle">
+            <div class="circle-bar">
+                <div class="circle-fill hp-fill" style="height: 24%"></div>
+            </div>
+            <div class="circle-bar">
+                <div class="circle-fill mp-fill" style="height: 100%"></div>
+            </div>
+        </div>
+        <div class="status-item">
+            <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+            <span>0.01</span>
+        </div>
+        <div class="status-item">
+            <img src="img/money.gif" alt="WR" title="WR">
+            <span>1029</span>
+        </div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время" /> 17:06</div>
     </div>
+</div>
+    <script>
+        (function () {
+            const timeDiff = Date.now() - 1776434808000;
+
+            function updateBars() {
+                const now = Date.now() - timeDiff;
+                let elapsedSeconds = (now - 1776434808000) / 1000;
+
+                let newLife = Math.min(Math.round(24 + 1.6666666666667 * elapsedSeconds), 100);
+                let newMana = Math.min(Math.round(5 + 0.083333333333333 * elapsedSeconds), 5);
+
+                const headerHP = document.querySelector('.hp-fill');
+                const headerMana = document.querySelector('.mp-fill');
+                if (headerHP && headerMana) {
+                    headerHP.style.height = Math.round((newLife / 100) * 100) + '%';
+                    headerMana.style.height = Math.round((newMana / 5) * 100) + '%';
+                }
+            }
+
+            setInterval(updateBars, 250);
+        })();
+    </script>
     <div class="chat">
-        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1772123684&amp;hash=bcc0c91">общий</a>,
-        <a href="teritory.php?chatmode=my&amp;uni=1772123684&amp;hash=acf87a1">мой</a>,
-        <a href="teritory.php?chatmode=add&amp;uni=1772123684&amp;hash=036e8dd">написать</a>
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1776434808&amp;hash=763c02e">общий</a>,
+        <a href="teritory.php?chatmode=my&amp;uni=1776434808&amp;hash=a3f80af">мой</a>,
+        <a href="teritory.php?chatmode=add&amp;uni=1776434808&amp;hash=da97460">написать</a>
     </div>
 </div>
 <style>
@@ -208,437 +229,20 @@
     <div class="map-wrap">
         <div class="title-border">
             <div id="mapViewport" class="map-viewport">
-                <div id="mapStage" class="map-stage"
-                     style="transition: none; transform: translate3d(-70px, -70px, 0px);">
-                    <div id="gridA" class="map-grid">
-                        <div class="map-cell" data-room="285" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/285_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="285" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="286" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/286_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="286" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="287" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/287_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="287" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="288" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/288_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="288" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="289" data-step="359"
-                             style="background-image: url(&quot;../images/l1/l1wd1/289_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=0b86ed5"
-                            data-step-url="teritorystep.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=57a6a73"
-                            data-room="289" data-step="359" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="290" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/290_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="290" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="291" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/291_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="291" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="292" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/292_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="292" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="293" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/293_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="293" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="320" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/320_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="320" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="321" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/321_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="321" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="322" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/322_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="322" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="323" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/323_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="323" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="324" data-step="359"
-                             style="background-image: url(&quot;../images/l1/l1wd1/324_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=0b86ed5"
-                            data-step-url="teritorystep.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=57a6a73"
-                            data-room="324" data-step="359" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="325" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/325_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="325" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="326" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/326_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="326" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="327" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/327_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="327" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="328" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/328_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="328" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="355" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/355_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="355" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="356" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/356_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="356" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="357" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/357_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="357" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="358" data-step="358"
-                             style="background-image: url(&quot;../images/l1/l1wd1/358_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803"
-                            data-step-url="teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951"
-                            data-room="358" data-step="358" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="359" data-step="359"
-                             style="background-image: url(&quot;../images/l1/l1wd1/359_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=0b86ed5"
-                            data-step-url="teritorystep.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=57a6a73"
-                            data-room="359" data-step="359" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="360" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/360_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="360" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="361" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/361_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="361" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="362" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/362_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="362" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="363" data-step="360"
-                             style="background-image: url(&quot;../images/l1/l1wd1/363_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36"
-                            data-step-url="teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea"
-                            data-room="363" data-step="360" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="390" data-step="393"
-                             style="background-image: url(&quot;../images/l1/l1wd1/390_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c"
-                            data-step-url="teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d"
-                            data-room="390" data-step="393" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="391" data-step="393"
-                             style="background-image: url(&quot;../images/l1/l1wd1/391_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c"
-                            data-step-url="teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d"
-                            data-room="391" data-step="393" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="392" data-step="393"
-                             style="background-image: url(&quot;../images/l1/l1wd1/392_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c"
-                            data-step-url="teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d"
-                            data-room="392" data-step="393" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="393" data-step="393"
-                             style="background-image: url(&quot;../images/l1/l1wd1/393_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c"
-                            data-step-url="teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d"
-                            data-room="393" data-step="393" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="394" data-step="394"
-                             style="background-image: url(&quot;../images/l1/l1wd1/394_l1wd3.jpg&quot;);"></div>
-                        <div class="map-cell" data-room="395" data-step="395"
-                             style="background-image: url(&quot;../images/l1/l1wd1/395_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725"
-                            data-step-url="teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2"
-                            data-room="395" data-step="395" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="396" data-step="395"
-                             style="background-image: url(&quot;../images/l1/l1wd1/396_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725"
-                            data-step-url="teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2"
-                            data-room="396" data-step="395" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="397" data-step="395"
-                             style="background-image: url(&quot;../images/l1/l1wd1/397_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725"
-                            data-step-url="teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2"
-                            data-room="397" data-step="395" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="398" data-step="395"
-                             style="background-image: url(&quot;../images/l1/l1wd1/398_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725"
-                            data-step-url="teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2"
-                            data-room="398" data-step="395" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="425" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/425_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="425" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="426" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/426_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="426" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="427" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/427_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="427" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="428" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/428_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="428" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="429" data-step="429"
-                             style="background-image: url(&quot;../images/l1/l1wd1/429_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=a746f00"
-                            data-step-url="teritorystep.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=c9f669f"
-                            data-room="429" data-step="429" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="430" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/430_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="430" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="431" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/431_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="431" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="432" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/432_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="432" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="433" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/433_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="433" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="460" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/460_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="460" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="461" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/461_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="461" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="462" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/462_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="462" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="463" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/463_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="463" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="464" data-step="429"
-                             style="background-image: url(&quot;../images/l1/l1wd1/464_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=a746f00"
-                            data-step-url="teritorystep.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=c9f669f"
-                            data-room="464" data-step="429" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="465" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/465_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="465" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="466" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/466_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="466" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="467" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/467_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="467" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="468" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/468_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="468" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="495" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/495_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="495" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="496" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/496_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="496" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="497" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/497_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="497" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="498" data-step="428"
-                             style="background-image: url(&quot;../images/l1/l1wd1/498_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308"
-                            data-step-url="teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19"
-                            data-room="498" data-step="428" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="499" data-step="429"
-                             style="background-image: url(&quot;../images/l1/l1wd1/499_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=a746f00"
-                            data-step-url="teritorystep.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=c9f669f"
-                            data-room="499" data-step="429" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="500" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/500_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="500" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="501" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/501_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="501" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="502" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/502_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="502" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                        <div class="map-cell" data-room="503" data-step="430"
-                             style="background-image: url(&quot;../images/l1/l1wd1/503_l1wd3.jpg&quot;);"><a
-                            href="teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e"
-                            data-step-url="teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946"
-                            data-room="503" data-step="430" style="display: block; width: 100%; height: 100%;"></a>
-                        </div>
-                    </div>
+                <div id="mapStage" class="map-stage">
+                    <div id="gridA" class="map-grid"></div>
                 </div>
 
                 <div id="mapHud" class="map-hud">
                     <div class="hud-frame"></div>
-                    <img id="hudIcon" class="hud-icon" style="" alt="" src="../images/users.png">
-                    <img id="hudOverlay" class="hud-overlay" style="display:none" alt="" src="">
+                    <img id="hudIcon" class="hud-icon" style="display:none" alt="">
+                    <img id="hudOverlay" class="hud-overlay" style="display:none" alt="">
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="belowWrap">
-        <div class="contur" style="font-size:11px"><img style="margin:3px;vertical-align:middle" src="img/users.png"
-                                                        border="0" alt=""> <strong><span
-            class="svet">[9]:</span></strong> 456 [39], deathкор [32], HannaMontana [23], KanchoSS [23], linog1
-            [35]...<br></div>
-        <div class="cont">
-            <div class="menu_div" align="left">
-                <ul>
-                    <li><a href="main.php?uni=1772123684&amp;hash=42a6a5e"><img src="icons/glavnoe_menyu_128.png"
-                                                                                border="0"
-                                                                                style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                alt=""> Главное меню</a></li>
-                    <li><a href="gorod.php?uni=1772123684&amp;hash=f39697f"><img src="icons/gorod_128.png" border="0"
-                                                                                 style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                 alt=""> Город - Центр</a></li>
-                    <li><a href="quest.php?uni=1772123684&amp;hash=b57eeb3"><img src="icons/strazh_128.png" border="0"
-                                                                                 style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                 alt=""> Стражник у ворот</a></li>
-                    <li><a href="game.php?uni=1772123684&amp;hash=7f9cc77"><img src="icons/vash_personazh_m1_128.png"
-                                                                                border="0"
-                                                                                style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                alt=""> Ваш персонаж</a></li>
-                    <li><a href="inventar.php?uni=1772123684&amp;hash=b3e39c4"><img src="icons/inventar_128.png"
-                                                                                    border="0"
-                                                                                    style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                    alt=""> Инвентарь</a></li>
-                    <li><a href="terview.php?uni=1772123684&amp;hash=e3263d3"><img src="icons/mini_karta_128.png"
-                                                                                   border="0"
-                                                                                   style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                   alt=""> Мини-карта</a></li>
-                    <li><a href="journal.php?uni=1772123684&amp;hash=bd07b5d"><img src="icons/journal_128.png"
-                                                                                   border="0"
-                                                                                   style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                   alt=""> Журнал событий</a></li>
-                    <li><a href="teleport.php?uni=1772123684&amp;hash=677c9ce"><img src="icons/teleport_v_gorod_128.png"
-                                                                                    border="0"
-                                                                                    style="vertical-align:middle; margin-right:3px; width:32px; height:32px"
-                                                                                    alt=""> Телепорт в город</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <div id="belowWrap"><div class="cont"><div class="menu_div" align="left"><ul><li><a   href="main.php?uni=1776434808&amp;hash=683bbfe"><img src="icons/glavnoe_menyu_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Главное меню</a></li><li><a   href="poisktrav.php?uni=1776434808&amp;hash=b2eddac"><img src="icons/osmotretsya_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Осмотреться</a></li><li><a   href="game.php?uni=1776434808&amp;hash=f310ac4"><img src="icons/vash_personazh_w1_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Ваш персонаж</a></li><li><a   href="inventar.php?uni=1776434808&amp;hash=b63961b"><img src="icons/inventar_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Инвентарь</a></li><li><a   href="terview.php?uni=1776434808&amp;hash=253d3b9"><img src="icons/mini_karta_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Мини-карта</a></li><li><a   href="journal.php?uni=1776434808&amp;hash=880dccf"><img src="icons/journal_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Журнал событий</a></li><li><a   href="teleport.php?uni=1776434808&amp;hash=38fc8b9"><img src="icons/teleport_v_gorod_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Телепорт в город</a></li></ul></div></div></div>
 </div>
 
 <script>
@@ -647,7 +251,7 @@
 
         let current = {
             location: 1,
-            room: 394,
+            room: 395,
             rowCount: 35,
             pcMode: 0,
 
@@ -657,8 +261,38 @@
 
             // viewport (видимая область)
             viewCols: 7,
-            viewRows: 5
-        };
+            viewRows: 5            };
+
+        function jslog(event, ms, code, msg, extra) {
+            try {
+                const payload = {
+                    event: String(event || ''),
+                    page: 'teritory',
+                    user: "Тринитя",
+                    ms: Number(ms || 0) | 0,
+                    code: Number(code || 0) | 0,
+                    msg: String(msg || '').slice(0, 400),
+                    extra: extra || null,
+                    t: Date.now()
+                };
+
+                const body = JSON.stringify(payload);
+
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon('jslog.php', new Blob([body], {type: 'application/json'}));
+                    return;
+                }
+
+                fetch('jslog.php', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {'Content-Type': 'application/json'},
+                    body
+                }).catch(() => {
+                });
+            } catch (e) {
+            }
+        }
 
         function fixCellVar() {
             if (current.pcMode) return;
@@ -685,14 +319,13 @@
             const loc = Number(1);
             if (loc >= 100 && loc < 200) return prefix + '/images/user_m1_w0.png';
             if (loc >= 300) return prefix + '/images/user_m1_w0.png';
-            const isW = 0;
+            const isW = 1;
             return prefix + (isW ? '/images/user_m0_w1.png' : '/images/user_m1_w0.png');
         })();
 
         const animCfg = {
-            enabled: 0,
-            ms: 50
-        };
+            enabled: 1,
+            ms: 50            };
 
         const stage = document.getElementById('mapStage');
         const viewport = document.getElementById('mapViewport');
@@ -754,520 +387,20 @@
             }
         }
 
-        const initialGrid = [{
-            "room": 285,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/285_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 286,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/286_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 287,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/287_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 288,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/288_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 289,
-            "stepRoom": 359,
-            "img": "../images/l1/l1wd1/289_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=0b86ed5",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=57a6a73",
-            "overlay": null
-        }, {
-            "room": 290,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/290_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 291,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/291_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 292,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/292_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 293,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/293_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 320,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/320_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 321,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/321_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 322,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/322_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 323,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/323_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 324,
-            "stepRoom": 359,
-            "img": "../images/l1/l1wd1/324_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=0b86ed5",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=57a6a73",
-            "overlay": null
-        }, {
-            "room": 325,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/325_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 326,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/326_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 327,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/327_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 328,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/328_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 355,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/355_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 356,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/356_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 357,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/357_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 358,
-            "stepRoom": 358,
-            "img": "../images/l1/l1wd1/358_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=f225803",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=358&amp;uni=1772123684&amp;hash=7ca4951",
-            "overlay": null
-        }, {
-            "room": 359,
-            "stepRoom": 359,
-            "img": "../images/l1/l1wd1/359_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=0b86ed5",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=359&amp;uni=1772123684&amp;hash=57a6a73",
-            "overlay": null
-        }, {
-            "room": 360,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/360_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 361,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/361_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 362,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/362_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 363,
-            "stepRoom": 360,
-            "img": "../images/l1/l1wd1/363_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=95f0e36",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=360&amp;uni=1772123684&amp;hash=1bd6cea",
-            "overlay": null
-        }, {
-            "room": 390,
-            "stepRoom": 393,
-            "img": "../images/l1/l1wd1/390_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d",
-            "overlay": null
-        }, {
-            "room": 391,
-            "stepRoom": 393,
-            "img": "../images/l1/l1wd1/391_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d",
-            "overlay": null
-        }, {
-            "room": 392,
-            "stepRoom": 393,
-            "img": "../images/l1/l1wd1/392_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d",
-            "overlay": null
-        }, {
-            "room": 393,
-            "stepRoom": 393,
-            "img": "../images/l1/l1wd1/393_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=46a854c",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=393&amp;uni=1772123684&amp;hash=9108a8d",
-            "overlay": null
-        }, {
-            "room": 394,
-            "stepRoom": 394,
-            "img": "../images/l1/l1wd1/394_l1wd3.jpg",
-            "isCenter": true,
-            "href": "teritory.php?l=1&amp;crd=394&amp;uni=1772123684&amp;hash=6cd38da",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=394&amp;uni=1772123684&amp;hash=980ea39",
-            "overlay": null
-        }, {
-            "room": 395,
-            "stepRoom": 395,
-            "img": "../images/l1/l1wd1/395_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2",
-            "overlay": null
-        }, {
-            "room": 396,
-            "stepRoom": 395,
-            "img": "../images/l1/l1wd1/396_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2",
-            "overlay": null
-        }, {
-            "room": 397,
-            "stepRoom": 395,
-            "img": "../images/l1/l1wd1/397_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2",
-            "overlay": null
-        }, {
-            "room": 398,
-            "stepRoom": 395,
-            "img": "../images/l1/l1wd1/398_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=c57f725",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=395&amp;uni=1772123684&amp;hash=e226fe2",
-            "overlay": null
-        }, {
-            "room": 425,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/425_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 426,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/426_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 427,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/427_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 428,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/428_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 429,
-            "stepRoom": 429,
-            "img": "../images/l1/l1wd1/429_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=a746f00",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=c9f669f",
-            "overlay": null
-        }, {
-            "room": 430,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/430_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 431,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/431_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 432,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/432_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 433,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/433_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 460,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/460_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 461,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/461_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 462,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/462_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 463,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/463_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 464,
-            "stepRoom": 429,
-            "img": "../images/l1/l1wd1/464_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=a746f00",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=c9f669f",
-            "overlay": null
-        }, {
-            "room": 465,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/465_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 466,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/466_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 467,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/467_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 468,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/468_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 495,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/495_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 496,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/496_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 497,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/497_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 498,
-            "stepRoom": 428,
-            "img": "../images/l1/l1wd1/498_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=480b308",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=428&amp;uni=1772123684&amp;hash=9b78a19",
-            "overlay": null
-        }, {
-            "room": 499,
-            "stepRoom": 429,
-            "img": "../images/l1/l1wd1/499_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=a746f00",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=429&amp;uni=1772123684&amp;hash=c9f669f",
-            "overlay": null
-        }, {
-            "room": 500,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/500_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 501,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/501_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 502,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/502_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }, {
-            "room": 503,
-            "stepRoom": 430,
-            "img": "../images/l1/l1wd1/503_l1wd3.jpg",
-            "isCenter": false,
-            "href": "teritory.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=ba7411e",
-            "stepUrl": "teritorystep.php?l=1&amp;crd=430&amp;uni=1772123684&amp;hash=c720946",
-            "overlay": null
-        }];
-        const initialPlayers = {
-            "394": {
-                "room": "394",
-                "kilk_player": "10",
-                "man": "8",
-                "woman": "2",
-                "names": "456 [39], deathкор [32], HannaMontana [23], KanchoSS [23], linog1 [35], sveta170691 [21], WheeL [26], Медведь [35], Ната_ [18], _BeN_ [36]"
+        async function fetchTextTimeout(url, timeoutMs) {
+            const ctl = new AbortController();
+            const t = setTimeout(() => ctl.abort(), timeoutMs);
+            try {
+                const res = await fetch(url, {credentials: 'same-origin', signal: ctl.signal, cache: 'no-store'});
+                const text = await res.text();
+                return {res, text};
+            } finally {
+                clearTimeout(t);
             }
-        };
+        }
+
+        const initialGrid = [{"room":286,"stepRoom":359,"img":"../images/l1/l1sd1/286_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":287,"stepRoom":359,"img":"../images/l1/l1sd1/287_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":288,"stepRoom":359,"img":"../images/l1/l1sd1/288_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":289,"stepRoom":359,"img":"../images/l1/l1sd1/289_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":290,"stepRoom":360,"img":"../images/l1/l1sd1/290_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=360&amp;uni=1776434808&amp;hash=16011e6","stepUrl":"teritorystep.php?l=1&amp;crd=360&amp;uni=1776434808&amp;hash=15a416e","overlay":null},{"room":291,"stepRoom":361,"img":"../images/l1/l1sd1/291_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":292,"stepRoom":361,"img":"../images/l1/l1sd1/292_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":293,"stepRoom":361,"img":"../images/l1/l1sd1/293_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":294,"stepRoom":361,"img":"../images/l1/l1sd1/294_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":321,"stepRoom":359,"img":"../images/l1/l1sd1/321_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":322,"stepRoom":359,"img":"../images/l1/l1sd1/322_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":323,"stepRoom":359,"img":"../images/l1/l1sd1/323_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":324,"stepRoom":359,"img":"../images/l1/l1sd1/324_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":325,"stepRoom":360,"img":"../images/l1/l1sd1/325_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=360&amp;uni=1776434808&amp;hash=16011e6","stepUrl":"teritorystep.php?l=1&amp;crd=360&amp;uni=1776434808&amp;hash=15a416e","overlay":null},{"room":326,"stepRoom":361,"img":"../images/l1/l1sd1/326_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":327,"stepRoom":361,"img":"../images/l1/l1sd1/327_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":328,"stepRoom":361,"img":"../images/l1/l1sd1/328_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":329,"stepRoom":361,"img":"../images/l1/l1sd1/329_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":356,"stepRoom":359,"img":"../images/l1/l1sd1/356_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":357,"stepRoom":359,"img":"../images/l1/l1sd1/357_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":358,"stepRoom":359,"img":"../images/l1/l1sd1/358_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":359,"stepRoom":359,"img":"../images/l1/l1sd1/359_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=6202434","stepUrl":"teritorystep.php?l=1&amp;crd=359&amp;uni=1776434808&amp;hash=f37b6cb","overlay":null},{"room":360,"stepRoom":360,"img":"../images/l1/l1sd1/360_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=360&amp;uni=1776434808&amp;hash=16011e6","stepUrl":"teritorystep.php?l=1&amp;crd=360&amp;uni=1776434808&amp;hash=15a416e","overlay":null},{"room":361,"stepRoom":361,"img":"../images/l1/l1sd1/361_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":362,"stepRoom":361,"img":"../images/l1/l1sd1/362_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":363,"stepRoom":361,"img":"../images/l1/l1sd1/363_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":364,"stepRoom":361,"img":"../images/l1/l1sd1/364_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=e858285","stepUrl":"teritorystep.php?l=1&amp;crd=361&amp;uni=1776434808&amp;hash=9be6629","overlay":null},{"room":391,"stepRoom":394,"img":"../images/l1/l1sd1/391_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=b02067e","stepUrl":"teritorystep.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=d47a954","overlay":null},{"room":392,"stepRoom":394,"img":"../images/l1/l1sd1/392_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=b02067e","stepUrl":"teritorystep.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=d47a954","overlay":null},{"room":393,"stepRoom":394,"img":"../images/l1/l1sd1/393_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=b02067e","stepUrl":"teritorystep.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=d47a954","overlay":null},{"room":394,"stepRoom":394,"img":"../images/l1/l1sd1/394_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=b02067e","stepUrl":"teritorystep.php?l=1&amp;crd=394&amp;uni=1776434808&amp;hash=d47a954","overlay":null},{"room":395,"stepRoom":395,"img":"../images/l1/l1sd1/395_l1sd3.jpg","isCenter":true,"href":"teritory.php?l=1&amp;crd=395&amp;uni=1776434808&amp;hash=22a89a0","stepUrl":"teritorystep.php?l=1&amp;crd=395&amp;uni=1776434808&amp;hash=7c58afc","overlay":null},{"room":396,"stepRoom":396,"img":"../images/l1/l1sd1/396_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=6ef71f2","stepUrl":"teritorystep.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=af5bc87","overlay":null},{"room":397,"stepRoom":396,"img":"../images/l1/l1sd1/397_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=6ef71f2","stepUrl":"teritorystep.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=af5bc87","overlay":null},{"room":398,"stepRoom":396,"img":"../images/l1/l1sd1/398_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=6ef71f2","stepUrl":"teritorystep.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=af5bc87","overlay":null},{"room":399,"stepRoom":396,"img":"../images/l1/l1sd1/399_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=6ef71f2","stepUrl":"teritorystep.php?l=1&amp;crd=396&amp;uni=1776434808&amp;hash=af5bc87","overlay":null},{"room":426,"stepRoom":429,"img":"../images/l1/l1sd1/426_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":427,"stepRoom":429,"img":"../images/l1/l1sd1/427_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":428,"stepRoom":429,"img":"../images/l1/l1sd1/428_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":429,"stepRoom":429,"img":"../images/l1/l1sd1/429_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":430,"stepRoom":430,"img":"../images/l1/l1sd1/430_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=430&amp;uni=1776434808&amp;hash=2c84324","stepUrl":"teritorystep.php?l=1&amp;crd=430&amp;uni=1776434808&amp;hash=31d64fd","overlay":null},{"room":431,"stepRoom":431,"img":"../images/l1/l1sd1/431_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":432,"stepRoom":431,"img":"../images/l1/l1sd1/432_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":433,"stepRoom":431,"img":"../images/l1/l1sd1/433_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":434,"stepRoom":431,"img":"../images/l1/l1sd1/434_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":461,"stepRoom":429,"img":"../images/l1/l1sd1/461_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":462,"stepRoom":429,"img":"../images/l1/l1sd1/462_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":463,"stepRoom":429,"img":"../images/l1/l1sd1/463_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":464,"stepRoom":429,"img":"../images/l1/l1sd1/464_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":465,"stepRoom":430,"img":"../images/l1/l1sd1/465_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=430&amp;uni=1776434808&amp;hash=2c84324","stepUrl":"teritorystep.php?l=1&amp;crd=430&amp;uni=1776434808&amp;hash=31d64fd","overlay":null},{"room":466,"stepRoom":431,"img":"../images/l1/l1sd1/466_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":467,"stepRoom":431,"img":"../images/l1/l1sd1/467_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":468,"stepRoom":431,"img":"../images/l1/l1sd1/468_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":469,"stepRoom":431,"img":"../images/l1/l1sd1/469_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":496,"stepRoom":429,"img":"../images/l1/l1sd1/496_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":497,"stepRoom":429,"img":"../images/l1/l1sd1/497_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":498,"stepRoom":429,"img":"../images/l1/l1sd1/498_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":499,"stepRoom":429,"img":"../images/l1/l1sd1/499_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=9cb5591","stepUrl":"teritorystep.php?l=1&amp;crd=429&amp;uni=1776434808&amp;hash=866edaa","overlay":null},{"room":500,"stepRoom":430,"img":"../images/l1/l1sd1/500_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=430&amp;uni=1776434808&amp;hash=2c84324","stepUrl":"teritorystep.php?l=1&amp;crd=430&amp;uni=1776434808&amp;hash=31d64fd","overlay":null},{"room":501,"stepRoom":431,"img":"../images/l1/l1sd1/501_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":502,"stepRoom":431,"img":"../images/l1/l1sd1/502_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":503,"stepRoom":431,"img":"../images/l1/l1sd1/503_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null},{"room":504,"stepRoom":431,"img":"../images/l1/l1sd1/504_l1sd3.jpg","isCenter":false,"href":"teritory.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=4f2587c","stepUrl":"teritorystep.php?l=1&amp;crd=431&amp;uni=1776434808&amp;hash=b9c33cb","overlay":null}];
+        const initialPlayers = {"394":{"room":"394","kilk_player":"6","man":"5","woman":"1","names":"=Thror= [37], Erron Black [31], Белка [35], Элдгар [30], _BeN_ [36], _РоМ_ [35]"},"395":{"room":"395","kilk_player":"1","man":"0","woman":"1","names":"Тринитя [10]"},"429":{"room":"429","kilk_player":"1","man":"1","woman":"0","names":"deathкор [32]"}};
         let lastGrid = initialGrid;
 
         function runInlineScripts(container) {
@@ -1324,6 +457,7 @@
         }
 
         let pendingDir = null;
+        let lastHardHref = '';
 
         function sign01(v) {
             return v < 0 ? -1 : (v > 0 ? 1 : 0);
@@ -1385,7 +519,7 @@
             const u = stepUrlFromDir(d);
             if (!u) return false;
 
-            stepToUrl(u, d);
+            stepToUrl(u, d, lastHardHref);
             return true;
         }
 
@@ -1534,7 +668,7 @@
             }
         }
 
-        async function stepToUrl(stepUrl, dirIntent) {
+        async function stepToUrl(stepUrl, dirIntent, hardHref) {
             if (!stepUrl) return;
 
             if (stepping) {
@@ -1544,19 +678,49 @@
             stepping = true;
 
             let json;
+            const started = Date.now();
+
             try {
                 const url = String(stepUrl).replace(/&amp;/g, '&');
-                const res = await fetch(url, {credentials: 'same-origin'});
-                json = await res.json();
+                const {res, text} = await fetchTextTimeout(url, 1500);
+
+                if (!res.ok) {
+                    jslog('step_http', Date.now() - started, res.status, 'HTTP not ok', {head: text.slice(0, 200)});
+                    stepping = false;
+                    if (hardHref) window.location.href = hardHref;
+                    flushPendingDir();
+                    return;
+                }
+
+                try {
+                    json = JSON.parse(text);
+                } catch (e) {
+                    jslog('step_nonjson', Date.now() - started, res.status, 'Non-JSON', {head: text.slice(0, 240)});
+                    stepping = false;
+                    if (hardHref) window.location.href = hardHref;
+                    flushPendingDir();
+                    return;
+                }
             } catch (e) {
+                const en = (e && e.name) ? String(e.name) : '';
+                if (en === 'AbortError') {
+                    jslog('step_timeout', Date.now() - started, 0, 'AbortError');
+                } else {
+                    jslog('step_fail', Date.now() - started, 0, String(e && e.message ? e.message : e));
+                }
                 stepping = false;
+                if (hardHref) window.location.href = hardHref;
                 flushPendingDir();
                 return;
             }
 
             if (!json || !json.ok) {
-                if (json && json.redirect) window.location.href = String(json.redirect).replace(/&amp;/g, '&');
+                if (json && json.redirect) {
+                    window.location.href = String(json.redirect).replace(/&amp;/g, '&');
+                    return;
+                }
                 stepping = false;
+                if (hardHref) window.location.href = hardHref;
                 flushPendingDir();
                 return;
             }
@@ -1706,6 +870,7 @@
         setStageBase(true);
 
 
+
         stage.addEventListener('click', (ev) => {
             const a = ev.target.closest('.map-cell a');
             if (!a) return;
@@ -1724,7 +889,9 @@
             const stepUrl = String(a.dataset.stepUrl || '').replace(/&amp;/g, '&');
             if (!stepUrl) return;
 
-            stepToUrl(stepUrl, dir);
+            const href = String(a.getAttribute('href') || '').replace(/&amp;/g, '&');
+            lastHardHref = href;
+            stepToUrl(stepUrl, dir, href);
         });
 
         startPoll(2500);
@@ -1732,6 +899,5 @@
 </script>
 
 <div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
-
 </body>
 </html>

@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="World of Rest — мобильная браузерная RPG-игра.">
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="refresh" content="200">
+    <title>World of Rest — мобильная онлайн-игра!</title>
+
+    <link rel="stylesheet" type="text/css" href="style54.css?v=20260001">
+
+    <script src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Осмотр территории</div>        <div class="chat">
+    <div class="header">
+        <div class="level-block">
+            <div style="display:flex; align-items:center;">
+                <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 10%"></div>
+            </div>
+        </div>
+        <div class="hp-mp-circle">
+            <div class="circle-bar">
+                <div class="circle-fill hp-fill" style="height: 100%"></div>
+            </div>
+            <div class="circle-bar">
+                <div class="circle-fill mp-fill" style="height: 100%"></div>
+            </div>
+        </div>
+        <div class="status-item">
+            <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+            <span>1.01</span>
+        </div>
+        <div class="status-item">
+            <img src="img/money.gif" alt="WR" title="WR">
+            <span>1648</span>
+        </div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время" /> 12:05</div>
+    </div>
+</div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1776503108&amp;hash=f3c489b">общий</a>,
+        <a href="poisktrav.php?chatmode=my&amp;uni=1776503108&amp;hash=9b7a529">мой</a>,
+        <a href="poisktrav.php?chatmode=add&amp;uni=1776503108&amp;hash=bdd8b59">написать</a>
+    </div>
+</div>    <style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+        /*border: 1px solid #888;*/
+        max-width: 260px;
+    }
+
+    .modal-content.game-modal {
+        max-width: 320px;
+    }
+
+    @media screen and (max-width: 360px) {
+        .modal-content.game-modal {
+            max-width: 90%;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 0;
+        right: 5px;
+        color: #aaa;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #loader {
+        display: none;
+        text-align: center;
+    }
+
+    .modal-content.ud-theme-default {
+        color: #FFFFFF;
+        background: rgba(51, 51, 51, 0.75);
+        border: 1px solid rgba(135, 135, 135, 0.5);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(151, 151, 151, 0.35);
+        padding: 0 10px        }
+
+    .modal-content.ud-theme-red {
+        color: #FFFFFF;
+        background: rgba(113, 11, 11, 0.58);
+        border: 1px solid rgba(168, 26, 26, 0.58);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(231, 76, 60, 0.35);
+        padding: 0 10px        }
+
+    .modal-content.ud-theme-green {
+        color: #FFFFFF;
+        background: rgba(14, 91, 47, 0.78);
+        border: 1px solid #0b7b3a;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(39, 174, 96, 0.35);
+        padding: 0 10px        }
+
+    .ud-footer {
+        display: flex;
+        padding: 12px;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .ud-btn {
+        appearance: none;
+        border: none;
+        background: #ddd;
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .ud-btn:hover {
+        filter: brightness(0.97);
+    }
+
+    .ud-btn.ud-primary {
+        border-color: #444;
+        font-weight: 600;
+    }
+
+    .ud-theme-red .ud-btn.ud-primary {
+        background-color: #d93222;
+        color: #ffffff;
+    }
+
+    .ud-theme-green .ud-btn.ud-primary {
+        background-color: #27ae60;
+        color: #ffffff;
+    }
+</style>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="loader"></div>
+        <div id="dataContainer"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var modal = $('#myModal');
+        var modalContent = $('.modal-content');
+        var closeBtn = $('.close');
+        var dataContainer = $('#dataContainer');
+        var loader = $('#loader');
+
+        $(document).on('click', '.openItemModal', function () {
+            var url = $(this).data('url');
+            var isGame = $(this).hasClass('game-modal-btn');
+            modal.show();
+            dataContainer.hide();
+            loader.show();
+
+            if (isGame) {
+                $('.modal-content').addClass('game-modal');
+            } else {
+                $('.modal-content').removeClass('game-modal');
+            }
+
+            $.ajax({
+                url: url,
+                cache: true,
+                success: function (data) {
+                    dataContainer.html(data).show();
+                    loader.hide();
+                }
+            });
+        });
+
+        $(document).on('click', '.openStaticModal', function () {
+            var content = $(this).data('content');
+            var theme = ($(this).data('theme') || '').toLowerCase();
+
+            var $modalContent = $('.modal-content');
+            $modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+            if (theme) $modalContent.addClass('ud-theme-' + theme);
+
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+        });
+
+        closeBtn.click(function () {
+            modal.hide();
+            StopJsInModal();
+            removeUdFooter();
+            removeUdTheme();
+        });
+
+        $(window).click(function (event) {
+            if ($(event.target).is(modal)) {
+                modal.hide();
+                StopJsInModal();
+                removeUdFooter();
+                removeUdTheme();
+            }
+        });
+
+        $(document).on('click', '.openConfirmModal', function () {
+            removeUdTheme();
+            removeUdFooter();
+
+            var content = $(this).data('content') || '';
+            var theme = (($(this).data('theme') || 'default') + '').toLowerCase();
+            var primaryText = $(this).data('primary') || 'Ок';
+            var secondaryText = $(this).data('secondary') || 'Отмена';
+
+            var hrefPrimary = $(this).data('primary-href') || '';
+            var hrefSecondary = $(this).data('secondary-href') || '';
+
+            modalContent.removeClass('game-modal');
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+
+            applyUdTheme(theme);
+
+            var $footer = $('<div class="ud-footer" id="udFooter"></div>');
+            var $btnSecondary = $('<button type="button" class="ud-btn" id="udSecondary"></button>').text(secondaryText);
+            var $btnPrimary = $('<button type="button" class="ud-btn ud-primary" id="udPrimary"></button>').text(primaryText);
+
+            $footer.append($btnPrimary, $btnSecondary);
+            modalContent.append($footer);
+
+            $btnPrimary.on('click.ud', function () {
+                if (hrefPrimary) window.location.href = hrefPrimary;
+                udClose();
+            });
+
+            $btnSecondary.on('click.ud', function () {
+                if (hrefSecondary) window.location.href = hrefSecondary;
+                udClose();
+            });
+        });
+
+        function applyUdTheme(theme) {
+            var map = {'red': 'ud-theme-red', 'green': 'ud-theme-green', 'default': 'ud-theme-default'};
+            modalContent.addClass(map[theme] || 'ud-theme-default');
+        }
+
+        function removeUdTheme() {
+            modalContent.removeClass('ud-theme-default ud-theme-red ud-theme-green');
+        }
+
+        function removeUdFooter() {
+            $('#udFooter').remove();
+        }
+
+        function udClose() {
+            modal.hide();
+            removeUdFooter();
+            removeUdTheme();
+            StopJsInModal();
+        }
+    });
+
+    function StopJsInModal() {
+        if (typeof gameTimer !== 'undefined' && gameTimer) {
+            clearInterval(gameTimer);
+        }
+    }
+
+    window.udModalOpenHtml = function (html, theme) {
+        var modal = $('#myModal');
+        if (!modal.length) return;
+
+        var modalContent = modal.find('.modal-content');
+
+        $('#udFooter').remove();
+        modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+
+        theme = (theme || 'default').toLowerCase();
+        modalContent.addClass('ud-theme-' + theme);
+
+        $('#loader').hide();
+        $('#dataContainer').empty().append(html).show();
+        modal.show();
+    };
+
+</script>
+<div class="cont">
+    <div class="menu_div" align="left"><ul><li><a   href="main.php?uni=1776503108&amp;hash=ab8f616"><img src="icons/glavnoe_menyu_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Главное меню</a></li><li><a   href="teritory.php?uni=1776503108&amp;hash=966d746"><img src="icons/priroda_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Природа</a></li><li><a   href="poisktrav.php?uni=1776503108&amp;hash=0dbfd3a"><img src="icons/obnovit_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Обновить</a></li></ul></div>    </div>
+
+<script type="text/javascript">var sec = 0;</script>
+
+<div style="padding:10px" align="center">
+    <script type="text/javascript">
+        var g = 53;
+        var pmax = 55;
+
+        function progressBar(percent,txt)
+        {
+            var progressBarWidth = percent * $('#progress').width() / 100;
+            $('#progress').find('div').animate({width:progressBarWidth}, 1000).html(txt);
+        }
+
+        $.ajaxSetup({cache:false});
+
+        $(document).ready(function(){
+
+            window.setInterval(function(){
+                if (g > 0)
+                {
+                    g = g-1;
+                    progressBar(Math.round(100-((100*g)/pmax)),g+'<span style="font-size:10px">&nbsp;с.</span>');
+                }
+
+                if (g == 0) $('#form1').submit();
+            }, 1000);
+        });
+    </script>
+    <div align="left" id="progress" class="pbar" style="text-shadow:none"><div align="center" style="width:0px"></div></div>
+    <noscript>
+        <strong><span class="svet">Осталось: 53 секунд</span></strong>
+    </noscript>
+
+    [ <a href="poisktrav.php?tochat=1&amp;uni=1776503108&amp;hash=d5bf529">Чат</a> |
+    <a href="poisktrav.php?tochat=2&amp;uni=1776503108&amp;hash=5565d53">Анекдоты</a> ]
+    <script type="text/javascript">var sec = 53;</script>    </div>
+
+<script type="text/javascript">
+    <!--
+    var is_redirected = 0;
+
+    function startTIME() {
+        sec = sec - 1;
+        if (sec < 0) {
+            if (is_redirected == 0) {
+                is_redirected = 1;
+                location.replace('poisktrav.php?uni=1776503108&hash=0dbfd3a');
+            }
+        }
+    }
+
+    if (sec > 0) setInterval("startTIME()", 1000);
+    -->
+</script>
+
+<div align="center" style="margin-top:10px">
+    <form name="chatline" id="chatline" method="post">
+        <input type="hidden" name="url" value="chat2.php?uni=1776503108&amp;hash=f3c489b"/>
+        <input id="postprivat" name="privat" type="checkbox"/>
+        <input id="postuser" type="text" name="komy" class="do_button" style="width:25%; max-width:120px" value=""/>
+        <input id="postmessage" type="text" name="message" class="do_button" style="width:50%; max-width:300px" value=""/>
+        <input type="submit" name="button" onsubmit="return false;" value="Сказать всем" class="button"/>
+    </form>
+</div>
+
+<div id="msg_box" class="contur_mes" style="margin: 10px 0 0; padding: 2px" align="left">
+    <span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:05:06</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> Найдено Свиток нападения на игрока!</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:05:04</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> Найдено 3 <img src="../smiles/wr.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .wr. ';" alt=".wr."/> (+1 <img src="../smiles/wr.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .wr. ';" alt=".wr."/> бонусных!)</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:05:04</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> <a target="_blank" href="log.php?boj=87339631">Бой №87339631</a> закончен. Нанесено урона: 170. Получено опыта: 306</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:04:30</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> На Вас напал Волот 8 уровня!</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:03:50</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> Сорвано растение Трава лопуха!</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:03:46</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a>:</strong> Продав М хлама на 40к <img src="../smiles/vosadok.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .vosadok. ';" alt=".восадок."/><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:03:46</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> Найдено 20 <img src="../smiles/wr.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .wr. ';" alt=".wr."/></span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:03:46</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> <a target="_blank" href="log.php?boj=87339629">Бой №87339629</a> закончен. Нанесено урона: 308. Получено опыта: 336</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:03:38</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> На Вас напал Гуркиры 11 уровня!</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:02:55</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='DoomSlayer';">DoomSlayer</a>:</strong> Побед в боях с монстрами96 Получено опыта в боях с монстрами65039702 3ч<br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:02:31</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> <a target="_blank" href="log.php?boj=87339619">Бой №87339619</a> закончен. Нанесено урона: 0. Получено опыта: 0</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:02:31</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> Вы сдались! Ваш уровень жизни - 0 HP! Ожидайте завершения боя.</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:01:10</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> На Вас напал Волот 10 уровня!</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:58</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Tipa';">Tipa</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a>:</strong> Лёха <img src="../smiles/druzhba.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .druzhba. ';" alt=".druzhba."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:34</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='С к а р а б е й';">С к а р а б е й</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a>:</strong> <img src="../smiles/pozhali.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .pozhali. ';" alt=".pozhali."/> <img src="../smiles/kruzhki.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .kruzhki. ';" alt=".kruzhki."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:34</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Tipa';">Tipa</a>:</strong> <img src="../smiles/pozhali.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .pozhali. ';" alt=".pozhali."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:27</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Tipa';">Tipa</a>:</strong> Агрис <img src="../smiles/kruzhki.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .kruzhki. ';" alt=".кружки."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:26</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Tipa';">Tipa</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a>:</strong> <img src="../smiles/kruzhki.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .kruzhki. ';" alt=".kruzhki."/><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:25</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> <a target="_blank" href="log.php?boj=87339606">Бой №87339606</a> закончен. Нанесено урона: 0. Получено опыта: 0</span><br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:24</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Тринитя:" title="[[[ Система ]]] для Тринитя:" /> </strong> Вы сдались! Ваш уровень жизни - 0 HP! Ожидайте завершения боя.</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:00:11</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Tipa';">Tipa</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a>:</strong> <img src="../smiles/pozhali.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .pozhali. ';" alt=".pozhali."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">11:59:56</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Капик';">Капик</a>:</strong> <img src="../smiles/kruzhki.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .kruzhki. ';" alt=".kruzhki."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">11:59:54</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Капик';">Капик</a>:</strong> <img src="../smiles/pozhali.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .pozhali. ';" alt=".pozhali."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">11:59:51</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='С к а р а б е й';">С к а р а б е й</a>:</strong> <img src="../smiles/kruzhki.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .kruzhki. ';" alt=".kruzhki."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">11:59:48</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='deathкор';">deathкор</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='С к а р а б е й';">С к а р а б е й</a>:</strong> <img src="../smiles/pozhali.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .pozhali. ';" alt=".pozhali."/><br /><div class="navigation" align="center"> <a href="chat2.php?str=1&amp;uni=1776503108&amp;hash=d381cf6">&laquo;</a>  <a href="chat2.php?str=1&amp;uni=1776503108&amp;hash=d381cf6"><span class="svet">1</span></a>  <a href="chat2.php?str=2&amp;uni=1776503108&amp;hash=0f4ddd1">2</a>  <a href="chat2.php?str=3&amp;uni=1776503108&amp;hash=81284a8">3</a>  ...  <a href="chat2.php?str=100&amp;uni=1776503108&amp;hash=75c9a76">100</a>  <a href="chat2.php?str=2&amp;uni=1776503108&amp;hash=0f4ddd1">&raquo;</a> </div>        </div>
+
+<script>
+    $(document).ready(function () {
+
+        function loadXMLDoc() {
+            $.ajax({
+                url: 'chat2txt.php?hide_paging=1&uni=1776503108&hash=20088b2',
+                type: 'GET',
+                success: function (data) {
+                    $('#msg_box').html(data);
+                }
+            });
+        }
+
+        $('#chatline').on('submit', function (e) {
+            e.preventDefault();
+
+            var dataToSend = {
+                komy: $('#postuser').val(),
+                message: $('#postmessage').val(),
+                privat: $('#postprivat').is(':checked')
+            };
+
+
+            $.ajax({
+                url: 'otpravit.php?js=1',
+                type: 'POST',
+                data: dataToSend,
+                success: function (response) {
+                    $('#postprivat').prop('checked', false);
+                    $('#postuser').val('');
+                    $('#postmessage').val('');
+                    loadXMLDoc();
+                }
+            });
+        });
+
+        setInterval(function () {
+            loadXMLDoc();
+        }, 10000);
+    });
+</script>
+
+<br/>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>
