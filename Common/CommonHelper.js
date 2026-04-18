@@ -321,6 +321,7 @@ class CommonHelper {
     }
 
     static async turnFighting(active = true) {
+        await CommonHelper.setFightExitUrl(null);
         await CommonHelper.setExtStorage('wor_fight_active', active);
     }
 
