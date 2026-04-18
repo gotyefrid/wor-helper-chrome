@@ -22,12 +22,20 @@ async function scheduleNextChatAlarm() {
     chrome.alarms.create('sendMessagesAlarm', { delayInMinutes: ms / 60000 });
 }
 
-chrome.runtime.onInstalled.addListener(() => {
-    scheduleNextChatAlarm();
-    chrome.alarms.create('disableChaosBattle', {
-        periodInMinutes: 30
-    });
-});
+async function ensureAlarmsCreated() {
+    const chatAlarm = await chrome.alarms.get('sendMessagesAlarm');
+    if (!chatAlarm) {
+        scheduleNextChatAlarm();
+    }
+    const chaosAlarm = await chrome.alarms.get('disableChaosBattle');
+    if (!chaosAlarm) {
+        chrome.alarms.create('disableChaosBattle', { periodInMinutes: 30 });
+    }
+}
+
+chrome.runtime.onInstalled.addListener(ensureAlarmsCreated);
+chrome.runtime.onStartup.addListener(ensureAlarmsCreated);
+ensureAlarmsCreated();
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'sendMessagesAlarm') {

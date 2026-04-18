@@ -81,15 +81,24 @@ window.addEventListener("load", async function () {
         }
     }
 
-    let cleanedHtml = captcha.cleanDocumentHTML();
-    let actualHtmlHash = captcha.fnv1aHash(cleanedHtml);
-    CommonHelper.log('Актуал хэш страницы:' + actualHtmlHash);
     CommonHelper.log('Актуал хэш ресурсов:' + actualCacheAllResourses);
 
-    if (actualHtmlHash !== captcha.HTML_HASH) {
-        CommonHelper.log(cleanedHtml);
-        CommonHelper.log('Хэш HTML изменился! Ничего не делаем');
-        CommonHelper.sendTelegramMessage('Хэш HTML изменился! Ничего не делаем');
+    const structureCheck = captcha.validatePageStructure();
+    if (!structureCheck.ok) {
+        CommonHelper.log('Структура страницы изменилась: ' + structureCheck.reason);
+        CommonHelper.sendTelegramMessage('Структура страницы капчи изменилась: ' + structureCheck.reason);
+        return;
+    }
+
+    const inlineScriptHash = captcha.getCaptchaInlineScriptHash();
+    CommonHelper.log('Inline script hash: ' + inlineScriptHash);
+    if (inlineScriptHash === null) {
+        CommonHelper.sendTelegramMessage('Inline-скрипт капчи не найден!');
+        return;
+    }
+    if (captcha.CAPTCHA_SCRIPT_HASH !== 0 && inlineScriptHash !== captcha.CAPTCHA_SCRIPT_HASH) {
+        CommonHelper.log('Хэш inline-скрипта капчи изменился: ' + inlineScriptHash);
+        CommonHelper.sendTelegramMessage('Хэш inline-скрипта капчи изменился: ' + inlineScriptHash);
         return;
     }
 
@@ -109,7 +118,7 @@ window.addEventListener("load", async function () {
 
         if (coords && coords.x != null && coords.y != null) {
             let randomOffset = 10;
-            let piece = document.getElementById("puzzle-piece");
+            let piece = captcha.findPuzzlePiece();
             // await captcha.simulateArcDrag(piece, coords, 8, randomOffset);
             captcha.setPuzzleCoorsinates(piece, coords.x, coords.y, randomOffset);
 

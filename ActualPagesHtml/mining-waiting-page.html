@@ -1,0 +1,434 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="World of Rest — мобильная браузерная RPG-игра.">
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="refresh" content="200">
+    <title>World of Rest — мобильная онлайн-игра!</title>
+
+    <link rel="stylesheet" type="text/css" href="style56.css?v=20260001">
+
+    <script src="/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Внутри шахты</div>        <div class="chat">
+    <div class="header">
+        <div class="level-block">
+            <div style="display:flex; align-items:center;">
+                <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 19%"></div>
+            </div>
+        </div>
+        <div class="hp-mp-circle">
+            <div class="circle-bar">
+                <div class="circle-fill hp-fill" style="height: 100%"></div>
+            </div>
+            <div class="circle-bar">
+                <div class="circle-fill mp-fill" style="height: 100%"></div>
+            </div>
+        </div>
+        <div class="status-item">
+            <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+            <span>1.01</span>
+        </div>
+        <div class="status-item">
+            <img src="img/money.gif" alt="WR" title="WR">
+            <span>1695</span>
+        </div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время" /> 12:48</div>
+    </div>
+</div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1776505715&amp;hash=0314b4a">общий</a>,
+        <a href="kopat.php?sh=1&amp;reset=1&amp;chatmode=my&amp;uni=1776505715&amp;hash=1bea258">мой</a>,
+        <a href="kopat.php?sh=1&amp;reset=1&amp;chatmode=add&amp;uni=1776505715&amp;hash=81fdcbd">написать</a>
+    </div>
+</div>    <style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+        /*border: 1px solid #888;*/
+        max-width: 260px;
+    }
+
+    .modal-content.game-modal {
+        max-width: 320px;
+    }
+
+    @media screen and (max-width: 360px) {
+        .modal-content.game-modal {
+            max-width: 90%;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 0;
+        right: 5px;
+        color: #aaa;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    #loader {
+        display: none;
+        text-align: center;
+    }
+
+    .modal-content.ud-theme-default {
+        color: #FFFFFF;
+        background: rgba(51, 51, 51, 0.75);
+        border: 1px solid rgba(135, 135, 135, 0.5);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(151, 151, 151, 0.35);
+        padding: 0 10px        }
+
+    .modal-content.ud-theme-red {
+        color: #FFFFFF;
+        background: rgba(113, 11, 11, 0.58);
+        border: 1px solid rgba(168, 26, 26, 0.58);
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(231, 76, 60, 0.35);
+        padding: 0 10px        }
+
+    .modal-content.ud-theme-green {
+        color: #FFFFFF;
+        background: rgba(14, 91, 47, 0.78);
+        border: 1px solid #0b7b3a;
+        border-radius: 10px;
+        box-shadow: 0 0 25px rgba(39, 174, 96, 0.35);
+        padding: 0 10px        }
+
+    .ud-footer {
+        display: flex;
+        padding: 12px;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .ud-btn {
+        appearance: none;
+        border: none;
+        background: #ddd;
+        border-radius: 10px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .ud-btn:hover {
+        filter: brightness(0.97);
+    }
+
+    .ud-btn.ud-primary {
+        border-color: #444;
+        font-weight: 600;
+    }
+
+    .ud-theme-red .ud-btn.ud-primary {
+        background-color: #d93222;
+        color: #ffffff;
+    }
+
+    .ud-theme-green .ud-btn.ud-primary {
+        background-color: #27ae60;
+        color: #ffffff;
+    }
+</style>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="loader"></div>
+        <div id="dataContainer"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var modal = $('#myModal');
+        var modalContent = $('.modal-content');
+        var closeBtn = $('.close');
+        var dataContainer = $('#dataContainer');
+        var loader = $('#loader');
+
+        $(document).on('click', '.openItemModal', function () {
+            var url = $(this).data('url');
+            var isGame = $(this).hasClass('game-modal-btn');
+            modal.show();
+            dataContainer.hide();
+            loader.show();
+
+            if (isGame) {
+                $('.modal-content').addClass('game-modal');
+            } else {
+                $('.modal-content').removeClass('game-modal');
+            }
+
+            $.ajax({
+                url: url,
+                cache: true,
+                success: function (data) {
+                    dataContainer.html(data).show();
+                    loader.hide();
+                }
+            });
+        });
+
+        $(document).on('click', '.openStaticModal', function () {
+            var content = $(this).data('content');
+            var theme = ($(this).data('theme') || '').toLowerCase();
+
+            var $modalContent = $('.modal-content');
+            $modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+            if (theme) $modalContent.addClass('ud-theme-' + theme);
+
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+        });
+
+        closeBtn.click(function () {
+            modal.hide();
+            StopJsInModal();
+            removeUdFooter();
+            removeUdTheme();
+        });
+
+        $(window).click(function (event) {
+            if ($(event.target).is(modal)) {
+                modal.hide();
+                StopJsInModal();
+                removeUdFooter();
+                removeUdTheme();
+            }
+        });
+
+        $(document).on('click', '.openConfirmModal', function () {
+            removeUdTheme();
+            removeUdFooter();
+
+            var content = $(this).data('content') || '';
+            var theme = (($(this).data('theme') || 'default') + '').toLowerCase();
+            var primaryText = $(this).data('primary') || 'Ок';
+            var secondaryText = $(this).data('secondary') || 'Отмена';
+
+            var hrefPrimary = $(this).data('primary-href') || '';
+            var hrefSecondary = $(this).data('secondary-href') || '';
+
+            modalContent.removeClass('game-modal');
+            loader.hide();
+            dataContainer.html(content).show();
+            modal.show();
+
+            applyUdTheme(theme);
+
+            var $footer = $('<div class="ud-footer" id="udFooter"></div>');
+            var $btnSecondary = $('<button type="button" class="ud-btn" id="udSecondary"></button>').text(secondaryText);
+            var $btnPrimary = $('<button type="button" class="ud-btn ud-primary" id="udPrimary"></button>').text(primaryText);
+
+            $footer.append($btnPrimary, $btnSecondary);
+            modalContent.append($footer);
+
+            $btnPrimary.on('click.ud', function () {
+                if (hrefPrimary) window.location.href = hrefPrimary;
+                udClose();
+            });
+
+            $btnSecondary.on('click.ud', function () {
+                if (hrefSecondary) window.location.href = hrefSecondary;
+                udClose();
+            });
+        });
+
+        function applyUdTheme(theme) {
+            var map = {'red': 'ud-theme-red', 'green': 'ud-theme-green', 'default': 'ud-theme-default'};
+            modalContent.addClass(map[theme] || 'ud-theme-default');
+        }
+
+        function removeUdTheme() {
+            modalContent.removeClass('ud-theme-default ud-theme-red ud-theme-green');
+        }
+
+        function removeUdFooter() {
+            $('#udFooter').remove();
+        }
+
+        function udClose() {
+            modal.hide();
+            removeUdFooter();
+            removeUdTheme();
+            StopJsInModal();
+        }
+    });
+
+    function StopJsInModal() {
+        if (typeof gameTimer !== 'undefined' && gameTimer) {
+            clearInterval(gameTimer);
+        }
+    }
+
+    window.udModalOpenHtml = function (html, theme) {
+        var modal = $('#myModal');
+        if (!modal.length) return;
+
+        var modalContent = modal.find('.modal-content');
+
+        $('#udFooter').remove();
+        modalContent.removeClass('game-modal ud-theme-default ud-theme-red ud-theme-green');
+
+        theme = (theme || 'default').toLowerCase();
+        modalContent.addClass('ud-theme-' + theme);
+
+        $('#loader').hide();
+        $('#dataContainer').empty().append(html).show();
+        modal.show();
+    };
+
+</script>
+<div class="menu_div" align="left"><ul><li><a   href="main.php?uni=1776505715&amp;hash=91b7365"><img src="icons/glavnoe_menyu_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Главное меню</a></li><li><a   href="gorodr.php?uni=1776505715&amp;hash=9714daa"><img src="icons/gorod_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Город</a></li><li><a   href="kopat.php?sh=1&amp;uni=1776505715&amp;hash=6d5e778"><img src="icons/obnovit_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="" />  Обновить</a></li></ul></div>    <div class="zagolovok" align="center"><strong>Поиски новых ресурсов</strong></div>
+
+
+<div align="center" style="padding:10px">
+    <script type="text/javascript">
+        var g = 50;
+        var pmax = 50;
+
+        function progressBar(percent,txt)
+        {
+            var progressBarWidth = percent * $('#progress').width() / 100;
+            $('#progress').find('div').animate({width:progressBarWidth}, 1000).html(txt);
+        }
+
+        $.ajaxSetup({cache:false});
+
+        $(document).ready(function(){
+
+            window.setInterval(function(){
+                if (g > 0)
+                {
+                    g = g-1;
+                    progressBar(Math.round(100-((100*g)/pmax)),g+'<span style="font-size:10px">&nbsp;с.</span>');
+                }
+
+                if (g == 0) $('#form1').submit();
+            }, 1000);
+        });
+    </script>
+    <div align="left" id="progress" class="pbar" style="text-shadow:none"><div align="center" style="width:0px"></div></div>
+    <script type="text/javascript">var sec = 50;</script>
+
+    <noscript>
+        <strong><span class="svet">Осталось:50 секунд</span></strong>
+    </noscript>
+
+    [ <a href="kopat.php?sh=1&amp;tochat=1&amp;uni=1776505715&amp;hash=37f583a">Чат</a> |
+    <a href="kopat.php?sh=1&amp;tochat=2&amp;uni=1776505715&amp;hash=613fb21">Анекдоты</a> ]
+</div>
+
+<script type="text/javascript">
+    <!--
+    var is_redirected = 0;
+
+    function startTIME() {
+        sec = sec - 1;
+        if (sec < 0) {
+            if (is_redirected == 0) {
+                is_redirected = 1;
+                location.replace('kopat.php?sh=1&uni=1776505715&hash=6d5e778');
+            }
+        }
+    }
+
+    if (sec > 0) setInterval("startTIME()", 1000);
+    -->
+</script>
+
+<div align="center" style="margin-top:10px">
+    <form name="chatline" id="chatline" method="post">
+        <input type="hidden" name="url" value="chat2.php?uni=1776505715&amp;hash=0314b4a"/>
+        <input id="postprivat" name="privat" type="checkbox"/>
+        <input id="postuser" type="text" name="komy" class="do_button" style="width:25%; max-width:120px" value=""/>
+        <input id="postmessage" type="text" name="message" class="do_button" style="width:50%; max-width:300px" value=""/>
+        <input type="submit" name="button" onsubmit="return false;" value="Сказать всем" class="button"/>
+    </form>
+</div>
+
+<div id="msg_box" class="contur_mes" style="margin: 10px 0 0; padding: 2px" align="left">
+    <strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:48:23</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> А в luksoras mirusho pilsetu?<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:48:16</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';"><span style="color:#55FF55">Kiss Butterfly</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a>:</strong> Нас 3е и каждый занят сегодня своим делом<br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:47:53</span>  <img src='../pic/nb7.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';">Misha</a>:</strong> а так хочется включить <img src="../smiles/quot.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .quot. ';" alt=".quot."/>режим ублюдка<img src="../smiles/quot.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .quot. ';" alt=".quot."/> и забить на всё и всех)</span><br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:47:23</span>  <img src='../pic/nb7.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';">Misha</a>:</strong> В игре у меня уже нет цели, по поводу вредить - не знаю. может какое-то время буду обновлять что нибудь, пока не надоест. но ты такой добрый, что у меня сердце сжимается когда я это даже говорю<img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/></span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:47:20</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';">Kiss Butterfly</a>:</strong> Так хай хтось другий перевіряє <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:47:18</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:47:16</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';"><span style="color:#55FF55">Kiss Butterfly</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a>:</strong> Держи деньги при себе,а не трать до последнего<img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:47:05</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> Наверное да за подарками <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:46:52</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';"><span style="color:#55FF55">Kiss Butterfly</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a>:</strong> И почему то на твои квартиры попадаю я<img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:46:43</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> В Kair поедешь?<br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:58</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';"><span style="color:#55FF55">Misha</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a>:</strong> так Хрум - не игра, он игрок-модер</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:45</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:43</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';">Kiss Butterfly</a>:</strong> У мене квартира просто злетіла <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:41</span>  <img src='../pic/lorg.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a>:</strong> 12:45:29 [[[ Система ]]] для Killer Vova: Сорвано растение Трава арала!<br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:30</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';"><span style="color:#55FF55">Misha</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a>:</strong> *Все такты скомпроментированы, весь фарм скомпроментирован.* - какова твоя цель в игре сейчас? вредить мне?</span><br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:27</span>  <img src='../pic/nb7.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';">Misha</a>:</strong> да не столько тебе, как Хруму поднасрать бы)</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:26</span>  <img src='../pic/empire_of_fire_3.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Гадкий Я';">Гадкий Я</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Killer Vova';">Killer Vova</a>:</strong> Ти давай иди отдыхать чу залез сюда <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:22</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';"><span style="color:#55FF55">Kiss Butterfly</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a>:</strong> Ща поймёшь,или уже понял?<img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/>)<br /><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:45:02</span> <img src="images/system.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для :" title="[[[ Система ]]] для :" /> </strong> Лотерея 5 из 36: В розыгрыше №26898 выигрышными номерами стали: 34, 24, 18, 27, 20.</span><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:44:55</span>  <img src='../pic/bas.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Mostik';">Mostik</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Капик';">Капик</a>:</strong> <img src="../smiles/lapa.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .lapa. ';" alt=".lapa."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:44:45</span>  <img src='../pic/bas.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Mostik';">Mostik</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Капик';">Капик</a>:</strong> ролли замовили?<br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:44:23</span>  <img src='../pic/kill.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';">Kiss Butterfly</a>:</strong> Чо <img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:44:19</span>  <img src='../pic/teni5.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Капик';">Капик</a>:</strong> Пошел форель чистить <img src="../smiles/gy.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .gy. ';" alt=".гы."/> <img src="../smiles/lapa.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .lapa. ';" alt=".лапа."/><br /><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:44:10</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Kiss Butterfly';"><span style="color:#55FF55">Kiss Butterfly</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Іван';">Іван</a>:</strong> Да да тебе<img src="../smiles/biggrin.gif" style="cursor:pointer" onclick="javascript:document.forms.chatline.message.value+=' .biggrin. ';" alt=".biggrin."/><br /><span style="color:#FF5555;"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">12:44:09</span>  <img src='../pic/stixija.gif' height='11'>  <a href="#" onclick="javascript:document.forms.chatline.komy.value='Misha';"><span style="color:#55FF55">Misha</span></a></strong> для <strong><a href="#" onclick="javascript:document.forms.chatline.komy.value='Тринитя';">Тринитя</a>:</strong> 18:31:54</span><br /><div class="navigation" align="center"> <a href="chat2.php?str=1&amp;uni=1776505715&amp;hash=1a74aef">&laquo;</a>  <a href="chat2.php?str=1&amp;uni=1776505715&amp;hash=1a74aef"><span class="svet">1</span></a>  <a href="chat2.php?str=2&amp;uni=1776505715&amp;hash=fff01bf">2</a>  <a href="chat2.php?str=3&amp;uni=1776505715&amp;hash=acb09f2">3</a>  ...  <a href="chat2.php?str=97&amp;uni=1776505715&amp;hash=e7736a8">97</a>  <a href="chat2.php?str=2&amp;uni=1776505715&amp;hash=fff01bf">&raquo;</a> </div>            </div>
+
+<script>
+    $(document).ready(function () {
+
+        function loadXMLDoc() {
+            $.ajax({
+                url: 'chat2txt.php?hide_paging=1&uni=1776505715&hash=8c92ddf',
+                type: 'GET',
+                success: function (data) {
+                    $('#msg_box').html(data);
+                }
+            });
+        }
+
+        $('#chatline').on('submit', function (e) {
+            e.preventDefault();
+
+            var dataToSend = {
+                komy: $('#postuser').val(),
+                message: $('#postmessage').val(),
+                privat: $('#postprivat').is(':checked')
+            };
+
+
+            $.ajax({
+                url: 'otpravit.php?js=1',
+                type: 'POST',
+                data: dataToSend,
+                success: function (response) {
+                    $('#postprivat').prop('checked', false);
+                    $('#postuser').val('');
+                    $('#postmessage').val('');
+                    loadXMLDoc();
+                }
+            });
+        });
+
+        setInterval(function () {
+            loadXMLDoc();
+        }, 10000);
+    });
+</script>
+
+<br/>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+</body>
+</html>

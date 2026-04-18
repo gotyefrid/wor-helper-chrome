@@ -1,7 +1,7 @@
 class Captcha {
     // плавающий скрипт хэш 2931440912
-    HTML_HASH = 2251357741;
-    RESOURCES_HASH = 408120367;
+    RESOURCES_HASH = 4103931139;
+    CAPTCHA_SCRIPT_HASH = 577988740;
 
     constructor() {
         this.#checkCurrentPage();
@@ -94,11 +94,8 @@ class Captcha {
     async hashAllResources() {
         const urls = [];
 
-        // Собираем все <script src="">
+        // Собираем все <script src=""> (стили намеренно не включаем — зависят от выбранной темы)
         document.querySelectorAll('script[src]').forEach(el => urls.push(el.src));
-
-        // Собираем все <link rel="stylesheet" href="">
-        document.querySelectorAll('link[rel="stylesheet"][href]').forEach(el => urls.push(el.href));
 
         const partialHashes = [];
 
@@ -116,6 +113,60 @@ class Captcha {
 
         const combined = partialHashes.join("|");
         return this.fnv1aHash(combined);
+    }
+
+    validatePageStructure() {
+        if (!document.querySelector('img[src*="captcha_main.php"]'))
+            return { ok: false, reason: 'нет captcha_main img' };
+
+        if (!document.querySelector('img[src*="cap_puzzle.png"]'))
+            return { ok: false, reason: 'нет puzzle img' };
+
+        const form = document.querySelector('form[action*="cap.php"]');
+        if (!form) return { ok: false, reason: 'нет формы' };
+
+        const expectedInputs = [
+            { type: 'hidden', name: 'piece_x' },
+            { type: 'hidden', name: 'piece_y' },
+            { type: 'submit', name: '' },
+        ];
+
+        const actualInputs = [...form.querySelectorAll('input')]
+            .map(i => ({ type: i.type, name: i.name }))
+            .sort((a, b) => (a.type + a.name).localeCompare(b.type + b.name));
+
+        const expected = [...expectedInputs]
+            .sort((a, b) => (a.type + a.name).localeCompare(b.type + b.name));
+
+        const match = actualInputs.length === expected.length &&
+            expected.every((e, i) => actualInputs[i].type === e.type && actualInputs[i].name === e.name);
+
+        if (!match) {
+            const actual = actualInputs.map(i => `${i.type}[${i.name}]`).join(', ');
+            return { ok: false, reason: 'неожиданный состав инпутов: ' + actual };
+        }
+
+        if (!document.querySelector('a[href*="shuffle"]'))
+            return { ok: false, reason: 'нет ссылки shuffle' };
+
+        return { ok: true };
+    }
+
+    getCaptchaInlineScriptHash() {
+        const script = [...document.querySelectorAll('script')]
+            .find(el => el.innerText.includes('draggable') && el.innerText.includes('captcha-form'));
+
+        if (!script) return null;
+
+        let text = script.innerText.replace(/\s+/g, '');
+        // Нормализуем динамический id пазла (вида #p[0-9a-f]+)
+        text = text.replace(/#p[0-9a-f]+/g, '#PUZZLE_ID');
+
+        return this.fnv1aHash(text);
+    }
+
+    findPuzzlePiece() {
+        return document.querySelector('img[src*="cap_puzzle.png"]');
     }
 
     cleanDocumentHTML() {

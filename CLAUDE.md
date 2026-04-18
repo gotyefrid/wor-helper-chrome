@@ -156,6 +156,9 @@ this.isWaitingFishPage = zag.some(div => div.textContent.includes('удочка 
 - `peredatm.html` - страница передачи WR другому игроку, URL: `peredatm.php`. Форма `action="permoneyact.php"`, поля: `_csrf` (hidden), `nameperedat`, `suma`
 - `login.html` - страница авторизации, URL: `http://185.212.47.8/wap/` (появляется когда пользователь не авторизован). Форма `action="login.php" method="post"`, поля: `pname` (логин), `pass` (пароль), `cap` (hidden=111), кнопка `login` (submit)
 - `boj-join.html` - страница текущего боя, к которому можно присоединиться (используется для реализации автоприсоединения к бою)
+- `chemistry-waiting-page.html` - страница ожидания сбора трав/алхимии
+- `fishing-waiting-page.html` - страница ожидания рыбалки (удочка закинута)
+- `mining-waiting-page.html` - страница ожидания добычи руды
 
 При написании селекторов или поиске элементов **всегда сверяйся** с соответствующим файлом из этой папки.
 

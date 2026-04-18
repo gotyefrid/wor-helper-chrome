@@ -45,7 +45,6 @@
             if (mining.isWaitingPage) {
                 let exitUrl = location.origin + '/wap/' + mining.extractKopatLink(document);
                 CommonHelper.setFightExitUrl(exitUrl);
-                document.querySelector('#progressBar')?.insertAdjacentHTML('afterend', '<a href="' + exitUrl + '">Обновить</a>')
                 await mining.processWaitPage();
                 return;
             }
@@ -59,6 +58,7 @@
                 await mining.processTerritoryPage(inspectButton);
                 return;
             } else {
+                CommonHelper.log('На странице почему то нету кнопки прохода в шахту. Ничего не делаем.');
                 CommonHelper.sendTelegramMessage('На странице почему то нету кнопки прохода в шахту. Ничего не делаем.');
             }
         } else {

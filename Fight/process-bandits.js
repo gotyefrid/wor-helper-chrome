@@ -94,7 +94,7 @@ async function process(fightClass) {
     if (udtypeEl) udtypeEl.value = fightClass.attackType;
     if (toggleUdtypeEl) toggleUdtypeEl.checked = (String(fightClass.attackType) === '2');
 
-    let hitButton = document.querySelector('input[name=bitvraga]');
+    let hitButton = Fight.getHitButton();
 
     if (hitButton) {
         await CommonHelper.clickAndWait(hitButton);

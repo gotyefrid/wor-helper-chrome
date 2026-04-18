@@ -16,7 +16,8 @@ class Chemistry {
         this.isMiningPage = paths.some(path => window.location.pathname.includes(path));
 
         if (this.isMiningPage) {
-            this.isWaitingPage = document.querySelector('#progressBar') ? true : false;
+            this.isWaitingPage = document.location.href.includes('poisktrav') &&
+                [...document.querySelectorAll('a')].some(a => (a.getAttribute('href') || '').includes('poisktrav'));
             this.isGetLootPage = document.querySelector('input[value=Собрать]') ? true : false;
             this.isTerritoryPage = document.location.href.includes('teritory');
             this.isMainPage = document.location.href.includes('main');
@@ -27,31 +28,6 @@ class Chemistry {
     async processWaitPage() {
         CommonHelper.log('Ждем кнопки Собрать');
         CommonHelper.log('Паралельно ждём кнопки "В бой"', false);
-
-        const progressBar = document.querySelector('#progressBar');
-
-        if (!progressBar) {
-            CommonHelper.log('Элемент progressBar не найден');
-            return;
-        }
-
-        // Наблюдаем за внутренним div, где меняются цифры
-        const target = progressBar.firstElementChild;
-
-        const observer = new MutationObserver(() => {
-            const text = target.textContent.replace(/\s/g, '').toLowerCase(); // убираем пробелы и приведение к нижнему регистру
-            // например: "2с."
-            if (text.startsWith('2с.')) {
-                CommonHelper.reloadPage();
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(target, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
 
         // Ожидаем появления "В бой:"
         await CommonHelper.waitForElement('#msg_box', true, box => {
