@@ -1,5 +1,2 @@
 .idea
 test.html
-
-# Разрешить CLAUDE.md в этом проекте (переопределение глобального gitignore)
-!CLAUDE.md
