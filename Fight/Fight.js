@@ -193,11 +193,16 @@ class Fight {
         if (this.needPotHP) await this.potHP(this.potHPThreshold);
         if (this.needPotMP) await this.potMP(this.potMPThreshold);
 
-        // Устанавливаем тип удара (1 = физический, 2 = магический)
-        const udtypeEl = document.querySelector('#udartype');
+        // Тип удара (1 = физический, 2 = магический).
+        // Сервер рендерит тумблер #toggle-udartype и поле #udartype только если у игрока
+        // есть выбор (надето оружие, позволяющее магический удар). Если выбора нет —
+        // значение не трогаем, чтобы не отправить недопустимый тип удара.
         const toggleUdtypeEl = document.querySelector('#toggle-udartype');
-        if (udtypeEl) udtypeEl.value = this.attackType;
-        if (toggleUdtypeEl) toggleUdtypeEl.checked = (String(this.attackType) === '2');
+        if (toggleUdtypeEl) {
+            const udtypeEl = document.querySelector('#udartype') || document.querySelector('input[name="udartype"]');
+            if (udtypeEl) udtypeEl.value = this.attackType;
+            toggleUdtypeEl.checked = (String(this.attackType) === '2');
+        }
 
         let hitButton = Fight.getHitButton();
 
@@ -319,6 +324,7 @@ class Fight {
         }
 
         const playerName = this.getPlayerName();
+        CommonHelper.log(playerName);
 
         if (!playerName) {
             CommonHelper.log('Не нашли имя игрока в HTML');
@@ -534,17 +540,32 @@ class Fight {
     }
 
     getEnemyName() {
-        let enemyDiv = document.querySelector('form').nextElementSibling;
+        let enemyDiv = document.querySelector('form')?.nextElementSibling;
 
         if (!enemyDiv) {
             CommonHelper.log('Имя противника не найдено. Не найден enemyDiv.');
             return null;
         }
 
-        let name = [...enemyDiv.querySelectorAll('span')].find(span => span.innerText.includes('['));
+        // Старый формат: имя и уровень в одном span — "Ортоз [9]"
+        let combined = [...enemyDiv.querySelectorAll('span')].find(span => span.innerText.includes('['));
 
-        if (name) {
-            return name.innerText.trim();
+        if (combined) {
+            return combined.innerText.trim();
+        }
+
+        // Новый формат: имя и уровень в отдельных span'ах ("Волот" + "8").
+        // У блоков HP/MA есть span'ы с id (hp_text/mana_text) — их исключаем.
+        const spans = [...enemyDiv.querySelectorAll('span:not([id])')];
+        const nameSpan = spans.find(s => s.innerText.trim() && !/^\d+$/.test(s.innerText.trim()));
+        const levelSpan = spans.find(s => /^\d+$/.test(s.innerText.trim()));
+
+        if (nameSpan && levelSpan) {
+            return `${nameSpan.innerText.trim()}[${levelSpan.innerText.trim()}]`;
+        }
+
+        if (nameSpan) {
+            return nameSpan.innerText.trim();
         }
 
         CommonHelper.log('Имя противника не найдено. Не найден name.');
@@ -553,8 +574,26 @@ class Fight {
     }
 
     getPlayerName() {
-        return document.querySelectorAll('div[style*="url(img/base.png)"] span[style*="left:70px"]')[0]
-            ?.textContent?.trim() ?? null;
+        // Старый формат — блок с фоном base.png и span с left:70px
+        let oldName = document.querySelector('div[style*="url(img/base.png)"] span[style*="left:70px"]')
+            ?.textContent?.trim();
+
+        if (oldName) {
+            return oldName;
+        }
+
+        // Новый формат — первый блок с рамкой HP/MA принадлежит игроку.
+        // Берём первый span без id, не являющийся числом (уровнем).
+        const playerBlock = document.querySelector('div[style*="user_hpma_frame"]');
+
+        if (!playerBlock) {
+            return null;
+        }
+
+        const nameSpan = [...playerBlock.querySelectorAll('span:not([id])')]
+            .find(s => s.innerText.trim() && !/^\d+$/.test(s.innerText.trim()));
+
+        return nameSpan?.textContent?.trim() ?? null;
     }
 
     enemiesSkipListHas(enemyName) {

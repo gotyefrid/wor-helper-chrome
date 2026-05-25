@@ -88,11 +88,16 @@ async function process(fightClass) {
         await fightClass.potMP(fightClass.potMPThreshold);
     }
 
-    // Устанавливаем тип удара (1 = физический, 2 = магический)
-    const udtypeEl = document.querySelector('#udartype');
+    // Тип удара (1 = физический, 2 = магический).
+    // Сервер рендерит тумблер #toggle-udartype и поле #udartype только если у игрока
+    // есть выбор (надето оружие, позволяющее магический удар). Если выбора нет —
+    // значение не трогаем, чтобы не отправить недопустимый тип удара.
     const toggleUdtypeEl = document.querySelector('#toggle-udartype');
-    if (udtypeEl) udtypeEl.value = fightClass.attackType;
-    if (toggleUdtypeEl) toggleUdtypeEl.checked = (String(fightClass.attackType) === '2');
+    if (toggleUdtypeEl) {
+        const udtypeEl = document.querySelector('#udartype') || document.querySelector('input[name="udartype"]');
+        if (udtypeEl) udtypeEl.value = fightClass.attackType;
+        toggleUdtypeEl.checked = (String(fightClass.attackType) === '2');
+    }
 
     let hitButton = Fight.getHitButton();
 
