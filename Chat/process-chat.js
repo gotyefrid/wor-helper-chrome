@@ -410,8 +410,14 @@ async function showMailModal(nickname) {
         });
 
         const text = await response.text();
+        const responseDoc = new DOMParser().parseFromString(text, 'text/html');
+        const bodyText = responseDoc.body?.innerText || responseDoc.body?.textContent || '';
 
-        // Сервер обычно возвращает страницу с текстом письма — можно обработать при желании
+        if (bodyText.includes('не могут отправлять')) {
+            alert("Ошибка: " + bodyText.trim().split('\n').find(l => l.includes('не могут отправлять'))?.trim());
+            return;
+        }
+
         alert("Письмо отправлено!");
 
         document.body.removeChild(overlay);
