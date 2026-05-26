@@ -47,9 +47,13 @@ class Mining {
     }
 
     async processBuyPassPage() {
-        let pass = [...document.querySelectorAll('.btninv')].find(div => div.innerText.includes('Купить за 120'));
+        const passSize = parseInt(await CommonHelper.getExtStorage('wor_mining_pass_size') ?? '1');
+        const rows = [...document.querySelectorAll('table.table_modern tbody tr')].filter(tr => tr.querySelector('.btninv'));
+        const targetRow = rows[passSize - 1] ?? rows[0];
+        const pass = targetRow?.querySelector('.btninv');
 
         if (pass) {
+            CommonHelper.log(`Покупаем пропуск №${passSize} (${pass.innerText.trim()})`, false, false, true);
             await CommonHelper.clickAndWait(pass);
             return;
         }
@@ -119,7 +123,7 @@ class Mining {
         }
 
         CommonHelper.sendTelegramMessage('На странице нету ссылки на природу, что-то тут не так:' + document.location.href);
-        await CommonHelper.turnAlchemistry(false);
+        await CommonHelper.turnMining(false);
         await CommonHelper.turnFighting(false);
         return;
     }

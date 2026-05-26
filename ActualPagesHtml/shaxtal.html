@@ -1,0 +1,116 @@
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="World of Rest - мобильная браузерная RPG-игра.">
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="refresh" content="200">
+    <title>WoR: Левая шахта</title>
+
+    <link rel="stylesheet" type="text/css" href="style_theme-base.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="style_palette-grey.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="style_menu-hybrid.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="style_overlay-transparent.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="stylebody0.css?v=20260055">
+
+</head>
+<body class="palette-grey menu-hybrid transparent">
+<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Левая шахта</div>        <div class="chat">
+    <div class="header">
+        <div class="level-block">
+            <div style="display:flex; align-items:center;">
+                <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 39%"></div>
+            </div>
+        </div>
+        <div class="hp-mp-circle">
+            <div class="circle-bar">
+                <div class="circle-fill hp-fill" style="height: 78%;"></div>
+            </div>
+            <div class="circle-bar">
+                <div class="circle-fill mp-fill" style="height: 100%"></div>
+            </div>
+        </div>
+        <div class="status-item">
+            <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+            <span>0.01</span>
+        </div>
+        <div class="status-item">
+            <img src="img/money.gif" alt="WR" title="WR">
+            <span>1534</span>
+        </div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время"> 9:02</div>
+    </div>
+</div>
+    <script>
+        (function () {
+            const timeDiff = Date.now() - 1779775350000;
+
+            function updateBars() {
+                const now = Date.now() - timeDiff;
+                let elapsedSeconds = (now - 1779775323000) / 1000;
+
+                let newLife = Math.min(Math.round(11 + 1.6666666666667 * elapsedSeconds), 100);
+                let newMana = Math.min(Math.round(85 + 1.4166666666667 * elapsedSeconds), 85);
+
+                const headerHP = document.querySelector('.hp-fill');
+                const headerMana = document.querySelector('.mp-fill');
+                if (headerHP && headerMana) {
+                    headerHP.style.height = Math.round((newLife / 100) * 100) + '%';
+                    headerMana.style.height = Math.round((newMana / 85) * 100) + '%';
+                }
+            }
+
+            setInterval(updateBars, 250);
+        })();
+    </script>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1779775350&amp;hash=15a6550">общий</a>,
+        <a href="shaxtal.php?chatmode=my&amp;uni=1779775350&amp;hash=cf96dbf">мой</a>,
+        <a href="shaxtal.php?chatmode=add&amp;uni=1779775350&amp;hash=3b84351">написать</a>
+    </div>
+</div>    <div class="cont">
+    <div class="menu_div" align="left"><ul><li><a href="main.php?uni=1779775350&amp;hash=cdc0b55"><img src="icons/glavnoe_menyu_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="">  Главное меню</a></li><li><a href="gorodl.php?uni=1779775350&amp;hash=c58e770"><img src="icons/gorod_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="">  Город</a></li></ul></div>    </div>
+
+<div class="zagolovok" align="center"><strong>Левая шахта</strong></div>
+
+<img class="title-border" style="margin: 10px 0" src="images/builds/shaxtal_D.jpg" border="0" alt="">
+<br>
+<div class="svet" style="margin: 5px">Купить пропуск на добычу ресурсов:</div>
+
+<table class="table_modern" border="0" cellpadding="0" cellspacing="0" style="max-width:320px">
+    <tbody><tr>
+        <td>Время</td>
+        <td>Цена</td>
+    </tr>
+    <tr>
+        <td>30 минут</td>
+        <td align="center">
+            <a class="btninv" href="shaxtakupit.php?sel=1&amp;sh=2&amp;uni=1779775350&amp;hash=d96700d">
+                Купить за <strong>20</strong> <img src="img/money.gif" alt="WR" border="0">
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>1 час</td>
+        <td align="center">
+            <a class="btninv" href="shaxtakupit.php?sel=2&amp;sh=2&amp;uni=1779775350&amp;hash=419473c">
+                Купить за <strong>30</strong> <img src="img/money.gif" alt="WR" border="0">
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>3 часа</td>
+        <td align="center">
+            <a class="btninv" href="shaxtakupit.php?sel=3&amp;sh=2&amp;uni=1779775350&amp;hash=49da931">
+                Купить за <strong>80</strong> <img src="img/money.gif" alt="WR" border="0">
+            </a>
+        </td>
+    </tr>
+    </tbody></table>
+<br>
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+
+</body></html>

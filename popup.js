@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Тип удара в бою
     processFightingAttackType();
 
+    // Размер пропуска в шахту
+    processMiningPassSize();
+
     // Обработчик выбора боссов
     processFightingBossesModal();
 
@@ -387,6 +390,18 @@ async function processFightingAttackType() {
 
     select.addEventListener('change', () => {
         chrome.storage.local.set({ wor_fight_attack_type: select.value });
+    });
+}
+
+async function processMiningPassSize() {
+    const select = document.getElementById('selectMiningPassSize');
+
+    chrome.storage.local.get('wor_mining_pass_size', (data) => {
+        select.value = data.wor_mining_pass_size ?? '1';
+    });
+
+    select.addEventListener('change', () => {
+        chrome.storage.local.set({ wor_mining_pass_size: select.value });
     });
 }
 

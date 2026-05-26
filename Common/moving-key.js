@@ -78,7 +78,7 @@ async function start() {
                     break;
                 case 'KeyR': // Сдаться
                     try {
-                        document.querySelector("a[href*=killme]").click()
+                        document.location.href = document.querySelector("a[href*=killme]").href;
                         return;
                     } catch {
                     }
