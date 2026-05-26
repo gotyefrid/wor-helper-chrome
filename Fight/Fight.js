@@ -169,6 +169,7 @@ class Fight {
                 }
 
                 CommonHelper.sendTelegramMessage('Скип боя, так как противник больше ' + this.levelToSkip + ' уровня');
+                CommonHelper.log('Скип боя, так как противник ' + enemyName + ' больше ' + this.levelToSkip + ' уровня');
                 await CommonHelper.delay(15000);
                 await CommonHelper.reloadPage();
                 return;
