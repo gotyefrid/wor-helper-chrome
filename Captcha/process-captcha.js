@@ -111,7 +111,7 @@ window.addEventListener("load", async function () {
     CommonHelper.log('Хэш одинаковый - можно проходить капчу, ничего не изменилось');
 
     let bgElement = this.document.querySelector('img[src*=captcha_main]');
-    let puzzleElement = document.querySelector('img[src*="captcha_piece"], img[src*="cap_puzzle"]');
+    let puzzleElement = document.querySelector('img[src*="captcha_piece"]');
 
     if (bgElement) {
         let bgImage = await captcha.getImageFromDOM(bgElement);
@@ -121,8 +121,7 @@ window.addEventListener("load", async function () {
         if (coords && coords.x != null && coords.y != null) {
             let randomOffset = 5;
             let piece = captcha.findPuzzlePiece();
-            // await captcha.simulateArcDrag(piece, coords, 8, randomOffset);
-            captcha.setPuzzleCoorsinates(piece, coords.x, coords.y, randomOffset);
+            captcha.setPuzzleCoordinates(piece, coords.x, coords.y, randomOffset);
 
             // Проверка что пазл установлен нормально на нужном месте.
             const actualX = piece.offsetLeft;
@@ -152,16 +151,6 @@ window.addEventListener("load", async function () {
 
                 CommonHelper.clickAndWait(document.querySelector('input[type=submit]'));
                 return;
-                let exitUrl = await CommonHelper.getFightExitUrl() || null;
-
-                // if (exitUrl) {
-                //     CommonHelper.sendTelegramMessage('Нужно пройти капчу: ' + exitUrl);
-                //     await CommonHelper.delay(15000);
-                //     // document.location = exitUrl;
-                //     return;
-                // }
-
-                // await CommonHelper.delay(15000);
             }
         } else {
             CommonHelper.sendTelegramMessage("⚠️ Не переданы координаты для перемещения!");

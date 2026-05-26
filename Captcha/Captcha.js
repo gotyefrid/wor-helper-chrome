@@ -117,7 +117,7 @@ class Captcha {
         if (!document.querySelector('img[src*="captcha_main.php"]'))
             return { ok: false, reason: 'нет captcha_main img' };
 
-        if (!document.querySelector('img[src*="captcha_piece"], img[src*="cap_puzzle"]'))
+        if (!document.querySelector('img[src*="captcha_piece"]'))
             return { ok: false, reason: 'нет puzzle img' };
 
         const form = document.querySelector('form[action*="cap.php"]');
@@ -164,7 +164,7 @@ class Captcha {
     }
 
     findPuzzlePiece() {
-        return document.querySelector('img[src*="captcha_piece"], img[src*="cap_puzzle"]');
+        return document.querySelector('img[src*="captcha_piece"]');
     }
 
     cleanDocumentHTML() {
@@ -216,89 +216,7 @@ class Captcha {
     }
 
 
-    async simulateArcDrag(el, end, baseInterval = 8, randomOffset = 10) {
-        return new Promise((resolve) => {
-            const start = { x: 0, y: 0 };
-            el.style.left = "0px";
-            el.style.top = "0px";
-            el.style.position = "absolute";
-
-            const offsetX = (Math.random() - 0.5) * 2 * randomOffset;
-            const offsetY = (Math.random() - 0.5) * 2 * randomOffset;
-            const finalTarget = {
-                x: end.x + offsetX,
-                y: end.y + offsetY
-            };
-
-            const arcRadius = 10 + Math.random() * 20;
-            const arcDirection = Math.random() < 0.5 ? 1 : -1;
-
-            const totalDistance = Math.hypot(finalTarget.x, finalTarget.y);
-            const baseSteps = totalDistance / 3;
-            const speedFactor = 8 / baseInterval;
-            const intervalAdjustment = Math.pow(speedFactor, 0.6);
-            let steps = Math.round(baseSteps * 1.3 * intervalAdjustment);
-
-            const minSteps = 70 + Math.floor(Math.random() * 31);
-            steps = Math.max(steps, minSteps);
-
-            let currentStep = 0;
-
-            function easeOutQuart(t) {
-                return 1 - Math.pow(1 - t, 4);
-            }
-
-            el.dispatchEvent(new MouseEvent("mousedown", {
-                bubbles: true,
-                clientX: start.x,
-                clientY: start.y
-            }));
-
-            function nextStep() {
-                currentStep++;
-                const linearT = Math.min(currentStep / steps, 1);
-                const t = easeOutQuart(linearT);
-                const angle = linearT * Math.PI;
-
-                const dx = finalTarget.x - start.x;
-                const dy = finalTarget.y - start.y;
-
-                const progressX = start.x + dx * t;
-                const progressY = start.y + dy * t;
-
-                const perp = { x: -dy, y: dx };
-                const len = Math.hypot(perp.x, perp.y);
-                const norm = { x: perp.x / len, y: perp.y / len };
-
-                const arcOffset = Math.sin(angle) * arcRadius * arcDirection;
-
-                const x = progressX + norm.x * arcOffset;
-                const y = progressY + norm.y * arcOffset;
-
-                document.dispatchEvent(new MouseEvent("mousemove", {
-                    bubbles: true,
-                    clientX: x,
-                    clientY: y
-                }));
-
-                if (linearT >= 1) {
-                    document.dispatchEvent(new MouseEvent("mouseup", {
-                        bubbles: true,
-                        clientX: x,
-                        clientY: y
-                    }));
-                    resolve(); // ✅ Сообщаем, что всё завершилось
-                } else {
-                    const jitter = baseInterval * (0.8 + Math.random() * 0.4);
-                    setTimeout(nextStep, jitter);
-                }
-            }
-
-            nextStep();
-        });
-    }
-
-    setPuzzleCoorsinates(el, x, y, randomOffset = 10) {
+    setPuzzleCoordinates(el, x, y, randomOffset = 10) {
         const offsetX = (Math.random() - 0.5) * 2 * randomOffset;
         const offsetY = (Math.random() - 0.5) * 2 * randomOffset;
 

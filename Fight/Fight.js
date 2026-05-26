@@ -548,14 +548,7 @@ class Fight {
             return null;
         }
 
-        // Старый формат: имя и уровень в одном span — "Ортоз [9]"
-        let combined = [...enemyDiv.querySelectorAll('span')].find(span => span.innerText.includes('['));
-
-        if (combined) {
-            return combined.innerText.trim();
-        }
-
-        // Новый формат: имя и уровень в отдельных span'ах ("Волот" + "8").
+        // Имя и уровень в отдельных span'ах ("Волот" + "8").
         // У блоков HP/MA есть span'ы с id (hp_text/mana_text) — их исключаем.
         const spans = [...enemyDiv.querySelectorAll('span:not([id])')];
         const nameSpan = spans.find(s => s.innerText.trim() && !/^\d+$/.test(s.innerText.trim()));
@@ -575,15 +568,7 @@ class Fight {
     }
 
     getPlayerName() {
-        // Старый формат — блок с фоном base.png и span с left:70px
-        let oldName = document.querySelector('div[style*="url(img/base.png)"] span[style*="left:70px"]')
-            ?.textContent?.trim();
-
-        if (oldName) {
-            return oldName;
-        }
-
-        // Новый формат — первый блок с рамкой HP/MA принадлежит игроку.
+        // Первый блок с рамкой HP/MA принадлежит игроку.
         // Берём первый span без id, не являющийся числом (уровнем).
         const playerBlock = document.querySelector('div[style*="user_hpma_frame"]');
 
