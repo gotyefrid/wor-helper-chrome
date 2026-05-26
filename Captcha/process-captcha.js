@@ -110,11 +110,13 @@ window.addEventListener("load", async function () {
 
     CommonHelper.log('Хэш одинаковый - можно проходить капчу, ничего не изменилось');
 
-    let imgElement = this.document.querySelector('img[src*=captcha_main]');
+    let bgElement = this.document.querySelector('img[src*=captcha_main]');
+    let puzzleElement = document.querySelector('img[src*="captcha_piece"], img[src*="cap_puzzle"]');
 
-    if (imgElement) {
-        let image = await captcha.getImageFromDOM(imgElement);
-        let coords = await captcha.getCoorditanes(image)
+    if (bgElement) {
+        let bgImage = await captcha.getImageFromDOM(bgElement);
+        let puzzleImage = puzzleElement ? await captcha.getImageFromDOM(puzzleElement) : null;
+        let coords = await captcha.getCoorditanes(bgImage, puzzleImage)
 
         if (coords && coords.x != null && coords.y != null) {
             let randomOffset = 10;

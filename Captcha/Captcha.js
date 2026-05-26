@@ -28,34 +28,32 @@ class Captcha {
         return false;
     }
 
-    async getCoorditanes(image) {
-        return new Promise((resolve, reject) => {
+    async getCoorditanes(bgImage, puzzleImage) {
+        const toBase64 = (file) => new Promise((resolve, reject) => {
             const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject("Ошибка чтения файла");
+            reader.readAsDataURL(file);
+        });
 
-            reader.onload = function () {
-                const base64Image = reader.result;
+        const bgBase64 = await toBase64(bgImage);
+        const puzzleBase64 = puzzleImage ? await toBase64(puzzleImage) : null;
 
-                chrome.runtime.sendMessage({
-                    action: "sendRequestResolveCaptcha",
-                    data: {imageBase64: base64Image}
-                }, function (response) {
-                    if (chrome.runtime.lastError) {
-                        reject(chrome.runtime.lastError.message);
-                    } else if (!response) {
-                        reject("Нет ответа от background");
-                    } else if (response.success) {
-                        resolve(response.data); // <- вернёт то, что прислал сервер
-                    } else {
-                        reject(response || "Ошибка при распознавании");
-                    }
-                });
-            };
-
-            reader.onerror = function () {
-                reject("Ошибка чтения файла");
-            };
-
-            reader.readAsDataURL(image);
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({
+                action: "sendRequestResolveCaptcha",
+                data: {bgBase64, puzzleBase64}
+            }, function (response) {
+                if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError.message);
+                } else if (!response) {
+                    reject("Нет ответа от background");
+                } else if (response.success) {
+                    resolve(response.data);
+                } else {
+                    reject(response || "Ошибка при распознавании");
+                }
+            });
         });
     }
 
@@ -119,7 +117,7 @@ class Captcha {
         if (!document.querySelector('img[src*="captcha_main.php"]'))
             return { ok: false, reason: 'нет captcha_main img' };
 
-        if (!document.querySelector('img[src*="cap_puzzle.png"]'))
+        if (!document.querySelector('img[src*="captcha_piece"], img[src*="cap_puzzle"]'))
             return { ok: false, reason: 'нет puzzle img' };
 
         const form = document.querySelector('form[action*="cap.php"]');
@@ -166,7 +164,7 @@ class Captcha {
     }
 
     findPuzzlePiece() {
-        return document.querySelector('img[src*="cap_puzzle.png"]');
+        return document.querySelector('img[src*="captcha_piece"], img[src*="cap_puzzle"]');
     }
 
     cleanDocumentHTML() {

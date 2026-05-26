@@ -52,11 +52,16 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.action === "sendRequestResolveCaptcha") {
         (async () => {
             try {
-                const base64 = message.data.imageBase64;
-                const blob = await (await fetch(base64)).blob();
+                const { bgBase64, puzzleBase64 } = message.data;
+                const bgBlob = await (await fetch(bgBase64)).blob();
 
                 let formData = new FormData();
-                formData.append("file", blob, "captcha.png");
+                formData.append("background", bgBlob, "captcha_bg.png");
+
+                if (puzzleBase64) {
+                    const puzzleBlob = await (await fetch(puzzleBase64)).blob();
+                    formData.append("piece", puzzleBlob, "captcha_puzzle.png");
+                }
 
                 const CAPTCHA_HOST = await CommonHelperBackground.getExtStorage('wor_captcha_host');
 

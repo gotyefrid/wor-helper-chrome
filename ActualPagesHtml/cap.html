@@ -1,0 +1,128 @@
+<html><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="World of Rest - мобильная браузерная RPG-игра.">
+    <meta name="theme-color" content="#000000">
+    <meta http-equiv="refresh" content="200">
+    <title>WoR: Проверка</title>
+
+    <link rel="stylesheet" type="text/css" href="style_theme-base.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="style_palette-grey.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="style_menu-hybrid.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="style_overlay-transparent.css?v=20260055">
+    <link rel="stylesheet" type="text/css" href="stylebody1.css?v=20260055">
+
+    <script src="/jquery-3.7.1.min.js"></script>
+</head>
+<body class="palette-grey menu-hybrid transparent">
+<div id="headerContainer" class="header-container"><div class="menu" align="center">WoR: Проверка</div>        <div class="chat">
+    <div class="header">
+        <div class="level-block">
+            <div style="display:flex; align-items:center;">
+                <img src="img/st_upgrade.gif" style="height: 8px;" alt="Уровень" title="Уровень">
+                <span style="margin-left: 3px; font-size: 10px" class="svet"><strong>10</strong></span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 31%"></div>
+            </div>
+        </div>
+        <div class="hp-mp-circle">
+            <div class="circle-bar">
+                <div class="circle-fill hp-fill" style="height: 100%"></div>
+            </div>
+            <div class="circle-bar">
+                <div class="circle-fill mp-fill" style="height: 100%"></div>
+            </div>
+        </div>
+        <div class="status-item">
+            <img src="img/rubin.gif" alt="Рубины" title="Рубины">
+            <span>0.01</span>
+        </div>
+        <div class="status-item">
+            <img src="img/money.gif" alt="WR" title="WR">
+            <span>1503</span>
+        </div>
+        <div class="status-item"> <img src="img/clock.gif" border="0" alt="Время" title="Время"> 21:14</div>
+    </div>
+</div>
+    <div class="chat">
+        <span class="chat_txt">Чат:</span> <a href="chat2.php?uni=1779732883&amp;hash=f181b26">общий</a>,
+        <a href="cap.php?chatmode=my&amp;uni=1779732883&amp;hash=7749dd5">мой</a>,
+        <a href="cap.php?chatmode=add&amp;uni=1779732883&amp;hash=c49c72f">написать</a>
+    </div>
+    <div class="contur_mes"><div class="header_mes" align="left"><span class="svet"><strong><span style="color:#FAA134; font-family: 'Courier New', Tahoma; letter-spacing: -0.5px; ">21:14:43</span> <img src="images/system_my.gif" border="0" style="vertical-align:middle" alt="[[[ Система ]]] для Сквиртус:" title="[[[ Система ]]] для Сквиртус:"> </strong> На Вас напал Волот 10 уровня!</span><br></div></div></div>    <style>
+    #captcha-container {
+        position: relative;
+        width: 300px;
+        height: 200px;
+        border: 1px solid #ccc;
+        margin: 10px;
+        background: #eee;
+    }
+
+    #captcha-container img {
+        display: block;
+    }
+
+    #pb2012ae7 {
+        position: absolute;
+        cursor: move;
+        top: 0;
+        left: 0;
+        z-index: 10;
+    }
+
+    .button {
+        display: block;
+        margin: 10px;
+    }
+</style>
+
+<div class="cont">
+    <div class="menu_div" align="left"><ul><li><a href="main.php?uni=1779732883&amp;hash=33f03dd"><img src="icons/glavnoe_menyu_128.png" border="0" style="vertical-align:middle; margin-right:3px; width:32px; height:32px" alt="">  Главное меню</a></li></ul></div>    </div>
+
+<div style="margin: 10px">
+    Перетяните пазл примерно на его место:
+</div>
+
+<div id="captcha-container">
+    <img src="captcha_main.php?uni=1779732883&amp;hash=e503947" width="300" height="200" alt="">
+    <img src="captcha_piece.php?uni=1779732883&amp;hash=246b85c" id="pb2012ae7" alt="" class="ui-draggable ui-draggable-handle">
+</div>
+
+<form action="cap.php?enter&amp;uni=1779732883&amp;hash=7ec79a4" method="post" id="captcha-form">
+    <input type="hidden" name="piece_x" id="piece_x" value="">
+    <input type="hidden" name="piece_y" id="piece_y" value="">
+    <input type="submit" value="Готово" class="button">
+</form>
+
+<div style="margin: 10px">
+    вводится 1 раз на <span class="svet">10</span> сборов<br>
+
+    <br>
+
+    <a class="btninv" href="cap.php?shuffle=1&amp;uni=1779732883&amp;hash=b660f16">Сменить картинку</a><br>
+    <span style="font-size: 10px">разрешается не более 10 раз в час</span>
+    <div class="cont">	 		 	 	    	 		  		 	 </div>
+</div>
+
+<script src="/jquery-ui.min.js?v001"></script>
+<script src="/jquery.ui.touch-punch.min.js"></script>
+<script>
+    $(function () {
+        $("#pb2012ae7").draggable({
+            containment: "#captcha-container"
+        });
+
+        $("#captcha-form").submit(function (e) {
+            var pos = $("#pb2012ae7").position();
+            $("#piece_x").val(Math.round(pos.left));
+            $("#piece_y").val(Math.round(pos.top));
+            return true;
+        });
+    });
+</script>
+
+<div class="foot">©WoR 2026 [<a href="exit.php">x</a>]</div>
+
+</body></html>
