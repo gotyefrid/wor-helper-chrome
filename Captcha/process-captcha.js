@@ -119,7 +119,7 @@ window.addEventListener("load", async function () {
         let coords = await captcha.getCoorditanes(bgImage, puzzleImage)
 
         if (coords && coords.x != null && coords.y != null) {
-            let randomOffset = 10;
+            let randomOffset = 5;
             let piece = captcha.findPuzzlePiece();
             // await captcha.simulateArcDrag(piece, coords, 8, randomOffset);
             captcha.setPuzzleCoorsinates(piece, coords.x, coords.y, randomOffset);
