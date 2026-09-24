@@ -445,69 +445,74 @@ async function addQuickPost() {
         return;
     }
 
-    // 1. Получаем из стораджа массивы (или пустые массивы по умолчанию)
     const answers = await CommonHelper.getExtStorage('wor_chat_fast_answers') || [];
     const addresses = await CommonHelper.getExtStorage('wor_chat_fast_address') || [];
 
-    // 2. Вставляем два ваших статичных спана (метки)
-    form.insertAdjacentHTML(
-        "afterend",
-        '<span class="" style="margin: 0 3px 0 10px;">Теги:</span>'
-    );
-    form.insertAdjacentHTML(
-        "afterend",
-        '<span class="" style="margin: 0 3px 0 10px;">Кому:</span>'
-    );
+    if (!answers.length && !addresses.length) {
+        return;
+    }
 
-    // 3. Находим эти спаны по текстовому содержимому
-    const container = form.parentNode;
-    const labels = Array.from(container.querySelectorAll('span'))
-        .filter(el => ['Теги:', 'Кому:'].includes(el.textContent.trim()));
+    // Одна строка под формой: метка + ссылки, по центру, с переносом на узких экранах
+    const bar = document.createElement('div');
+    bar.className = 'wor-quick-post';
+    bar.style.cssText = 'display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:3px 6px; margin:4px 0;';
 
-    const tagsLabel = labels.find(el => el.textContent.trim() === 'Теги:');
-    const addressesLabel = labels.find(el => el.textContent.trim() === 'Кому:');
+    const addLabel = (text) => {
+        const span = document.createElement('span');
+        span.textContent = text;
+        span.style.marginLeft = bar.children.length ? '10px' : '0';
+        bar.appendChild(span);
+    };
 
-    // 4. Динамически создаём ссылки «ответы» (Теги)
-    //    Проходим по answers в обратном порядке, чтобы при вставке
-    //    через afterend итоговый порядок совпал с исходным
-    answers.slice().reverse().forEach(item => {
-        const [key, val] = item.split(':').map(s => s.trim());
+    const addLink = (text, onClick) => {
         const a = document.createElement('a');
         a.href = '#';
         a.className = 'svet';
-        a.style.margin = '0 3px';
-        a.textContent = key;
+        a.textContent = text;
         a.addEventListener('click', e => {
             e.preventDefault();
-            const inp = document.getElementById('postmessage');
-            if (inp) inp.value += val;
+            onClick();
         });
-        tagsLabel.insertAdjacentElement('afterend', a);
-    });
+        bar.appendChild(a);
+    };
 
-    // 5. Динамически создаём ссылки «кому» (Адреса)
-    addresses.slice().reverse().forEach(item => {
-        const parts = item.split(':').map(s => s.trim());
-        const key = parts[0];
-        const val = parts[1] || '';
-        const opt = parts[2];  // если есть «:1» — будет '1'
+    // Адресаты: «ник:значение» или «ник:значение:1» (1 — сразу ставить галку «Личное»)
+    if (addresses.length) {
+        addLabel('Кому:');
 
-        const a = document.createElement('a');
-        a.href = '#';
-        a.className = 'svet';
-        a.style.margin = '0 3px';
-        a.textContent = key;
-        a.addEventListener('click', e => {
-            e.preventDefault();
-            const inp = document.getElementById('postuser');
-            if (inp) inp.value = val;
-            if (opt === '1') {
-                const cb = document.getElementById('postprivat');
-                if (cb) cb.checked = true;
-            }
+        addresses.forEach(item => {
+            const [key, val = '', opt] = item.split(':').map(s => s.trim());
+
+            addLink(key, () => {
+                const inp = document.getElementById('postuser');
+                if (inp) inp.value = val;
+
+                if (opt === '1') {
+                    const cb = document.getElementById('postprivat');
+                    if (cb) cb.checked = true;
+                }
+            });
         });
-        addressesLabel.insertAdjacentElement('afterend', a);
-    });
+    }
+
+    // Теги: «название:текст» — дописываются в поле сообщения
+    if (answers.length) {
+        addLabel('Теги:');
+
+        answers.forEach(item => {
+            // Только первое двоеточие — разделитель, в самом тексте они допустимы
+            const sep = item.indexOf(':');
+            const key = (sep === -1 ? item : item.slice(0, sep)).trim();
+            const val = sep === -1 ? '' : item.slice(sep + 1).trim();
+
+            addLink(key, () => {
+                const inp = document.getElementById('postmessage');
+                if (inp) inp.value += val;
+            });
+        });
+    }
+
+    form.insertAdjacentElement('afterend', bar);
 }
 
 function setupBattleHoverPreview() {

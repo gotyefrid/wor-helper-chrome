@@ -79,8 +79,15 @@ class Chat {
         }
 
         function timeFromStrong(strong) {
-            const span = strong.querySelector('span[style*="FAA134"]');
+            const span = strong.querySelector('span.chat-clock, span[style*="FAA134"]');
             return span ? span.textContent.trim() : null;
+        }
+
+        // Новая вёрстка: каждое сообщение — отдельный div.chat-line.
+        // Старая: всё одной простынёй, сообщения разделены <br>.
+        function splitMessages() {
+            const lines = msgBox.querySelectorAll(':scope > .chat-line');
+            return lines.length ? Array.from(lines) : splitByBr();
         }
 
         function splitByBr() {
@@ -156,6 +163,8 @@ class Chat {
             const firstEl = Array.from(wrap.children)[0];
             if (!firstEl) return null;
             if (firstEl.tagName === 'SPAN' && firstEl.classList.contains('svet')) return parseSystem(firstEl);
+            // Системное без обёртки .svet (новая вёрстка) — узнаём по иконке системы
+            if (wrap.querySelector('img[src*="images/system"]')) return parseSystem(wrap);
             if (firstEl.tagName === 'SPAN') {
                 const style = firstEl.getAttribute('style') || '';
                 if (style.toLowerCase().includes('ff5555')) return parseColoredPersonal(firstEl, 'PRIVATE');
@@ -182,7 +191,7 @@ class Chat {
 
         // ── build result ──────────────────────────────────────────────────────
         const msgs = [];
-        for (const wrap of splitByBr()) {
+        for (const wrap of splitMessages()) {
             const msg = parseFragment(wrap);
             if (!msg) continue;
             msg.isPrivate = msg.type === 'PRIVATE';
