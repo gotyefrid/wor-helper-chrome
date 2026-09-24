@@ -58,6 +58,29 @@ class Captcha {
     }
 
 
+    /**
+     * Скачивает картинку как есть (исходными байтами), не теряя анимацию.
+     * Для фона капчи это важно: это GIF с «бегущим» пунктиром обводки,
+     * а canvas отдал бы только один кадр с рваной линией.
+     */
+    async fetchImageFile(url, filename = "image") {
+        try {
+            const response = await fetch(url, { cache: "force-cache", credentials: "include" });
+
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            const blob = await response.blob();
+            const ext = (blob.type.split("/")[1] || "png").split("+")[0];
+
+            return new File([blob], `${filename}.${ext}`, { type: blob.type });
+        } catch (error) {
+            CommonHelper.log("Не удалось скачать картинку капчи: " + error);
+            return null;
+        }
+    }
+
     getImageFromDOM(imgElement, filename = "image.jpg") {
         try {
             let canvas = document.createElement("canvas");

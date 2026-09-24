@@ -56,7 +56,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 const bgBlob = await (await fetch(bgBase64)).blob();
 
                 let formData = new FormData();
-                formData.append("background", bgBlob, "captcha_bg.png");
+                // Расширение по факту: фон приходит анимированным GIF, но может быть и PNG
+                const bgExt = (bgBlob.type.split("/")[1] || "png").split("+")[0];
+                formData.append("background", bgBlob, `captcha_bg.${bgExt}`);
 
                 if (puzzleBase64) {
                     const puzzleBlob = await (await fetch(puzzleBase64)).blob();

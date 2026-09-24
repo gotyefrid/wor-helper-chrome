@@ -114,7 +114,10 @@ window.addEventListener("load", async function () {
     let puzzleElement = document.querySelector('img[src*="captcha_piece"]');
 
     if (bgElement) {
-        let bgImage = await captcha.getImageFromDOM(bgElement);
+        // Фон берём исходными байтами (это анимированный GIF) — склейкой кадров занимается резолвер.
+        // Если скачать не вышло, падаем на старый способ: один кадр через canvas.
+        let bgImage = await captcha.fetchImageFile(bgElement.src, "captcha_bg")
+            || await captcha.getImageFromDOM(bgElement);
         let puzzleImage = puzzleElement ? await captcha.getImageFromDOM(puzzleElement) : null;
         let coords = await captcha.getCoorditanes(bgImage, puzzleImage)
 

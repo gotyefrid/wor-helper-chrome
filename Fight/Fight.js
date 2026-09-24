@@ -107,14 +107,22 @@ class Fight {
                 return;
             }
 
-            await this.trackEnemyDodges(5, async () => {
-                let message = 'Слишком много уворотов, что-то тут не так, ничего не делаю больше';
-                CommonHelper.log(message);
-                CommonHelper.sendTelegramMessage(message);
-                await CommonHelper.delay(10000);
-                await CommonHelper.reloadPage();
-                return;
-            });
+            // Пустое поле — дефолтные 5, явный 0 — проверка выключена
+            const maxDodgesSetting = await CommonHelper.getExtStorage('wor_fight_max_dodges');
+            const maxDodges = maxDodgesSetting === undefined || maxDodgesSetting === null || maxDodgesSetting === ''
+                ? 5
+                : Number(maxDodgesSetting);
+
+            if (maxDodges > 0) {
+                await this.trackEnemyDodges(maxDodges, async () => {
+                    let message = 'Слишком много уворотов подряд (' + maxDodges + '), что-то тут не так, ничего не делаю больше';
+                    CommonHelper.log(message);
+                    CommonHelper.sendTelegramMessage(message);
+                    await CommonHelper.delay(10000);
+                    await CommonHelper.reloadPage();
+                    return;
+                });
+            }
 
             let checkTrauma = await CommonHelper.getExtStorage('wor_fight_check_trauma');
             let maxTraumaInHours = await CommonHelper.getExtStorage('wor_fight_max_trauma');
@@ -409,12 +417,12 @@ class Fight {
             await CommonHelper.setExtStorage(DODGE_STORAGE_KEY, count);
             CommonHelper.log(`Противник увернулся. Стрик: ${count}`);
 
-            if (count > maxDodges) {
+            if (count >= maxDodges) {
                 if (typeof callback === "function") {
                     await CommonHelper.log('Делаем указанную логику при частых уворотах');
                     await callback();
                 } else {
-                    CommonHelper.log('Противник уклоняется слишком часто! Больше 5 раз подряд.');
+                    CommonHelper.log(`Противник уклоняется слишком часто! ${count} раз подряд.`);
                 }
             }
         } else {

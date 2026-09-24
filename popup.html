@@ -259,6 +259,12 @@
             </label>
         </div>
         <div class="toggle-wrapper">
+            <span class="info-icon" title="Сколько уворотов противника подряд терпим. При достижении — бот останавливается и пишет в Telegram. 0 = проверка отключена.">?</span><span class="toggle-title small">Макс. уворотов</span>
+            <label class="text-input">
+                <input type="number" id="inputFightingMaxDodges" min="0" max="99" maxlength="2">
+            </label>
+        </div>
+        <div class="toggle-wrapper">
             <span class="toggle-title small">Выходить на природу</span>
             <label class="switch">
                 <input type="checkbox" id="toggleFightingExitToNature"><span class="slider round"></span>

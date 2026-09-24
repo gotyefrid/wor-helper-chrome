@@ -413,6 +413,7 @@ async function processInputs() {
         inputFightingLevelToSkip: { storageKey: "wor_fight_level_to_skip" },
         inputFightingMaxTrauma: { storageKey: "wor_fight_max_trauma" },
         inputFightingLowDamageThreshold: { storageKey: "wor_fight_low_damage_threshold" },
+        inputFightingMaxDodges: { storageKey: "wor_fight_max_dodges", defaultValue: "5" },
         inputFightingPotHPThreshold: { storageKey: "wor_fight_pot_hp_threshold" },
         inputFightingPotMPThreshold: { storageKey: "wor_fight_pot_mp_threshold" },
         inputTelegramOptApiKeyCommon: { storageKey: "wor_tg_bot_common_token" },
