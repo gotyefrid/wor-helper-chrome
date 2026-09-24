@@ -1,3 +1,28 @@
+// Telegram отдаёт 409 Conflict, если getUpdates по одному боту дёргают одновременно.
+// Скрипт живёт на каждой вкладке игры, поэтому опрашивает только одна — «владелец».
+// Владение берётся на время и продлевается каждый цикл; если вкладку закрыли,
+// запись протухает и опрос подхватывает другая вкладка.
+const TG_POLL_OWNER_KEY = 'wor_tg_poll_owner';
+const TG_POLL_OWNER_TTL = 30000;
+const TG_POLL_TAB_ID = Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+async function claimTelegramPolling() {
+    const owner = await CommonHelper.getExtStorage(TG_POLL_OWNER_KEY);
+    const expired = !owner || !owner.ts || (Date.now() - owner.ts) > TG_POLL_OWNER_TTL;
+
+    if (!expired && owner.id !== TG_POLL_TAB_ID) {
+        return false;
+    }
+
+    await CommonHelper.setExtStorage(TG_POLL_OWNER_KEY, { id: TG_POLL_TAB_ID, ts: Date.now() });
+
+    // Две вкладки могли записаться одновременно — побеждает та, чья запись легла последней
+    await CommonHelper.delay(200, 500);
+    const confirmed = await CommonHelper.getExtStorage(TG_POLL_OWNER_KEY);
+
+    return confirmed?.id === TG_POLL_TAB_ID;
+}
+
 (async function () {
     while (typeof CommonHelper === 'undefined') {
         await new Promise(r => setTimeout(r, 50));
@@ -11,6 +36,12 @@
 
     while (true) {
         try {
+            if (!await claimTelegramPolling()) {
+                CommonHelper.log('Команды из Телеграма опрашивает другая вкладка.');
+                await CommonHelper.delay(10000);
+                continue;
+            }
+
             // Отправка сообщений из чата в Telegram
             let command = await CommonHelper.getTelegramUpdates('common');
 
